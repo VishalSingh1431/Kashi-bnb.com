@@ -1,14 +1,13 @@
 import { useState } from 'react' 
 import './App.css'
 import { bg_main } from './assets/Vars'
+import Navbar from './Components/Navbar'
 
 function App() { 
 
   return (
     <>
-      <div className="sec tex">
-        sdlkfjsld
-      </div>
+       <Navbar/>
     </>
   )
 }
