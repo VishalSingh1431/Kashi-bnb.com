@@ -1,0 +1,21 @@
+* {
+  background-color: #d7c2f4;
+  max-width: 1280px;
+  margin: 0 auto; 
+  text-align: center;
+}
+
+.sec{
+  background-color: #0a9396;
+}
+
+.tex{
+  color: #001219;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.sec:hover{
+ background: #027890 ;
+}
+
+/* 606c38 */
