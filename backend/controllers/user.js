@@ -1,10 +1,21 @@
+import { PrismaClient } from '@prisma/client'
 
-export const loginControl = (req,res,nex)=>{
-    
+const prisma = new PrismaClient();
+
+export const loginControl = async (req,res,nex)=>{
 }
 
-export const signupControl = (req,res,nex)=>{
+export const verification = async (req,res,nex)=>{
 
+}
+
+export const signupControl = async (req,res,nex)=>{
+    const user = await prisma.users.create({
+        data: {
+            ...req.body
+        }
+    })
+    
 }
 
 export const checkControl = (req,res,nex)=>{
