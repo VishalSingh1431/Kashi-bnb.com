@@ -17,12 +17,14 @@ datasource db {
 model users{
   id        String @id @default(uuid())
   email     String @unique
-  name      String?
-  password  String?
-  has_hotel Boolean @default(false)
-  has_restr Boolean @default(false)
-  is_admin  Boolean @default(false)
-  verified  Boolean @default(false)
+  name      String
+  password  String
+  token     String?
+  time      DateTime  @updatedAt
+  has_hotel Boolean   @default(false)
+  has_restr Boolean   @default(false)
+  is_admin  Boolean   @default(false)
+  verified  Boolean   @default(false)
   hotels_name   hotels[]
   restr_name    restr[]
   blogs_name    blogs[]
