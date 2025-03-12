@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model users{
+  id        String @id @default(uuid())
+  email     String @unique
+  name      String?
+  password  String?
+  has_hotel Boolean @default(false)
+  has_restr Boolean @default(false)
+  is_admin  Boolean @default(false)
+  verified  Boolean @default(false)
+  hotels_name   hotels[]
+  restr_name    restr[]
+  blogs_name    blogs[]
+}
+
+model hotels{
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  gmap      String
+  images    himages[]
+  owner     users     @relation(fields: [ownerId], references: [id])
+  ownerId   String
+}
+
+model restr{
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  gmap      String
+  images    rimages[]
+  owner     users    @relation(fields: [ownerId], references: [id])
+  ownerId   String
+}
+
+model blogs{
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  author    users     @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+
+model himages{
+  id        String   @id @default(uuid())
+  url       String
+  name      String
+  hotel    hotels    @relation(fields: [hotelId], references: [id])
+  hotelId  String
+}
+
+model rimages{
+  id        String   @id @default(uuid())
+  url       String
+  name      String
+  rest      restr     @relation(fields: [restrId], references: [id])
+  restrId  String
+}
