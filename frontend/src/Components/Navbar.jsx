@@ -9,7 +9,7 @@ const Navbar = () => {
       <div className='container mx-auto flex justify-between items-center'>
         {/* Logo */}
         <div>
-          <img className='w-40 md:w-72 rounded-lg' src='/images/logo1.png' alt='Logo' />
+          <img className='w-40 h-40 rounded-lg' src='https://kashibnb.in/wp-content/uploads/2024/09/Image-3-1.jpg' alt='Logo' />
         </div>
 
         {/* Hamburger Menu for Mobile */}
