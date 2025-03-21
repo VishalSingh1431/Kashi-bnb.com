@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios'
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -7,13 +8,9 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('https://kashi-bnb-production.up.railway.app/api/v1/user/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: { name, email, password },
-    });
-    const data = await response.json();
-    console.log(data);
+    const response = await axios.post('https://kashi-bnb-production.up.railway.app/api/v1/user/signup', 
+      { name, email, password });
+    console.log(response);
   };
 
   return (
