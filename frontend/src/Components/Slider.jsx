@@ -44,10 +44,10 @@ const Slider = () => {
             ))}
 
             {/* Centered Text */}
-            <div className="absolute top-1/2 left-1/2 bg-black/10 rounded-2xl transform -translate-x-1/2 -translate-y-1/2 text-center text-white p-6 w-11/12 md:w-2/3 lg:w-1/2">
+            <div className="absolute  top-3/5 left-1/2 bg-white/30 rounded-2xl transform -translate-x-1/2 -translate-y-1/2 text-center text-white p-6 w-11/12 md:w-2/3 lg:w-1/2">
                 {/* Title */}
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold drop-shadow-lg">Explore Varanasi, The Oldest City</h1>
-                <h2 className="text-lg sm:text-xl mt-2 drop-shadow-md">Location Search</h2>
+                <h1 className="text-3xl text-black sm:text-4xl md:text-5xl font-bold drop-shadow-lg">Explore Varanasi, The Oldest City</h1>
+                <h2 className="text-lg text-black sm:text-xl mt-2 drop-shadow-md">Location Search</h2>
 
                 {/* Buttons with Links */}
                 <ul className="flex flex-wrap justify-center gap-3 mt-4">
