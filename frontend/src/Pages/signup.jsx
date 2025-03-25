@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios'
+import { BACKEND } from '../assets/Vars';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -8,7 +9,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await axios.post('https://kashi-bnb-production.up.railway.app/api/v1/user/signup', 
+    const response = await axios.post(`${BACKEND}/api/v1/user/signup`, 
       { name, email, password });
     console.log(response);
   };
