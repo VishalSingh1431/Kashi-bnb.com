@@ -79,7 +79,7 @@ const Footer = () => {
               {[
                 { icon: Facebook, href: "https://facebook.com", color: "hover:text-blue-500" },
                 { icon: Twitter, href: "https://twitter.com", color: "hover:text-blue-400" },
-                { icon: Instagram, href: "https://instagram.com", color: "hover:text-pink-500" },
+                { icon: Instagram, href: "https://www.instagram.com/kashibnb_official?igsh=MXN2a2Z3cjJ3NmgzMw==", color: "hover:text-pink-500" },
               ].map((social, index) => (
                 <motion.a
                   key={index}
@@ -172,21 +172,22 @@ const Footer = () => {
                 whileHover={{ scale: 1.02 }}
               >
                 <MapPin className="h-5 w-5 text-indigo-400 animate-pulse" />
-                <span>Varanasi, Uttar Pradesh, India</span>
+                <span>Adress: Bhelupur, Varanasi Uttar Pradesh ,221010</span>
               </motion.li>
               <motion.li
                 className="flex items-center gap-3"
                 whileHover={{ scale: 1.02 }}
               >
                 <Phone className="h-5 w-5 text-indigo-400 animate-pulse" />
-                <span>+91 123-456-7890</span>
+                <span>+91 80117 08595</span>
+                <span>, +91 7054347998</span>
               </motion.li>
               <motion.li
                 className="flex items-center gap-3"
                 whileHover={{ scale: 1.02 }}
               >
                 <Mail className="h-5 w-5 text-indigo-400 animate-pulse" />
-                <span>support@kashibnb.in</span>
+                <span>kashibnb@gmail.com</span>
               </motion.li>
             </ul>
             {/* Newsletter Subscription */}

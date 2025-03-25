@@ -52,7 +52,7 @@ const Homestay =  () => {
                     />
 
                     <Card
-                        // name={hotels[0].name}
+                        name={hotels[0].name}
                         price="199"  // Just pass the number, rupee symbol is added in the component
                         image="https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg"
                         options={["Free WiFi", "Breakfast Included", "Pool Access", "24/7 Support"]}
