@@ -31,8 +31,9 @@ model users {
 
 model hotels {
   id      String    @id @default(uuid())
-  name    String
+  name    String 
   address String
+  services    String[]
   gmap    String
   images  himages[]
   owner   users     @relation(fields: [ownerId], references: [id])
@@ -43,6 +44,7 @@ model restr {
   id      String    @id @default(uuid())
   name    String
   address String
+  city    String
   gmap    String
   images  rimages[]
   owner   users     @relation(fields: [ownerId], references: [id])

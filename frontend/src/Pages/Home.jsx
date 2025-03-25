@@ -5,13 +5,16 @@ import Login from './login'
 import Signup from './Signup'
 import Contact from './Contact'
 import About from './About'
-import Footer from '../Components/Footer'
+import Footer from '../Components/Footer' 
+import Card from '../Components/Card' 
+import Homestay from './Homestay'
 
 const Home = () => {
   return (
     <div>
       <Navbar/>
-      <Slider/> 
+      <Slider/>  
+      <Homestay/>
       
       {/* <About/> */}
       {/* <Contact/> */}
