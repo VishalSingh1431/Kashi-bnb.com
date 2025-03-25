@@ -1,8 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const Card = ({ name, price, image, rating, options }) => {
-  // Animation variants for framer-motion
+const Card = ({ name, price, image, rating, options, address, gmap, onClick }) => {
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
@@ -11,11 +10,12 @@ const Card = ({ name, price, image, rating, options }) => {
 
   return (
     <motion.div
-      className="max-w-sm w-80  bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300"
+      className="max-w-sm w-80 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300 cursor-pointer"
       variants={cardVariants}
       initial="hidden"
       animate="visible"
       whileHover="hover"
+      onClick={onClick} // Add onClick handler here
     >
       <img
         src={image}
@@ -24,14 +24,24 @@ const Card = ({ name, price, image, rating, options }) => {
       />
       <div className="p-4">
         <h2 className="text-xl font-semibold">{name}</h2>
-        {/* Price and Rating in the same row */}
         <div className="flex justify-between items-center mt-2">
           <p className="text-lg text-gray-700">₹{price}/night</p>
           <div className="flex items-center space-x-1">
             <span className="text-gray-700">{rating}</span>
           </div>
         </div>
-        {/* Options in two columns */}
+        {address && <p className="mt-2 text-gray-600 text-sm">{address}</p>}
+        {gmap && (
+          <a
+            href={gmap}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 text-blue-600 text-sm hover:underline"
+            onClick={(e) => e.stopPropagation()} // Prevent map link click from triggering card navigation
+          >
+            View on Google Maps
+          </a>
+        )}
         <div className="mt-3 text-gray-600">
           <div className="grid grid-cols-2 gap-2">
             {options.map((option, index) => (

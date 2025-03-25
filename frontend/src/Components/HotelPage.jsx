@@ -1,28 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // Get ID from URL
 import { motion } from "framer-motion";
 import { MapPin, Bed, Bath, Wifi, Tv, Coffee, Star } from "lucide-react";
-import { Link } from "react-router-dom"; // For navigation
+import { Link } from "react-router-dom";
 
-const HotelProfile = ({
-  name = "Property Name",
-  slug = "property-name", // Unique slug for routing
-  heroImage = "https://via.placeholder.com/1200x600",
-  description = "A wonderful place to stay with all the comforts you need.",
-  pricePerNight = 0,
-  currency = "₹", // Default to INR, can be changed
-  location = "Unknown Location",
-  amenities = [],
-  galleryImages = [],
-  mapEmbed = "",
-  rating = 0,
-  reviews = 0,
-  features = [], // Additional features (e.g., "Non-Smoking", "Pet-Friendly")
-  ctaText = "Book Now", // Customizable call-to-action text
-  ctaLink = "/book", // Default booking link
-  showRating = true, // Toggle rating display
-  showGallery = true, // Toggle gallery display
-  showMap = true, // Toggle map display
-}) => {
+const HotelPage = () => {
+  const { id } = useParams(); // Get hotel ID from URL
+  const [hotel, setHotel] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHotelData = async () => {
+      try {
+        const response = await fetch(`BACKEND/api/v1/hotel/hotel/${id}`);
+        const data = await response.json();
+        setHotel(data);
+      } catch (error) {
+        console.error("Error fetching hotel data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHotelData();
+  }, [id]);
+
+  if (loading) return <div className="text-center py-10 text-gray-600">Loading...</div>;
+  if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
+
+  const {
+    name,
+    slug,
+    heroImage,
+    description,
+    pricePerNight,
+    currency,
+    location,
+    amenities,
+    galleryImages,
+    mapEmbed,
+    rating,
+    reviews,
+    features,
+    ctaText,
+    ctaLink,
+  } = hotel;
+
   // Animation Variants
   const sectionVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -49,11 +72,7 @@ const HotelProfile = ({
         initial="hidden"
         animate="visible"
       >
-        <img
-          src={heroImage}
-          alt={name}
-          className="w-full h-96 object-cover rounded-xl shadow-lg"
-        />
+        <img src={heroImage} alt={name} className="w-full h-96 object-cover rounded-xl shadow-lg" />
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-xl">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-lg text-center px-4">
             {name}
@@ -78,7 +97,7 @@ const HotelProfile = ({
           </div>
 
           {/* Amenities */}
-          {amenities.length > 0 && (
+          {amenities?.length > 0 && (
             <div className="bg-white p-6 rounded-xl shadow-md">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Amenities</h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -92,8 +111,8 @@ const HotelProfile = ({
             </div>
           )}
 
-          {/* Additional Features */}
-          {features.length > 0 && (
+          {/* Features */}
+          {features?.length > 0 && (
             <div className="bg-white p-6 rounded-xl shadow-md">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Features</h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -108,7 +127,7 @@ const HotelProfile = ({
           )}
 
           {/* Gallery */}
-          {showGallery && galleryImages.length > 0 && (
+          {galleryImages?.length > 0 && (
             <div className="bg-white p-6 rounded-xl shadow-md">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Gallery</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -127,22 +146,16 @@ const HotelProfile = ({
         </motion.div>
 
         {/* Right Column: Booking & Info */}
-        <motion.div
-          className="lg:col-span-1 space-y-8"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <motion.div className="lg:col-span-1 space-y-8" variants={sectionVariants} initial="hidden" whileInView="visible">
           {/* Price & Booking */}
           <div className="bg-white p-6 rounded-xl shadow-md sticky top-20">
             <div className="flex items-center justify-between mb-4">
               <p className="text-2xl font-bold text-gray-900">
                 {currency}
-                {pricePerNight.toLocaleString()}{" "}
+                {pricePerNight?.toLocaleString()}{" "}
                 <span className="text-sm font-normal text-gray-500">/ night</span>
               </p>
-              {showRating && rating > 0 && (
+              {rating > 0 && (
                 <div className="flex items-center gap-1">
                   <Star className="h-5 w-5 text-yellow-400 fill-current" />
                   <span className="text-gray-700 font-medium">
@@ -151,34 +164,16 @@ const HotelProfile = ({
                 </div>
               )}
             </div>
-            <Link to={ctaLink}>
+            <Link to={ctaLink || "/book"}>
               <button className="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition-colors duration-300 font-semibold">
-                {ctaText}
+                {ctaText || "Book Now"}
               </button>
             </Link>
           </div>
-
-          {/* Location */}
-          {showMap && mapEmbed && (
-            <div className="bg-white p-6 rounded-xl shadow-md">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Location</h2>
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="h-5 w-5 text-indigo-500" />
-                <p className="text-gray-600">{location}</p>
-              </div>
-              <iframe
-                src={mapEmbed}
-                className="w-full h-64 rounded-lg border-0"
-                allowFullScreen=""
-                loading="lazy"
-                title="Property Location"
-              />
-            </div>
-          )}
         </motion.div>
       </div>
     </div>
   );
 };
 
-export default HotelProfile;
+export default HotelPage;
