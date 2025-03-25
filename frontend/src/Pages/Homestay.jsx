@@ -70,32 +70,33 @@ const Homestay = () => {
               options={["Free WiFi", "Breakfast Included", "Pool Access", "24/7 Support"]}
               onClick={() => navigate("/hotel/static-premium-suite")} // Example static ID
             />
-            <Card
+            {/* <Card
                         name="Guranteed Virgin"
                         price="69"  // Just pass the number, rupee symbol is added in the component
                         image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2XQlfxscGl9L5SM75BVSLJRgIpLaGwlMaug&s"
                         options={["Free WiFi", "Breakfast Included", "Pool Access", "24/7 Support"]}
-                    />
+                    /> */}
+          
             <Card
-              name="Premium Suite"
-              price="199"
+              name={hotels[0]?.name}
+              price={hotels[0]?.rate}
               image="https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg"
-              options={["Free WiFi", "Breakfast Included", "Pool Access", "24/7 Support"]}
-              onClick={() => navigate("/hotel/static-premium-suite-2")}
+              options={[hotels[0].s1, hotels[0].s2, hotels[0].s3, hotels[0].s4]}
+              onClick={() => navigate(`hotel/${hotels[0]?.id}`)}
             />
             <Card
               name={hotels[0]?.name}
               price={hotels[0]?.rate}
               image="https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg"
               options={[hotels[0].s1, hotels[0].s2, hotels[0].s3, hotels[0].s4]}
-              onClick={() => navigate("/hotel/static-premium-suite-3")}
+              onClick={() => navigate(`hotel/${hotels[0]?.id}`)}
             />
             <Card
               name={hotels[0]?.name}
               price={hotels[0]?.rate}
               image="https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg"
               options={[hotels[0].s1, hotels[0].s2, hotels[0].s3, hotels[0].s4]}
-              onClick={() => navigate("/hotel/static-premium-suite-3")}
+              onClick={() => navigate(`hotel/${hotels[0]?.id}`)}
             />
           </div>
         )}
