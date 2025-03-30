@@ -7,15 +7,16 @@ import Contact from './Contact'
 import About from './About'
 import Footer from '../Components/Footer' 
 import Card from '../Components/Card' 
-import Homestay from './Homestay'
+import Homestay from './Homestay' 
+import Hotel from './Hotel'
 
 const Home = () => {
   return (
     <div>
       <Navbar/>
       <Slider/>  
-      <Homestay/>
-      
+      <Homestay/> 
+      <Hotel/>
       {/* <About/> */}
       {/* <Contact/> */}
       {/* <Signup/>  */}
