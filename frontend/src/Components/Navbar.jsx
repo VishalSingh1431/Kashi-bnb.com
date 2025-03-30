@@ -43,11 +43,10 @@ const Navbar = () => {
             {/* Menu items */}
             <ul className="pt-20 px-4 space-y-4">
               {[
-                { name: "Home", path: "/" },
-                { name: "Restaurants & Hotels", path: "/restaurants-hotels" },
-                { name: "About", path: "/about" },
-                { name: "Add Your Business", path: "/add-business" },
-                { name: "Blogs", path: "/blogs" },
+                { name: "Home", path: "/" }, 
+                { name: "Why KashiBnB", path: "/about" },
+                { name: "Add Your Listing", path: "/add-listing" },
+                { name: "Activities", path: "/activities" },
                 { name: "Contact", path: "/contact" },
               ].map((item) => (
                 <li
@@ -70,11 +69,10 @@ const Navbar = () => {
         {/* Desktop Navigation Links */}
         <ul className="hidden md:flex gap-5 font-bold text-black text-xl">
           {[
-            { name: "Home", path: "/" },
-            { name: "Restaurants & Hotels", path: "/restaurants-hotels" },
-            { name: "About", path: "/about" },
-            { name: "Add Your Business", path: "/add-business" },
-            { name: "Blogs", path: "/blogs" },
+            { name: "Home", path: "/" }, 
+            { name: "Why KashiBnB", path: "/about" },
+            { name: "Add Your Listing", path: "/add-listing" },
+            { name: "Activities", path: "/activities" },
             { name: "Contact", path: "/contact" },
           ].map((item) => (
             <li

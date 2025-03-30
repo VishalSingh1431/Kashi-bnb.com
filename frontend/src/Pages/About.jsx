@@ -32,66 +32,7 @@ const About = () => {
   return (
     <div className=" min-h-screen pt-52 px-4 sm:px-6 lg:px-8">
       {/* Hero Image */}
-      <motion.div
-        className="relative w-full h-64 md:h-96 overflow-hidden rounded-xl shadow-2xl"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <img
-          className="w-full h-full object-cover"
-          src="/images/About Us.png"
-          alt="About Us"
-        />
-        {/* <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-          <motion.h1
-            className="text-4xl md:text-6xl font-extrabold text-white tracking-tight"
-            variants={itemVariants}
-          >
-            About KashiBNB
-          </motion.h1>
-        </div> */}
-      </motion.div>
-
-      {/* Welcome Section */}
-      <motion.div
-        className="max-w-5xl mx-auto mt-12 text-center"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <motion.h1
-          className="text-3xl md:text-5xl font-bold text-gray-900 mb-6"
-          variants={itemVariants}
-        >
-          Welcome to KashiBNB
-        </motion.h1>
-        <motion.p
-          className="text-gray-600 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto"
-          variants={itemVariants}
-        >
-          Your one-stop solution for authentic homestay experiences in Varanasi!
-          Whether you’re a traveler seeking a seamless journey or a property owner
-          looking for better visibility, KashiBnB is here to redefine the way you
-          explore and host in the spiritual heart of India.
-        </motion.p>
-      </motion.div>
-
-      {/* Hotel Room Image */}
-      <motion.div
-        className="max-w-5xl mx-auto mt-12"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <img
-          className="w-full h-64 md:h-96 object-cover rounded-xl shadow-lg"
-          src="/images/hotel room.jpg"
-          alt="Hotel Room"
-        />
-      </motion.div>
+   
 
       {/* Why Choose KashiBNB */}
       <motion.div
@@ -166,7 +107,7 @@ const About = () => {
           </div>
         </motion.div>
       </motion.div>
-
+      
       {/* What We Offer */}
       <motion.div
         className="max-w-5xl mx-auto mt-16 bg-white p-8 rounded-xl shadow-md border border-gray-200"
@@ -299,6 +240,66 @@ const About = () => {
             </motion.div>
           ))}
         </div>
+      </motion.div>
+      <motion.div
+        className="relative w-full h-64 md:h-96 overflow-hidden rounded-xl shadow-2xl"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <img
+          className="w-full h-full object-cover"
+          src="/images/About Us.png"
+          alt="About Us"
+        />
+        {/* <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+          <motion.h1
+            className="text-4xl md:text-6xl font-extrabold text-white tracking-tight"
+            variants={itemVariants}
+          >
+            About KashiBNB
+          </motion.h1>
+        </div> */}
+      </motion.div>
+
+      {/* Welcome Section */}
+      <motion.div
+        className="max-w-5xl mx-auto mt-12 text-center"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <motion.h1
+          className="text-3xl md:text-5xl font-bold text-gray-900 mb-6"
+          variants={itemVariants}
+        >
+          Welcome to KashiBNB
+        </motion.h1>
+        <motion.p
+          className="text-gray-600 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto"
+          variants={itemVariants}
+        >
+          Your one-stop solution for authentic homestay experiences in Varanasi!
+          Whether you’re a traveler seeking a seamless journey or a property owner
+          looking for better visibility, KashiBnB is here to redefine the way you
+          explore and host in the spiritual heart of India.
+        </motion.p>
+      </motion.div>
+
+      {/* Hotel Room Image */}
+      <motion.div
+        className="max-w-5xl mx-auto mt-12"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <img
+          className="w-full h-64 md:h-96 object-cover rounded-xl shadow-lg"
+          src="/images/hotel room.jpg"
+          alt="Hotel Room"
+        />
       </motion.div>
     </div>
   );

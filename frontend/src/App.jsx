@@ -11,6 +11,7 @@ import About from "./Pages/About";
 // import Login from "./Pages/Login";
 import Footer from "./Components/Footer"; // Import Footer
 import HotelPage from "./Components/HotelPage";
+import Activities from "./Pages/Activities";
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
+          <Route path="/activities" element={<Activities/>} />
+          
           {/* <Route path="/signup" element={<Signup />} /> */}
           {/* <Route path="/login" element={<Login />} /> */}
           <Route path="/hotel/:id" element={<HotelPage/>} />
