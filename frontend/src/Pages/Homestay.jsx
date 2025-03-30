@@ -18,7 +18,7 @@ const Homestay = () => {
     const fetchHotels = async () => {
       try {
         const response = await axios.get("https://kashi-bnb-production.up.railway.app/api/v1/hotel/hotels");
-        console.log(response.data.hotels); // Log the actual data
+        // console.log(response.data.hotels); // Log the actual data
         setHotels(response.data.hotels || []); // Use empty array as fallback
         setLoading(false);
       } catch (error) {
@@ -71,7 +71,7 @@ const Homestay = () => {
               onClick={() => navigate("/hotel/static-premium-suite")} // Example static ID
             />
             {/* <Card
-                        name="Guranteed Virgin"
+                        name="ABC"
                         price="69"  // Just pass the number, rupee symbol is added in the component
                         image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2XQlfxscGl9L5SM75BVSLJRgIpLaGwlMaug&s"
                         options={["Free WiFi", "Breakfast Included", "Pool Access", "24/7 Support"]}
