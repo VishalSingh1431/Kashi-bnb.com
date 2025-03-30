@@ -1,8 +1,8 @@
 import React from 'react'
 import Navbar from '../Components/Navbar'
 import Slider from '../Components/Slider'
-// import Login from './Login'
-// import Signup from './Signup'
+import Login from './Login'
+import Signup from './Signup'
 import Contact from './Contact'
 import About from './About'
 import Footer from '../Components/Footer' 
@@ -19,8 +19,8 @@ const Home = () => {
       <Hotel/>
       {/* <About/> */}
       {/* <Contact/> */}
-      {/* <Signup/>  */}
-      {/* <Login/> */}
+      <Signup/> 
+      <Login/>
     </div>
   )
 }

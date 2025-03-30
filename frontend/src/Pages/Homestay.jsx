@@ -39,7 +39,9 @@ const Homestay = () => {
       >
         Book Your Dream Homestay in Kashi Today
       </motion.h1>
-
+       <div>
+        search
+       </div>
       <div className="flex justify-center">
         {loading ? (
           <p>Loading hotels...</p>
