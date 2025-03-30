@@ -14,24 +14,28 @@ export const loginControl = async (req,res,nex)=>{
         })
         if(!user||(user.verified==false)){
             return res.status(411).json({
+                success : false ,
                 message : "email not verified"
             });
         }
-        if(bcrypt.compare(req.body.password,user.password)){
+        if(await bcrypt.compare(req.body.password,user.password)){
             const token = await jwt.sign(user,process.env.JWT_SEX);
             return res.status(200).json({
+                success : true,
                 message : "logged in",
-                token
+                token : `Bearer ${token}`,
             });
         }
         else{
             return res.status(411).json({
+                success : false ,
                 message : "wrong username or password"
             });
         }
     }
     catch(e){
         return res.status(411).json({
+            success : false ,
             message : "error logingin",
             e
         });
@@ -44,6 +48,7 @@ export const verification = async (req,res,nex)=>{
         const email = req.query.email;
         if(!token||!email){
             return res.status(411).json({
+                success : false ,
                 message:"no token",
             });
         }
@@ -70,12 +75,14 @@ export const verification = async (req,res,nex)=>{
             });
             
             return res.status(200).json({
+                success : true,
                 message : "verified",
                 user 
             });
         }
         else{
             return res.status(411).json({
+                success : false ,
                 message:"invalid token",
                 e
             });
@@ -84,6 +91,7 @@ export const verification = async (req,res,nex)=>{
     }
     catch(e){
         return res.status(411).json({
+            success : false ,
             message:"cant verify",
             e
         });
@@ -100,6 +108,7 @@ export const signupControl = async (req,res,nex)=>{
 
         if((user)&&(user.verified===true)){
             return res.status(420).json({
+                success : false ,
                 message : "user already exist",
             })
         }
@@ -131,11 +140,13 @@ export const signupControl = async (req,res,nex)=>{
         await sendEmail(req.body.email,token);
 
         return res.status(201).json({
+            success : true,
             message:"verify user to finsish",
         })
     }
     catch(e){
         return res.status(411).json({
+            success : false ,
             message:"unable to gen token",
             e
         });
@@ -156,11 +167,13 @@ export const makeRequest = async (req,res,nex)=>{
             }
         })
         return res.status(200).json({
+            success : true,
             message : "request created"
         })
     }
     catch(e){
         return res.status(420).json({
+            success : false ,
             message : "error req created",
             e
         })

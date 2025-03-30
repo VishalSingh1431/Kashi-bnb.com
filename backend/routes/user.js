@@ -9,13 +9,16 @@ const router = Router();
 router.use('/admin',authorisation,isAdmin,adminRouter);
 
 // user
+// unauth
 router.post('/login',loginControl);
 router.post('/signup',signupControl);
-router.post('/upgrade_request',authorisation,makeRequest);
 router.get('/signup/verify/',verification);
-router.get('/id/:uid',authorisation,signupControl);
 router.get('/check',checkControl);
-router.get('/auth-check',authorisation,isAdmin,checkControl);
+
+// auth
+router.post('/upgrade_request',authorisation,makeRequest);
+router.get('/id/:uid',authorisation,signupControl);
+router.get('/auth-check',authorisation,checkControl);
 router.get('/admin-check',authorisation,isAdmin,checkControl);
 router.get('/hotel-check',authorisation,hasHotel,checkControl);
 
