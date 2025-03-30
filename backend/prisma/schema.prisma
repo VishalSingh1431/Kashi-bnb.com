@@ -24,27 +24,38 @@ model users {
   has_restr   Boolean  @default(false)
   is_admin    Boolean  @default(false)
   verified    Boolean  @default(false)
+
   hotels_name hotels[]
   restr_name  restr[]
   blogs_name  blogs[]
+
+  bookings    bookings[]
 }
 
 model hotels {
-  id      String    @id @default(uuid())
-  name    String 
-  address String
-  services    String[]
-  gmap    String
-  images  himages[]
-  owner   users     @relation(fields: [ownerId], references: [id])
-  ownerId String
+  id        String    @id @default(uuid())
+  name      String
+  address   String
+  gmap      String
+  totalRoom Int       @default(2)
+  maxInRoom Int       @default(2)
+  details   String    @default("This is beutiful hotel")
+  rate      Decimal   @default(0.0) // Provide a default value
+  s1        String    @default("")
+  s2        String    @default("")
+  s3        String    @default("")
+  s4        String    @default("")
+  images    himages[]
+  owner     users     @relation(fields: [ownerId], references: [id])
+  ownerId   String
+  bookings  bookings[]
 }
+
 
 model restr {
   id      String    @id @default(uuid())
   name    String
   address String
-  city    String
   gmap    String
   images  rimages[]
   owner   users     @relation(fields: [ownerId], references: [id])
@@ -80,4 +91,18 @@ model requests {
   email     String
   message   String
   phone     String
+}
+
+model bookings {
+  id        String    @id @default(uuid())
+  email     String
+  message   String
+  phone     String
+  time      DateTime  @updatedAt
+  from      DateTime
+  to        DateTime
+  hotel     hotels    @relation(fields: [hotelId], references: [id])
+  hotelId   String
+  user      users     @relation(fields: [userId], references: [id])
+  userId    String
 }
