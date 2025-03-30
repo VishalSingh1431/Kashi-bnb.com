@@ -12,7 +12,7 @@ import About from "./Pages/About";
 import Footer from "./Components/Footer"; // Import Footer
 import HotelPage from "./Components/HotelPage";
 import Activities from "./Pages/Activities";
-
+// okay hi
 function App() {
   return (
     <Router>
