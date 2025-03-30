@@ -4,6 +4,7 @@ import { FiChevronRight, FiChevronLeft, FiMapPin, FiHeart, FiWifi, FiEdit, FiSav
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BACKEND } from "../assets/Vars";
+import axios from 'axios';
 // import { useAuth } from "../context/AuthContext"; // Assuming you have an auth context
 const user = {
   id: "22619b36-80a1-473a-b0f6-be5a6cc34ce6",
@@ -101,42 +102,44 @@ const HotelPage = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const formData = new FormData();
-      formData.append('name', tempHotel.name);
-      formData.append('address', tempHotel.address);
-      formData.append('details', tempHotel.details);
-      formData.append('rate', tempHotel.rate);
-      formData.append('maxInRoom', tempHotel.maxInRoom);
-      formData.append('totalRoom', tempHotel.totalRoom);
-      formData.append('s1', tempHotel.s1);
-      formData.append('s2', tempHotel.s2);
-      formData.append('s3', tempHotel.s3);
-      formData.append('s4', tempHotel.s4);
-      
-      if (newImage) {
-        formData.append('image', newImage);
-      }
-      
-      const response = await fetch(`${BACKEND}/api/v1/hotel/hotel/${id}/update-hotel`, {
-        
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${user.token}`,
-        },
-        body: formData
-      });
+        const changedHotel = {};
 
-      const updatedHotel = await response.json();
-      setHotel(updatedHotel);
-      setTempHotel(updatedHotel);
-      setEditMode(false);
-      setNewImage(null);
+        // Check for changes in text fields
+        Object.keys(tempHotel).forEach(key => {
+            if (tempHotel[key] !== hotel[key]) {
+                changedHotel[key] = tempHotel[key];
+            }
+        });
+
+        // If there are no changes, return early
+        if (Object.keys(changedHotel).length === 0) {
+            console.log("No changes detected.");
+            setEditMode(false);
+            return;
+        }
+
+        const response = await axios.post(
+            `${BACKEND}/api/v1/hotel/hotel/${id}/update-hotel`, 
+            changedHotel,
+            {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        setHotel(response.data);
+        setTempHotel(response.data);
+        setEditMode(false);
     } catch (error) {
-      console.error("Error updating hotel:", error);
+        console.error("Error updating hotel:", error);
     }
-  };
+};
+
 
   const handleInputChange = (e) => {
+    console.log(tempHotel);
     const { name, value } = e.target;
     setTempHotel(prev => ({
       ...prev,
