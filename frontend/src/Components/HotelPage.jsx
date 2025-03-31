@@ -45,6 +45,7 @@ const HotelPage = () => {
       try {
         const response = await fetch(`${BACKEND}/api/v1/hotel/hotel/${id}`);
         const data = await response.json();
+        console.log(data);
         setHotel(data);
         setTempHotel(data);
       } catch (error) {
@@ -155,9 +156,32 @@ const HotelPage = () => {
     }));
   };
 
-  const handleImageUpload = (e) => {
-    setNewImage(e.target.files[0]);
+
+  const handleImageUpload = async (event) => {
+    const files = event.target.files; // FileList
+    const formData = new FormData();
+  
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i]);
+    }
+  
+    try {
+      const response = await axios.post(`${BACKEND}/api/v1/hotel/hotel/${id}/upload-images`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Upload response:", response.data);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
   };
+
+  // const handleImageUpload = (e) => {
+  //   console.log(e.target.files);
+
+  //   setNewImage(e.target.files);
+  // };
 
   if (loading) return <div className="text-center py-10 text-gray-600">Loading...</div>;
   if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
@@ -258,6 +282,7 @@ const HotelPage = () => {
             <input
               type="file"
               accept="image/*"
+              multiple
               onChange={handleImageUpload}
               className="block w-full text-sm text-gray-500
                 file:mr-4 file:py-2 file:px-4

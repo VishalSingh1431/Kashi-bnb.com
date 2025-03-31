@@ -1,4 +1,5 @@
 import { prisma } from "../utils/client.js";
+import { iUploader } from "../utils/imageUploader.js";
 
 export const getHotels = async (req,res,nex)=>{
     try{
@@ -43,13 +44,14 @@ export const getUniqueHotel = async (req,res,nex)=>{
                 id
             },
             include : {
-                owner : true,
-                // {
-                //     select : {
-                //         name : true,
-                //         email : true
-                //     },
-                // },
+                owner : 
+                // true,
+                {
+                    select : {
+                        name : true,
+                        email : true
+                    },
+                },
                 images : true,
                 bookings : true,
             }
@@ -67,7 +69,6 @@ export const getUniqueHotel = async (req,res,nex)=>{
         });
     }
 };
-
 
 export const bookHotel = async (req,res,nex) => {
     try{
@@ -101,7 +102,6 @@ export const bookHotel = async (req,res,nex) => {
     }
 };
 
-
 export const getMyHotels = async (req,res,nex) =>{
     try{
         const hotels = await prisma.hotels.findMany({
@@ -127,7 +127,6 @@ export const getMyHotels = async (req,res,nex) =>{
     }
 }
 
-
 export const addNewHotel = async (req,res,nex) =>{
     try{
         const newHotel = await prisma.hotels.create({
@@ -152,14 +151,14 @@ export const addNewHotel = async (req,res,nex) =>{
 }
 
 export const updateHotel = async (req,res,nex) =>{
+    // console.log("this is body: " ,req.body)
     try{
         const id = req.params.uid;
-        console.log(req.body)
         const newHotel = await prisma.hotels.update({
             where : {
                 id : id,
             },
-            update : {
+            data : {
                 ...req.body,
             }
         })
@@ -167,6 +166,49 @@ export const updateHotel = async (req,res,nex) =>{
             success : true,
             message : "updated hotel",
             newHotel
+        });
+    }
+    catch(e){
+        console.log(e);
+        return res.status(420).json({
+            success : false,
+            message : "error getting your hotels",e
+        });
+    }
+}
+
+export const uploadHotImage = async (req,res,nex) => {
+    try{
+        const id = req.params.uid;
+        if(!id){
+            return res.status(420).json({
+                success : false,
+                message : "no id",
+            });
+        }
+        
+        const uploadPromises = req.files.map(async (file, index) => {
+            const response = await iUploader(file,index);
+            return response;
+        });
+        
+        const imageUrlsNames = await Promise.all(uploadPromises);
+        
+        const insertedImages = await prisma.himages.createMany({
+            data: imageUrlsNames.map(img => ({
+              url: img[0],
+              name: img[1],
+              hotelId: id
+            }))
+          });
+
+          console.log("urls" , imageUrlsNames);
+          console.log("db" , insertedImages);
+        return res.status(200).json({
+            success : true,
+            message: "Images uploaded successfully!", 
+            db : insertedImages,
+            urls: imageUrlsNames
         });
     }
     catch(e){

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 
 const authorisation = async (req,res,nex)=>{
+    // console.log(req.body);
     try{
         const token = req.get('Authorization').split(" ")[1];
         if(!token){
@@ -59,6 +60,7 @@ const isAdmin = async (req,res,nex)=>{
 };
 
 const hasHotel = async (req,res,nex)=>{
+    // console.log(req.body);
     try
     {    
         const user= req.user;
@@ -82,6 +84,7 @@ const hasHotel = async (req,res,nex)=>{
 
     }
 };
+
 const hasRestr = async (req,res,nex)=>{
     try
     {    

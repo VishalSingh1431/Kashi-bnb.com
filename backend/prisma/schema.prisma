@@ -73,7 +73,7 @@ model blogs {
 model himages {
   id      String @id @default(uuid())
   url     String
-  name    String
+  name    String?
   hotel   hotels @relation(fields: [hotelId], references: [id])
   hotelId String
 }
