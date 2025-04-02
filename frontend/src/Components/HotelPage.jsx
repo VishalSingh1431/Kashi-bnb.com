@@ -1,11 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { FiChevronRight, FiChevronLeft, FiMapPin, FiHeart, FiWifi, FiEdit, FiSave, FiX } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
+import { 
+  FiChevronRight, 
+  FiChevronLeft, 
+  FiMapPin, 
+  FiHeart, 
+  FiWifi, 
+  FiEdit, 
+  FiSave, 
+  FiX 
+} from "react-icons/fi";
+import { 
+  FaTv,
+  FaCar,
+  FaSwimmingPool,
+  FaFireExtinguisher,
+  FaFirstAid,
+  FaTemperatureLow
+} from "react-icons/fa";
+import { GiWashingMachine } from "react-icons/gi";
+import { MdKitchen } from "react-icons/md";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BACKEND } from "../assets/Vars";
 import axios from 'axios';
-// import { useAuth } from "../context/AuthContext"; // Assuming you have an auth context
+
 const user = {
   id: "22619b36-80a1-473a-b0f6-be5a6cc34ce6",
   email: "subrat.singh.cer21@itbhu.ac.in",
@@ -19,10 +38,22 @@ const user = {
   verified: true
 };
 
+const amenityIcons = {
+  wifi: <FiWifi />,
+  tv: <FaTv />,
+  kitchen: <MdKitchen />,
+  washingmachine: <GiWashingMachine />,
+  parking: <FaCar />,
+  ac: <FaTemperatureLow />,
+  pool: <FaSwimmingPool />,
+  fireextinguisher: <FaFireExtinguisher />,
+  firstaid: <FaFirstAid />,
+  kit: <FaFirstAid />,
+};
 
 const HotelPage = () => {
   const { id } = useParams();
-  // const { user } = useAuth(); // Get current user from auth context
+  const nav = useNavigate();
   const [hotel, setHotel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -34,7 +65,6 @@ const HotelPage = () => {
   const [tempHotel, setTempHotel] = useState(null);
   const [newImage, setNewImage] = useState(null);
 
-  // Check if current user is owner or admin
   const isOwnerOrAdmin = user && (
     user.role === "admin" || 
     (hotel && user.id === hotel.ownerId)
@@ -45,7 +75,6 @@ const HotelPage = () => {
       try {
         const response = await fetch(`${BACKEND}/api/v1/hotel/hotel/${id}`);
         const data = await response.json();
-        console.log(data);
         setHotel(data);
         setTempHotel(data);
       } catch (error) {
@@ -77,20 +106,33 @@ const HotelPage = () => {
   };
 
   const getAmenities = () => {
-    const amenities = new Set();
-    if (hotel.s1) amenities.add(hotel.s1);
-    if (hotel.s2) amenities.add(hotel.s2);
-    if (hotel.s3) amenities.add(hotel.s3);
-    if (hotel.s4) amenities.add(hotel.s4);
-    return Array.from(amenities);
+    const amenities = [];
+    
+    // Add all standard amenities
+    if (hotel.wifi) amenities.push({ name: "WiFi", icon: amenityIcons.wifi });
+    if (hotel.tv) amenities.push({ name: "TV", icon: amenityIcons.tv });
+    if (hotel.kitchen) amenities.push({ name: "Kitchen", icon: amenityIcons.kitchen });
+    if (hotel.washingmachine) amenities.push({ name: "Washing Machine", icon: amenityIcons.washingmachine });
+    if (hotel.parking) amenities.push({ name: "Parking", icon: amenityIcons.parking });
+    if (hotel.ac) amenities.push({ name: "Air Conditioning", icon: amenityIcons.ac });
+    if (hotel.pool) amenities.push({ name: "Pool", icon: amenityIcons.pool });
+    if (hotel.fireextinguisher) amenities.push({ name: "Fire Extinguisher", icon: amenityIcons.fireextinguisher });
+    if (hotel.firstaid) amenities.push({ name: "First Aid Kit", icon: amenityIcons.firstaid });
+    if (hotel.kit) amenities.push({ name: "Basic Kit", icon: amenityIcons.kit });
+
+    // Add custom amenities from s1-s4 fields
+    if (hotel.s1) amenities.push({ name: hotel.s1, icon: <FiWifi /> });
+    if (hotel.s2) amenities.push({ name: hotel.s2, icon: <FiWifi /> });
+    if (hotel.s3) amenities.push({ name: hotel.s3, icon: <FiWifi /> });
+    if (hotel.s4) amenities.push({ name: hotel.s4, icon: <FiWifi /> });
+
+    return amenities;
   };
 
   const handleEditToggle = () => {
     if (editMode) {
-      // Save changes
       handleSaveChanges();
     } else {
-      // Enter edit mode
       setEditMode(true);
     }
   };
@@ -105,19 +147,18 @@ const HotelPage = () => {
     try {
         const changedHotel = {};
 
-        // Check for changes in text fields
         Object.keys(tempHotel).forEach(key => {
             if (tempHotel[key] !== hotel[key]) {
                 changedHotel[key] = tempHotel[key];
             }
         });
 
-        // If there are no changes, return early
         if (Object.keys(changedHotel).length === 0) {
             console.log("No changes detected.");
             setEditMode(false);
+            nav(`/hotel/${id}`);
             return;
-        }
+          }
 
         const response = await axios.post(
             `${BACKEND}/api/v1/hotel/hotel/${id}/update-hotel`, 
@@ -128,19 +169,15 @@ const HotelPage = () => {
                     'Content-Type': 'application/json'
                 }
             }
-        );
-
-        setHotel(response.data);
-        setTempHotel(response.data);
-        setEditMode(false);
+          );
+          
+          setEditMode(false);
     } catch (error) {
         console.error("Error updating hotel:", error);
     }
-};
-
+  };
 
   const handleInputChange = (e) => {
-    console.log(tempHotel);
     const { name, value } = e.target;
     setTempHotel(prev => ({
       ...prev,
@@ -148,17 +185,16 @@ const HotelPage = () => {
     }));
   };
 
-  const handleAmenityChange = (index, value) => {
-    const field = `s${index + 1}`;
+  const handleAmenityChange = (e) => {
+    const { name, checked } = e.target;
     setTempHotel(prev => ({
       ...prev,
-      [field]: value
+      [name]: checked
     }));
   };
 
-
   const handleImageUpload = async (event) => {
-    const files = event.target.files; // FileList
+    const files = event.target.files;
     const formData = new FormData();
   
     for (let i = 0; i < files.length; i++) {
@@ -177,18 +213,11 @@ const HotelPage = () => {
     }
   };
 
-  // const handleImageUpload = (e) => {
-  //   console.log(e.target.files);
-
-  //   setNewImage(e.target.files);
-  // };
-
   if (loading) return <div className="text-center py-10 text-gray-600">Loading...</div>;
   if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
 
   return (
     <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto p-4 ">
-      {/* Edit/Save Button for Owner/Admin */}
       {isOwnerOrAdmin && (
         <div className="flex justify-end mb-4">
           <button
@@ -216,7 +245,6 @@ const HotelPage = () => {
         </div>
       )}
 
-      {/* Hotel Name */}
       <div className="relative">
         {editMode ? (
           <input
@@ -231,7 +259,6 @@ const HotelPage = () => {
         )}
       </div>
 
-      {/* Image Gallery */}
       <div className="relative mb-8 rounded-xl overflow-hidden">
         <div className="aspect-[16/9] bg-gray-200 relative">
           {editMode && newImage ? (
@@ -295,7 +322,6 @@ const HotelPage = () => {
         )}
       </div>
 
-      {/* Location */}
       <div className="flex items-center mb-4">
         <div className="flex items-center w-full">
           <FiMapPin className="mr-1 flex-shrink-0" />
@@ -313,11 +339,8 @@ const HotelPage = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column */}
         <div className="lg:col-span-2">
-          {/* Property Details */}
           <div className="border-b pb-6 mb-6">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 rounded-full bg-gray-300 mr-4 flex-shrink-0 overflow-hidden flex items-center justify-center">
@@ -360,7 +383,6 @@ const HotelPage = () => {
             </div>
           </div>
 
-          {/* Description */}
           <div className="border-b pb-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">About this place</h2>
             <div className="relative">
@@ -393,41 +415,157 @@ const HotelPage = () => {
             )}
           </div>
 
-          {/* Amenities */}
+          {/* Updated Amenities Section */}
           <div className="border-b pb-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">What this place offers</h2>
             {editMode ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[0, 1, 2, 3].map((index) => (
-                  <div key={index} className="flex items-center min-w-0">
-                    <span className="text-xl mr-3 flex-shrink-0">
-                      <FiWifi />
-                    </span>
-                    <input
-                      type="text"
-                      value={tempHotel[`s${index + 1}`] || ''}
-                      onChange={(e) => handleAmenityChange(index, e.target.value)}
-                      className="w-full p-2 border rounded-lg capitalize"
-                      placeholder={`Amenity ${index + 1}`}
-                    />
-                  </div>
-                ))}
+                {/* Checkbox for each amenity */}
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="wifi"
+                    name="wifi"
+                    checked={tempHotel.wifi || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="wifi" className="flex items-center">
+                    <FiWifi className="mr-2" /> WiFi
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="tv"
+                    name="tv"
+                    checked={tempHotel.tv || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="tv" className="flex items-center">
+                    <FaTv className="mr-2" /> TV
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="kitchen"
+                    name="kitchen"
+                    checked={tempHotel.kitchen || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="kitchen" className="flex items-center">
+                    <MdKitchen className="mr-2" /> Kitchen
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="washingmachine"
+                    name="washingmachine"
+                    checked={tempHotel.washingmachine || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="washingmachine" className="flex items-center">
+                    <GiWashingMachine className="mr-2" /> Washing Machine
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="parking"
+                    name="parking"
+                    checked={tempHotel.parking || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="parking" className="flex items-center">
+                    <FaCar className="mr-2" /> Parking
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="ac"
+                    name="ac"
+                    checked={tempHotel.ac || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="ac" className="flex items-center">
+                    <FaTemperatureLow className="mr-2" /> Air Conditioning
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="pool"
+                    name="pool"
+                    checked={tempHotel.pool || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="pool" className="flex items-center">
+                    <FaSwimmingPool className="mr-2" /> Pool
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="fireextinguisher"
+                    name="fireextinguisher"
+                    checked={tempHotel.fireextinguisher || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="fireextinguisher" className="flex items-center">
+                    <FaFireExtinguisher className="mr-2" /> Fire Extinguisher
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="firstaid"
+                    name="firstaid"
+                    checked={tempHotel.firstaid || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="firstaid" className="flex items-center">
+                    <FaFirstAid className="mr-2" /> First Aid Kit
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="kit"
+                    name="kit"
+                    checked={tempHotel.kit || false}
+                    onChange={handleAmenityChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="kit" className="flex items-center">
+                    <FaFirstAid className="mr-2" /> Basic Kit
+                  </label>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {getAmenities().map((amenity, index) => (
-                  <div key={index} className="flex items-center min-w-0">
+                  <div key={index} className="flex items-center">
                     <span className="text-xl mr-3 flex-shrink-0">
-                      {amenity.toLowerCase().includes('wifi') && <FiWifi />}
+                      {amenity.icon}
                     </span>
-                    <span className="truncate capitalize">{amenity}</span>
+                    <span className="capitalize">{amenity.name}</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Location */}
           <div>
             <h2 className="text-xl font-semibold mb-4">Where you'll be</h2>
             <div className="h-64 bg-gray-200 rounded-xl mb-4 overflow-hidden">
@@ -457,7 +595,6 @@ const HotelPage = () => {
           </div>
         </div>
 
-        {/* Right Column - Booking Widget */}
         <div className="lg:col-span-1">
           <div className="sticky top-4 border rounded-xl p-6 shadow-lg">
             <div className="flex justify-between items-start mb-4">
@@ -479,7 +616,6 @@ const HotelPage = () => {
               </div>
             </div>
             
-            {/* Calendar for Check-in/Check-out */}
             <div className="mb-4">
               <div className="grid grid-cols-2 gap-2">
                 <div>
