@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config();
 
-    const transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
         service: "Gmail",
         host: "smtp.gmail.com",
         pool: true,
@@ -11,7 +11,7 @@ dotenv.config();
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS,
         },
-      });
+  });
   
   export const sendEmail = async (toEmail,token) => {
   
@@ -32,4 +32,5 @@ dotenv.config();
 
     return;
   };
+  
     // sendEmail("singhsubrat35@gmail.com","gogogo");
