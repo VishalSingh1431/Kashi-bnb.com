@@ -63,6 +63,7 @@ const HotelPage = () => {
   const [guestCount, setGuestCount] = useState(1);
   const [editMode, setEditMode] = useState(false);
   const [tempHotel, setTempHotel] = useState(null);
+  const [tempAm, setTempAm] = useState([]);
   const [newImage, setNewImage] = useState(null);
 
   const isOwnerOrAdmin = user && (
@@ -121,10 +122,10 @@ const HotelPage = () => {
     if (hotel.kit) amenities.push({ name: "Basic Kit", icon: amenityIcons.kit });
 
     // Add custom amenities from s1-s4 fields
-    if (hotel.s1) amenities.push({ name: hotel.s1, icon: <FiWifi /> });
-    if (hotel.s2) amenities.push({ name: hotel.s2, icon: <FiWifi /> });
-    if (hotel.s3) amenities.push({ name: hotel.s3, icon: <FiWifi /> });
-    if (hotel.s4) amenities.push({ name: hotel.s4, icon: <FiWifi /> });
+    // if (hotel.s1) amenities.push({ name: hotel.s1, icon: <FiWifi /> });
+    // if (hotel.s2) amenities.push({ name: hotel.s2, icon: <FiWifi /> });
+    // if (hotel.s3) amenities.push({ name: hotel.s3, icon: <FiWifi /> });
+    // if (hotel.s4) amenities.push({ name: hotel.s4, icon: <FiWifi /> });
 
     return amenities;
   };
@@ -160,6 +161,8 @@ const HotelPage = () => {
             return;
           }
 
+          console.log(changedHotel);
+
         const response = await axios.post(
             `${BACKEND}/api/v1/hotel/hotel/${id}/update-hotel`, 
             changedHotel,
@@ -170,7 +173,9 @@ const HotelPage = () => {
                 }
             }
           );
-          
+          console.log(response);
+          setHotel(response.data.newHotel);
+          setTempHotel(response.data.newHotel);
           setEditMode(false);
     } catch (error) {
         console.error("Error updating hotel:", error);
@@ -179,6 +184,7 @@ const HotelPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
     setTempHotel(prev => ({
       ...prev,
       [name]: value
@@ -189,7 +195,10 @@ const HotelPage = () => {
     const { name, checked } = e.target;
     setTempHotel(prev => ({
       ...prev,
-      [name]: checked
+      // amenities : {
+      //   ...prev.amenities || {},
+      [name] : checked
+      // }
     }));
   };
 
