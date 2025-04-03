@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FiChevronRight, FiChevronLeft, FiMapPin, FiHeart, FiWifi, FiEdit, FiSave, FiX } from "react-icons/fi";
+import { FiHeart } from "react-icons/fi";
+import { 
+  FiChevronRight, FiChevronLeft, FiMapPin, FiWifi, FiEdit, 
+  FiSave, FiX, FiHome, FiCloud, FiMonitor, FiDroplet, 
+  FiBriefcase, FiSun, FiZap 
+} from "react-icons/fi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BACKEND } from "../assets/Vars";
@@ -19,6 +24,20 @@ const user = {
   verified: true
 };
 
+const amenitiesConfig = [
+  { id: 'wifi', label: 'Wifi', icon: <FiWifi /> },
+  { id: 'kitchen', label: 'Kitchen', icon: <FiHome /> },
+  { id: 'free_parking', label: 'Free parking on premises', icon: <FiMapPin /> },
+  { id: 'air_conditioning', label: 'Air conditioning', icon: <FiCloud /> },
+  { id: 'tv', label: 'TV', icon: <FiMonitor /> },
+  { id: 'washing_machine', label: 'Washing machine', icon: <FiDroplet /> },
+  { id: 'paid_parking', label: 'Paid parking on premises', icon: <FiMapPin /> },
+  { id: 'dedicated_workspace', label: 'Dedicated workspace', icon: <FiBriefcase /> },
+  { id: 'pool', label: 'Pool', icon: <FiDroplet /> },
+  { id: 'patio', label: 'Patio', icon: <FiSun /> },
+  { id: 'hot_tub', label: 'Hot tub', icon: <FiDroplet /> },
+  { id: 'bbq_grill', label: 'BBQ grill', icon: <FiZap /> },
+];
 
 const HotelPage = () => {
   const { id } = useParams();
@@ -130,8 +149,8 @@ const HotelPage = () => {
             }
         );
 
-        setHotel(response.data);
-        setTempHotel(response.data);
+        // setHotel(response.data);
+        // setTempHotel(response.data);
         setEditMode(false);
     } catch (error) {
         console.error("Error updating hotel:", error);
