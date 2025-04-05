@@ -19,8 +19,8 @@ const Home = () => {
       <Hotel/>
       {/* <About/> */}
       {/* <Contact/> */}
-      <Signup/> 
-      <Login/>
+      {/* <Signup/>  */}
+      {/* <Login/> */}
     </div>
   )
 }
