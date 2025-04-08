@@ -172,15 +172,15 @@ const Footer = () => {
                 whileHover={{ scale: 1.02 }}
               >
                 <MapPin className="h-5 w-5 text-indigo-400 animate-pulse" />
-                <span>Adress: Bhelupur, Varanasi Uttar Pradesh ,221010</span>
+                <span>Adress: Bhelupur, Varanasi Uttar Pradesh, 221010</span>
               </motion.li>
               <motion.li
                 className="flex items-center gap-3"
                 whileHover={{ scale: 1.02 }}
               >
                 <Phone className="h-5 w-5 text-indigo-400 animate-pulse" />
-                <span>+91 80117 08595</span>
-                <span>, +91 7054347998</span>
+                <span>+91 8011708595, </span>
+                <span>+91 7054347998</span>
               </motion.li>
               <motion.li
                 className="flex items-center gap-3"
