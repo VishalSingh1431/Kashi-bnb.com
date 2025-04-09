@@ -12,6 +12,7 @@ import About from "./Pages/About";
 import Footer from "./Components/Footer"; // Import Footer
 import HotelPage from "./Components/HotelPage";
 import Activities from "./Pages/Activities";
+import Listings from "./Pages/Listings";
 // okay hi
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/activities" element={<Activities/>} />
+          <Route path="/add-listing" element={<Listings/>} />
           
           {/* <Route path="/signup" element={<Signup />} /> */}
           {/* <Route path="/login" element={<Login />} /> */}
