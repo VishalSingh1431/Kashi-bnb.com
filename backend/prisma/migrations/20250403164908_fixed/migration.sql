@@ -1,0 +1,14 @@
+-- AlterTable
+ALTER TABLE `himages` MODIFY `name` VARCHAR(191) NULL;
+
+-- AlterTable
+ALTER TABLE `hotels` ADD COLUMN `ac` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `fireextinguisher` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `firstaid` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `kit` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `kitchen` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `parking` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `pool` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `tv` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `washingmachine` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `wifi` BOOLEAN NOT NULL DEFAULT false;

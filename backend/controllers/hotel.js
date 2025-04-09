@@ -106,7 +106,7 @@ export const getMyHotels = async (req,res,nex) =>{
     try{
         const hotels = await prisma.hotels.findMany({
             where : {
-                email : req.user.email,
+                ownerId : req.user.id,
             },
             include : {
                 bookings : true,
@@ -132,14 +132,19 @@ export const addNewHotel = async (req,res,nex) =>{
         const newHotel = await prisma.hotels.create({
             data : {
                 ...req.body,
-                userId : req.user.id,
+                ownerId : req.user.id,
             }
         })
-        return res.status(200).json({
-            success : true,
-            message : "created hotel",
-            newHotel
-        });
+
+        if(req.files.length===0){
+            return res.status(200).json({
+                success : true,
+                message : "created hotel",
+                newHotel
+            });
+        }
+        req.params.uid = newHotel.id;
+        return nex();
     }
     catch(e){
         console.log(e);
@@ -160,6 +165,18 @@ export const updateHotel = async (req,res,nex) =>{
             },
             data : {
                 ...req.body,
+            },
+            include : {
+                owner : 
+                // true,
+                {
+                    select : {
+                        name : true,
+                        email : true
+                    },
+                },
+                images : true,
+                bookings : true,
             }
         })
         return res.status(200).json({

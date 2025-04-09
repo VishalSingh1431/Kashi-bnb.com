@@ -21,6 +21,7 @@ const Home = () => {
       {/* <Contact/> */}
       <Signup/> 
       <Login/>
+
     </div>
   )
 }
