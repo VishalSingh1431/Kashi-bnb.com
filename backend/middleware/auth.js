@@ -2,10 +2,12 @@ import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 
 const authorisation = async (req,res,nex)=>{
-    // console.log(req.body);
+    // console.log(req.headers);
     try{
         const token = req.get('Authorization').split(" ")[1];
+        // console.log(token," tot ")
         if(!token){
+            console.log("no token");
             return res.status(411).json({
                 success : false,
                 message : "no token",
@@ -17,6 +19,7 @@ const authorisation = async (req,res,nex)=>{
             nex();
         }
         else{
+            console.log("invalid token");
             return res.status(411).json({
                 success : false,
                 message : "invalid token",
@@ -42,6 +45,7 @@ const isAdmin = async (req,res,nex)=>{
             nex();
         }
         else{
+            console.log("you are not a admin");
             return res.status(411).json({
                 success : false,
                 message:" not admin"
@@ -68,6 +72,7 @@ const hasHotel = async (req,res,nex)=>{
             nex();
         }
         else{
+            console.log("you are not a hotel owner");
             return res.status(411).json({
                 success : false,
                 message:" no hoteler"
