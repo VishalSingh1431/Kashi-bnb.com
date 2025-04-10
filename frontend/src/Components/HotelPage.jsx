@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { 
   FiChevronRight, 
@@ -75,17 +76,16 @@ const HotelPage = () => {
   useEffect(() => {
     const fetchHotelData = async () => {
       try {
-        const response = await fetch(`${BACKEND}/api/v1/hotel/hotel/${id}`);
-        const data = await response.json();
-        setHotel(data);
-        setTempHotel(data);
+        const response = await axios.get(`${BACKEND}/api/v1/hotel/hotel/${id}`);
+        setHotel(response.data);
+        setTempHotel(response.data);
       } catch (error) {
         console.error("Error fetching hotel data:", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchHotelData();
   }, [id]);
 
