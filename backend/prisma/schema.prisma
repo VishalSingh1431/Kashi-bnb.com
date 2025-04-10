@@ -36,15 +36,27 @@ model hotels {
   id        String    @id @default(uuid())
   name      String
   address   String
-  gmap      String
+  gmap      String    @db.Text
   totalRoom Int       @default(2)
   maxInRoom Int       @default(2)
-  details   String    @default("This is beutiful hotel")
+  details   String    @db.Text
   rate      Decimal   @default(0.0) // Provide a default value
   s1        String    @default("")
   s2        String    @default("")
   s3        String    @default("")
   s4        String    @default("")
+
+  wifi            Boolean  @default(false)
+  tv              Boolean  @default(false)
+  kitchen         Boolean  @default(false)
+  washingmachine  Boolean  @default(false)
+  parking         Boolean  @default(false)
+  ac              Boolean  @default(false)
+  pool            Boolean  @default(false)
+  fireextinguisher Boolean @default(false)
+  firstaid        Boolean  @default(false)
+  kit             Boolean  @default(false)
+  
   images    himages[]
   owner     users     @relation(fields: [ownerId], references: [id])
   ownerId   String
