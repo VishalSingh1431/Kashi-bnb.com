@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { loginControl, signupControl, checkControl, verification , makeRequest } from "../controllers/user.js";
 import { authorisation, hasHotel, isAdmin } from "../middleware/auth.js";
-import adminRouter from '../routes/admin.js';
+import adminRouter from './admin.js';
 
 const router = Router();
 
