@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, User } from "lucide-react";
+import Profile from "./Profile";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +32,7 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div>
+          
           <Link to="/">
             <img
               className="w-20 h-20 md:w-40 md:h-40 rounded-lg"
@@ -175,7 +177,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-    
+
   );
 };
 

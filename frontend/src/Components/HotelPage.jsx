@@ -9,7 +9,9 @@ import {
   FiWifi, 
   FiEdit, 
   FiSave, 
-  FiX 
+  FiX,
+  FiPlus,
+  FiMinus
 } from "react-icons/fi";
 import { 
   FaTv,
@@ -26,18 +28,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { BACKEND } from "../assets/Vars";
 const token=localStorage.getItem("token");
 const user=JSON.parse(localStorage.getItem("user"));
-// const user = {
-//   id: "22619b36-80a1-473a-b0f6-be5a6cc34ce6",
-//   email: "subrat.singh.cer21@itbhu.ac.in",
-//   name: "subrat",
-//   password: "$2b$10$o6ibWLXwzr2U/jMOptthmOagj2S8PP5Nd9VvtqhcIkZJfn5ZtE/PG",
-//   token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNjE5YjM2LTgwYTEtNDczYS1iMGY2LWJlNWE2Y2MzNGNlNiIsImVtYWlsIjoic3VicmF0LnNpbmdoLmNlcjIxQGl0Ymh1LmFjLmluIiwibmFtZSI6InN1YnJhdCIsInBhc3N3b3JkIjoiJDJiJDEwJG82aWJXTFh3enIyVS9qTU9wdHRobU9hZ2oyUzhQUDVOZDlWdnRxaGNJa1pKZm41WnRFL1BHIiwidG9rZW4iOm51bGwsInRpbWUiOiIyMDI1LTAzLTI3VDA4OjM3OjQwLjc5NVoiLCJoYXNfaG90ZWwiOnRydWUsImhhc19yZXN0ciI6ZmFsc2UsImlzX2FkbWluIjpmYWxzZSwidmVyaWZpZWQiOnRydWUsImlhdCI6MTc0MzM1NTQ1MH0.by0RU3jAKKLryUYMiy7tQSCi_w4oro6K6tdZjyjGDL0',
-//   time: new Date("2025-03-27T08:37:40.795Z"),
-//   hasHotel: true,
-//   hasRestr: false,
-//   isAdmin: false,
-//   verified: true
-// };
 
 const amenityIcons = {
   wifi: <FiWifi />,
@@ -61,7 +51,12 @@ const HotelPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [guestCount, setGuestCount] = useState(1);
+  const [guestCount, setGuestCount] = useState({
+    adults: 1,
+    children: 0,
+    infants: 0,
+    pets: 0
+  });
   const [editMode, setEditMode] = useState(false);
   const [tempHotel, setTempHotel] = useState(null);
   const [tempAm, setTempAm] = useState([]);
@@ -121,12 +116,6 @@ const HotelPage = () => {
     if (hotel.firstaid) amenities.push({ name: "First Aid Kit", icon: amenityIcons.firstaid });
     if (hotel.kit) amenities.push({ name: "Basic Kit", icon: amenityIcons.kit });
 
-    // Add custom amenities from s1-s4 fields
-    // if (hotel.s1) amenities.push({ name: hotel.s1, icon: <FiWifi /> });
-    // if (hotel.s2) amenities.push({ name: hotel.s2, icon: <FiWifi /> });
-    // if (hotel.s3) amenities.push({ name: hotel.s3, icon: <FiWifi /> });
-    // if (hotel.s4) amenities.push({ name: hotel.s4, icon: <FiWifi /> });
-
     return amenities;
   };
 
@@ -156,6 +145,7 @@ const HotelPage = () => {
 
         if (Object.keys(changedHotel).length === 0) {
             console.log("No changes detected.");
+            // console.log();
             setEditMode(false);
             nav(`/hotel/${id}`);
             return;
@@ -195,10 +185,7 @@ const HotelPage = () => {
     const { name, checked } = e.target;
     setTempHotel(prev => ({
       ...prev,
-      // amenities : {
-      //   ...prev.amenities || {},
       [name] : checked
-      // }
     }));
   };
 
@@ -220,6 +207,43 @@ const HotelPage = () => {
     } catch (error) {
       console.error("Error uploading files:", error);
     }
+  };
+
+  const handleGuestChange = (type, operation) => {
+    setGuestCount(prev => {
+      const newValue = operation === 'increment' ? prev[type] + 1 : prev[type] - 1;
+      
+      // Validate against maximum limits from backend
+      let maxLimit;
+      switch(type) {
+        case 'adults':
+          maxLimit = hotel.maxAdults || 16;
+          break;
+        case 'children':
+          maxLimit = hotel.maxChildren || 5;
+          break;
+        case 'infants':
+          maxLimit = hotel.maxInfants || 5;
+          break;
+        case 'pets':
+          maxLimit = hotel.maxPets || 2;
+          break;
+        default:
+          maxLimit = 10;
+      }
+
+      // Don't allow going below 0 or above max limit
+      if (newValue < 0) return prev;
+      if (newValue > maxLimit) return prev;
+      
+      // For adults, ensure at least 1 remains
+      if (type === 'adults' && newValue < 1) return prev;
+
+      return {
+        ...prev,
+        [type]: newValue
+      };
+    });
   };
 
   if (loading) return <div className="text-center py-10 text-gray-600">Loading...</div>;
@@ -376,7 +400,35 @@ const HotelPage = () => {
                 )}
               </div>
               <div className="min-w-0">
-                <p className="text-gray-500 truncate">Rooms</p>
+                <p className="text-gray-500 truncate">Bedrooms</p>
+                {editMode ? (
+                  <input
+                    type="number"
+                    name="maxInRoom"
+                    value={tempHotel.maxInRoom}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-lg"
+                  />
+                ) : (
+                  <p className="font-medium truncate">{hotel.maxInRoom || 'N/A'}</p>
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="text-gray-500 truncate">Beds</p>
+                {editMode ? (
+                  <input
+                    type="number"
+                    name="maxInRoom"
+                    value={tempHotel.maxInRoom}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded-lg"
+                  />
+                ) : (
+                  <p className="font-medium truncate">{hotel.maxInRoom || 'N/A'}</p>
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="text-gray-500 truncate">Bathrooms</p>
                 {editMode ? (
                   <input
                     type="number"
@@ -424,12 +476,10 @@ const HotelPage = () => {
             )}
           </div>
 
-          {/* Updated Amenities Section */}
           <div className="border-b pb-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">What this place offers</h2>
             {editMode ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Checkbox for each amenity */}
                 <div className="flex items-center">
                   <input
                     type="checkbox"
@@ -647,7 +697,6 @@ const HotelPage = () => {
                     id="checkout"
                     selected={endDate}
                     onChange={(date) => setEndDate(date)}
-                    
                     selectsEnd
                     startDate={startDate}
                     endDate={endDate}
@@ -658,20 +707,106 @@ const HotelPage = () => {
                   />
                 </div>
               </div>
-              <div className="mt-2">
-                <label htmlFor="guests" className="text-xs font-semibold block mb-1">GUESTS</label>
-                <select
-                  id="guests"
-                  value={guestCount}
-                  onChange={(e) => setGuestCount(Number(e.target.value))}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-                >
-                  {Array.from({ length: hotel.maxInRoom || 2 }, (_, i) => i + 1).map((num) => (
-                    <option key={num} value={num}>
-                      {num} {num === 1 ? 'guest' : 'guests'}
-                    </option>
-                  ))}
-                </select>
+              
+              {/* Updated GUESTS Section */}
+              <div className="mt-4 border rounded-lg p-4">
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <div>
+                      <h3 className="font-medium">Adults</h3>
+                      <p className="text-xs text-gray-500">Age 13+</p>
+                    </div>
+                    <div className="flex items-center">
+                      <button 
+                        onClick={() => handleGuestChange('adults', 'decrement')}
+                        disabled={guestCount.adults <= 1}
+                        className={`p-1 rounded-full ${guestCount.adults <= 1 ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <FiMinus />
+                      </button>
+                      <span className="mx-2 w-6 text-center">{guestCount.adults}</span>
+                      <button 
+                        onClick={() => handleGuestChange('adults', 'increment')}
+                        disabled={guestCount.adults >= (hotel.maxAdults || 16)}
+                        className={`p-1 rounded-full ${guestCount.adults >= (hotel.maxAdults || 16) ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <FiPlus />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center mb-2">
+                    <div>
+                      <h3 className="font-medium">Children</h3>
+                      <p className="text-xs text-gray-500">Ages 2–12</p>
+                    </div>
+                    <div className="flex items-center">
+                      <button 
+                        onClick={() => handleGuestChange('children', 'decrement')}
+                        disabled={guestCount.children <= 0}
+                        className={`p-1 rounded-full ${guestCount.children <= 0 ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <FiMinus />
+                      </button>
+                      <span className="mx-2 w-6 text-center">{guestCount.children}</span>
+                      <button 
+                        onClick={() => handleGuestChange('children', 'increment')}
+                        disabled={guestCount.children >= (hotel.maxChildren || 5)}
+                        className={`p-1 rounded-full ${guestCount.children >= (hotel.maxChildren || 5) ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <FiPlus />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center mb-2">
+                    <div>
+                      <h3 className="font-medium">Infants</h3>
+                      <p className="text-xs text-gray-500">Under 2</p>
+                    </div>
+                    <div className="flex items-center">
+                      <button 
+                        onClick={() => handleGuestChange('infants', 'decrement')}
+                        disabled={guestCount.infants <= 0}
+                        className={`p-1 rounded-full ${guestCount.infants <= 0 ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <FiMinus />
+                      </button>
+                      <span className="mx-2 w-6 text-center">{guestCount.infants}</span>
+                      <button 
+                        onClick={() => handleGuestChange('infants', 'increment')}
+                        disabled={guestCount.infants >= (hotel.maxInfants || 5)}
+                        className={`p-1 rounded-full ${guestCount.infants >= (hotel.maxInfants || 5) ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <FiPlus />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="font-medium">Pets</h3>
+                      {/* <p className="text-xs text-gray-500">Bringing a service animal?</p> */}
+                    </div>
+                    <div className="flex items-center">
+                      <button 
+                        onClick={() => handleGuestChange('pets', 'decrement')}
+                        disabled={guestCount.pets <= 0}
+                        className={`p-1 rounded-full ${guestCount.pets <= 0 ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <FiMinus />
+                      </button>
+                      <span className="mx-2 w-6 text-center">{guestCount.pets}</span>
+                      <button 
+                        onClick={() => handleGuestChange('pets', 'increment')}
+                        disabled={guestCount.pets >= (hotel.maxPets || 2)}
+                        className={`p-1 rounded-full ${guestCount.pets >= (hotel.maxPets || 2) ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <FiPlus />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             

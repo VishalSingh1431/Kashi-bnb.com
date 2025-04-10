@@ -13,14 +13,14 @@ import Activities from "./Pages/Activities";
 import Listings from "./Pages/Listings";
 import Signup from "./Pages/signup";
 import Login from "./Pages/Login";
-// okay hi
+import Profile from "./Components/Profile"; 
 function App() {
   return (
     <Router>
       <div className="min-h-screen" style={{ backgroundImage: `url(${bg_main})` }}>
         <Navbar />
         <Routes>
-          
+
           
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
@@ -28,6 +28,7 @@ function App() {
           <Route path="/activities" element={<Activities/>} />
           <Route path="/add-listing" element={<Listings/>} />
           
+          <Route path="/profile" element={<Profile/>} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/hotel/:id" element={<HotelPage/>} />

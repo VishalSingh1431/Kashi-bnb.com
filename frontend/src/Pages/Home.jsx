@@ -12,6 +12,7 @@ import AdminBookings from './AdminBookings'
 import Listings from './Listings'
 import Signup from './signup'
 import Login from './Login'
+import Profile from '../Components/Profile'
 
 const Home = () => {
   return (
@@ -21,12 +22,14 @@ const Home = () => {
       <Slider/>  
       <Homestay/> 
       <Hotel/>
-      <AdminBookings/>
+      {/* <AdminBookings/> */}
       <Listings/>
+      
       {/* <About/> */}
       {/* <Contact/> */}
       {/* <Signup/>  */}
-      <Login/>
+      {/* <Login/> */}
+
     </div>
   )
 }
