@@ -82,7 +82,7 @@ const Signup = () => {
 
   if (success) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center items-center bg-gray-100">
         <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg text-center">
           <div className="flex justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -123,7 +123,7 @@ const Signup = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center items-center bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center">Create Your Account</h2>
         
