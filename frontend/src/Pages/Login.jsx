@@ -22,6 +22,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     setError("");
 
@@ -30,6 +31,7 @@ const Login = () => {
         "https://kashi-bnb-production.up.railway.app/api/v1/user/login",
         formData
       );
+      console.log(response);
 
       if (response.status === 200) {
         // Store token and user data

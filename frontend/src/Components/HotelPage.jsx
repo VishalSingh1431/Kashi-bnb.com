@@ -24,19 +24,20 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BACKEND } from "../assets/Vars";
 import axios from 'axios';
-
-const user = {
-  id: "22619b36-80a1-473a-b0f6-be5a6cc34ce6",
-  email: "subrat.singh.cer21@itbhu.ac.in",
-  name: "subrat",
-  password: "$2b$10$o6ibWLXwzr2U/jMOptthmOagj2S8PP5Nd9VvtqhcIkZJfn5ZtE/PG",
-  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNjE5YjM2LTgwYTEtNDczYS1iMGY2LWJlNWE2Y2MzNGNlNiIsImVtYWlsIjoic3VicmF0LnNpbmdoLmNlcjIxQGl0Ymh1LmFjLmluIiwibmFtZSI6InN1YnJhdCIsInBhc3N3b3JkIjoiJDJiJDEwJG82aWJXTFh3enIyVS9qTU9wdHRobU9hZ2oyUzhQUDVOZDlWdnRxaGNJa1pKZm41WnRFL1BHIiwidG9rZW4iOm51bGwsInRpbWUiOiIyMDI1LTAzLTI3VDA4OjM3OjQwLjc5NVoiLCJoYXNfaG90ZWwiOnRydWUsImhhc19yZXN0ciI6ZmFsc2UsImlzX2FkbWluIjpmYWxzZSwidmVyaWZpZWQiOnRydWUsImlhdCI6MTc0MzM1NTQ1MH0.by0RU3jAKKLryUYMiy7tQSCi_w4oro6K6tdZjyjGDL0',
-  time: new Date("2025-03-27T08:37:40.795Z"),
-  hasHotel: true,
-  hasRestr: false,
-  isAdmin: false,
-  verified: true
-};
+const token=localStorage.getItem("token");
+const user=JSON.parse(localStorage.getItem("user"));
+// const user = {
+//   id: "22619b36-80a1-473a-b0f6-be5a6cc34ce6",
+//   email: "subrat.singh.cer21@itbhu.ac.in",
+//   name: "subrat",
+//   password: "$2b$10$o6ibWLXwzr2U/jMOptthmOagj2S8PP5Nd9VvtqhcIkZJfn5ZtE/PG",
+//   token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNjE5YjM2LTgwYTEtNDczYS1iMGY2LWJlNWE2Y2MzNGNlNiIsImVtYWlsIjoic3VicmF0LnNpbmdoLmNlcjIxQGl0Ymh1LmFjLmluIiwibmFtZSI6InN1YnJhdCIsInBhc3N3b3JkIjoiJDJiJDEwJG82aWJXTFh3enIyVS9qTU9wdHRobU9hZ2oyUzhQUDVOZDlWdnRxaGNJa1pKZm41WnRFL1BHIiwidG9rZW4iOm51bGwsInRpbWUiOiIyMDI1LTAzLTI3VDA4OjM3OjQwLjc5NVoiLCJoYXNfaG90ZWwiOnRydWUsImhhc19yZXN0ciI6ZmFsc2UsImlzX2FkbWluIjpmYWxzZSwidmVyaWZpZWQiOnRydWUsImlhdCI6MTc0MzM1NTQ1MH0.by0RU3jAKKLryUYMiy7tQSCi_w4oro6K6tdZjyjGDL0',
+//   time: new Date("2025-03-27T08:37:40.795Z"),
+//   hasHotel: true,
+//   hasRestr: false,
+//   isAdmin: false,
+//   verified: true
+// };
 
 const amenityIcons = {
   wifi: <FiWifi />,
@@ -67,7 +68,7 @@ const HotelPage = () => {
   const [newImage, setNewImage] = useState(null);
 
   const isOwnerOrAdmin = user && (
-    user.role === "admin" || 
+    user.iaAdmin=== true || 
     (hotel && user.id === hotel.ownerId)
   );
 
@@ -168,7 +169,7 @@ const HotelPage = () => {
             changedHotel,
             {
                 headers: {
-                    'Authorization': `Bearer ${user.token}`,
+                    'Authorization': token,
                     'Content-Type': 'application/json'
                 }
             }

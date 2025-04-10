@@ -24,18 +24,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { BACKEND } from "../assets/Vars";
 import axios from 'axios';
 
-const user = {
-  id: "22619b36-80a1-473a-b0f6-be5a6cc34ce6",
-  email: "subrat.singh.cer21@itbhu.ac.in",
-  name: "subrat",
-  password: "$2b$10$o6ibWLXwzr2U/jMOptthmOagj2S8PP5Nd9VvtqhcIkZJfn5ZtE/PG",
-  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNjE5YjM2LTgwYTEtNDczYS1iMGY2LWJlNWE2Y2MzNGNlNiIsImVtYWlsIjoic3VicmF0LnNpbmdoLmNlcjIxQGl0Ymh1LmFjLmluIiwibmFtZSI6InN1YnJhdCIsInBhc3N3b3JkIjoiJDJiJDEwJG82aWJXTFh3enIyVS9qTU9wdHRobU9hZ2oyUzhQUDVOZDlWdnRxaGNJa1pKZm41WnRFL1BHIiwidG9rZW4iOm51bGwsInRpbWUiOiIyMDI1LTAzLTI3VDA4OjM3OjQwLjc5NVoiLCJoYXNfaG90ZWwiOnRydWUsImhhc19yZXN0ciI6ZmFsc2UsImlzX2FkbWluIjpmYWxzZSwidmVyaWZpZWQiOnRydWUsImlhdCI6MTc0MzM1NTQ1MH0.by0RU3jAKKLryUYMiy7tQSCi_w4oro6K6tdZjyjGDL0',
-  time: new Date("2025-03-27T08:37:40.795Z"),
-  hasHotel: true,
-  hasRestr: false,
-  isAdmin: false,
-  verified: true
-};
+const token=localStorage.getItem("token");
+const user=JSON.parse(localStorage.getItem("user"));
 
 const amenityIcons = {
   wifi: <FiWifi />,
@@ -156,7 +146,7 @@ const Listings = () => {
         listing,
         {
           headers: {
-            'Authorization': `Bearer ${user.token}`,
+            'Authorization':token,
             'Content-Type': 'application/json'
           }
         }
@@ -175,7 +165,7 @@ const Listings = () => {
         formData,
         {
           headers: {
-            'Authorization': `Bearer ${user.token}`,
+            'Authorization': token,
             'Content-Type': 'multipart/form-data'
           }
         }
@@ -298,11 +288,11 @@ const Listings = () => {
           <div className="border-b pb-6 mb-6">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 rounded-full bg-gray-300 mr-4 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                {user.name?.charAt(0).toUpperCase() || 'H'}
+                {user?.name?.charAt(0).toUpperCase() || 'H'}
               </div>
               <div className="min-w-0">
-                <h2 className="font-semibold truncate capitalize">Hosted by {user.name}</h2>
-                <p className="text-gray-600 truncate">Contact: {user.email}</p>
+                <h2 className="font-semibold truncate capitalize">Hosted by {user?.name}</h2>
+                <p className="text-gray-600 truncate">Contact: {user?.email}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">

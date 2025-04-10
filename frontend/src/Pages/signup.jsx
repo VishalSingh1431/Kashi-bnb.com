@@ -35,12 +35,12 @@ const Signup = () => {
 
       if (response.status === 201) {
         // Store token and user data
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        // localStorage.setItem("token", response.data.token);
+        // localStorage.setItem("user", JSON.stringify(response.data.user));
         
         setSuccess(true);
         setTimeout(() => {
-          navigate("/");
+          navigate("/login");
         }, 2000);
       }
     } catch (err) {
