@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { loginControl, signupControl, checkControl, verification , makeRequest } from "../controllers/user.js";
+import { loginControl, signupControl, checkControl, verification ,sendProfile, makeRequest } from "../controllers/user.js";
 import { authorisation, hasHotel, isAdmin } from "../middleware/auth.js";
 import adminRouter from './admin.js';
 
@@ -17,7 +17,7 @@ router.get('/check',checkControl);
 
 // auth
 router.post('/upgrade_request',authorisation,makeRequest);
-router.get('/id/:uid',authorisation,signupControl);
+router.get('/profile/id/:uid',authorisation,sendProfile);
 router.get('/auth-check',authorisation,checkControl);
 router.get('/admin-check',authorisation,isAdmin,checkControl);
 router.get('/hotel-check',authorisation,hasHotel,checkControl);

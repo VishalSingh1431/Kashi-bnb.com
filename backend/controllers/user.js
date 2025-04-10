@@ -20,10 +20,13 @@ export const loginControl = async (req,res,nex)=>{
         }
         if(await bcrypt.compare(req.body.password,user.password)){
             const token = await jwt.sign(user,process.env.JWT_SEX);
+            user.password=null;
+            user.token=null;
             return res.status(200).json({
                 success : true,
                 message : "logged in",
                 token : `Bearer ${token}`,
+                user
             });
         }
         else{
@@ -76,8 +79,8 @@ export const verification = async (req,res,nex)=>{
             
             return res.status(200).json({
                 success : true,
-                message : "verified",
-                user 
+                message : "verified login to continue",
+                // user 
             });
         }
         else{
@@ -181,3 +184,41 @@ export const makeRequest = async (req,res,nex)=>{
     }
 }
 
+
+export const sendProfile = async (req,res,nex)=>{
+    try{
+        const reqId = req.params.uid;
+        if(reqId!=req.user.id){
+            return res.status(420).json({
+                success : false ,
+                message : "accessing different profile",
+            })
+        }
+        const allData = await prisma.users.findUnique({
+            where: {
+                id : req.user.id
+            },
+            include : {
+                bookings : true,
+                hotels_name : true,
+                restr_name : true,
+                blogs_name : true
+            }
+        });
+        allData.password=null;
+        allData.token=null;
+        return res.status(200).json({
+            success : true,
+            message : "profile got",
+            allData
+        })
+    }
+    catch(e){
+        return res.status(420).json({
+            success : false ,
+            message : "error getting profile",
+            e
+        })
+    }
+    
+}
