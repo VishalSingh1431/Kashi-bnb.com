@@ -647,6 +647,7 @@ const HotelPage = () => {
                     id="checkout"
                     selected={endDate}
                     onChange={(date) => setEndDate(date)}
+                    
                     selectsEnd
                     startDate={startDate}
                     endDate={endDate}
