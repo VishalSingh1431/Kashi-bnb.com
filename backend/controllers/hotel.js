@@ -129,6 +129,8 @@ export const getMyHotels = async (req,res,nex) =>{
 
 export const addNewHotel = async (req,res,nex) =>{
     try{
+        // console.log(req);
+        // console.log(req.files);
         const newHotel = await prisma.hotels.create({
             data : {
                 ...req.body,
@@ -136,15 +138,15 @@ export const addNewHotel = async (req,res,nex) =>{
             }
         })
 
-        if(req.files.length===0){
-            return res.status(200).json({
-                success : true,
-                message : "created hotel",
-                newHotel
-            });
-        }
-        req.params.uid = newHotel.id;
-        return nex();
+        // if(req.files?.length===0){
+        return res.status(200).json({
+            success : true,
+            message : "created hotel",
+            newHotel
+        });
+        // }
+        // req.params.uid = newHotel.id;
+        // return nex();
     }
     catch(e){
         console.log(e);

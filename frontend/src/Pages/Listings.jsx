@@ -151,6 +151,7 @@ const Listings = () => {
 
     try {
       // First create the listing
+      console.log(listing);
       const response = await axios.post(
         `${BACKEND}/api/v1/hotel/create-hotel`,
         listing,
@@ -159,11 +160,12 @@ const Listings = () => {
             'Authorization': `Bearer ${user.token}`,
             'Content-Type': 'application/json'
           }
-        }
+        } 
       );
 
-      const hotelId = response.data.hotel._id;
+      const hotelId = response.data.newHotel.id;
 
+      setListing(response.data.newHotel);
       // Then upload images
       const formData = new FormData();
       images.forEach(image => {

@@ -39,7 +39,7 @@ model hotels {
   gmap      String    @db.Text
   totalRoom Int       @default(2)
   maxInRoom Int       @default(2)
-  details   String    @default("This is beutiful hotel")
+  details   String    @db.Text
   rate      Decimal   @default(0.0) // Provide a default value
   s1        String    @default("")
   s2        String    @default("")
