@@ -1,8 +1,7 @@
 import React from 'react'
 import Navbar from '../Components/Navbar'
 import Slider from '../Components/Slider'
-// import Login from './Login'
-// import Signup from './Signup'
+
 import Contact from './Contact'
 import About from './About'
 import Footer from '../Components/Footer' 
@@ -11,10 +10,13 @@ import Homestay from './Homestay'
 import Hotel from './Hotel'
 import AdminBookings from './AdminBookings'
 import Listings from './Listings'
+import Signup from './signup'
+import Login from './Login'
 
 const Home = () => {
   return (
     <div>
+
       <Navbar/>
       <Slider/>  
       <Homestay/> 
@@ -24,7 +26,7 @@ const Home = () => {
       {/* <About/> */}
       {/* <Contact/> */}
       {/* <Signup/>  */}
-      {/* <Login/> */}
+      <Login/>
     </div>
   )
 }

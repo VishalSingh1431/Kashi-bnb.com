@@ -12,12 +12,9 @@ const AdminBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const nav = useNavigate();
-
-  // Mock user (replace with actual user from context/state)
-  const user = {
-    isAdmin: true // Set this based on actual user role
-  };
-
+  const token=localStorage.getItem("token");
+  const user=JSON.parse(localStorage.getItem("user"));
+ 
   useEffect(() => {
     if (!user || !user.isAdmin) {
       nav('/');
@@ -28,7 +25,7 @@ const AdminBookings = () => {
       try {
         const response = await axios.get(`${BACKEND}/api/v1/booking/all?page=${currentPage}`, {
           headers: {
-            Authorization: `Bearer ${user.token}`
+            Authorization: token
           }
         });
         setBookings(response.data.bookings);
@@ -64,7 +61,7 @@ const AdminBookings = () => {
         { status: tempStatus },
         {
           headers: {
-            Authorization: `Bearer ${user.token}`
+            Authorization: token
           }
         }
       );
