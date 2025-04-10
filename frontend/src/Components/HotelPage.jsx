@@ -24,7 +24,6 @@ import { MdKitchen } from "react-icons/md";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BACKEND } from "../assets/Vars";
-import axios from 'axios';
 const token=localStorage.getItem("token");
 const user=JSON.parse(localStorage.getItem("user"));
 // const user = {
