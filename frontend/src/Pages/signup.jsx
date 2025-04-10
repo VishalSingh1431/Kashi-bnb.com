@@ -11,6 +11,7 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   
   const navigate = useNavigate();
 
@@ -34,14 +35,16 @@ const Signup = () => {
       );
 
       if (response.status === 201) {
-        // Store token and user data
-        // localStorage.setItem("token", response.data.token);
-        // localStorage.setItem("user", JSON.stringify(response.data.user));
-        
+        try {
+          await axios.post(
+            "https://kashi-bnb-production.up.railway.app/api/v1/user/send-verification",
+            { email: formData.email }
+          );
+          setVerificationSent(true);
+        } catch (verificationError) {
+          console.error("Verification email failed:", verificationError);
+        }
         setSuccess(true);
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
       }
     } catch (err) {
       let errorMessage = "Signup failed. Please try again.";
@@ -64,12 +67,56 @@ const Signup = () => {
     }
   };
 
+  const handleResendVerification = async () => {
+    try {
+      await axios.post(
+        "https://kashi-bnb-production.up.railway.app/api/v1/user/send-verification",
+        { email: formData.email }
+      );
+      // alert("Verification email has been resent successfully!");
+    } catch (error) {
+      // alert("Failed to resend verification. Please try again later.");
+      setSuccess(false); // Return to signup form with prefilled data
+    }
+  };
+
   if (success) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md p-8 space-y-4 bg-white shadow-lg rounded-lg text-center">
-          <h2 className="text-2xl font-bold text-green-600">Signup Successful!</h2>
-          <p>You will be redirected to the home page shortly.</p>
+        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg text-center">
+          <div className="flex justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-green-600">Registration Successful!</h2>
+          
+          <p className="text-gray-700">
+            We've sent a verification email to <span className="font-semibold">{formData.email}</span>.
+          </p>
+          
+          <p className="text-gray-600 text-sm">
+            Please check your inbox and click the verification link to activate your account.
+            <br />
+            <span className="text-gray-500">If you don't see the email, please check your spam folder.</span>
+          </p>
+
+          <div className="pt-4 space-y-3">
+            <button
+              onClick={() => navigate('/login')}
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+            >
+              Go to Login
+            </button>
+            
+            <button
+              onClick={handleResendVerification}
+              className="w-full text-blue-500 hover:underline font-medium py-2"
+            >
+              Resend Verification Email
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -78,7 +125,7 @@ const Signup = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold text-center">Sign Up</h2>
+        <h2 className="text-2xl font-bold text-center">Create Your Account</h2>
         
         {error && (
           <div className="p-3 bg-red-100 text-red-700 rounded text-center">
@@ -88,7 +135,7 @@ const Signup = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 mb-1">Name</label>
+            <label className="block text-gray-700 mb-1">Full Name</label>
             <input
               type="text"
               name="name"
@@ -100,7 +147,7 @@ const Signup = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-1">Email</label>
+            <label className="block text-gray-700 mb-1">Email Address</label>
             <input
               type="email"
               name="email"
@@ -112,7 +159,7 @@ const Signup = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-1">Password</label>
+            <label className="block text-gray-700 mb-1">Password (min 6 characters)</label>
             <input
               type="password"
               name="password"
@@ -129,14 +176,14 @@ const Signup = () => {
             disabled={loading}
             className={`w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
           >
-            {loading ? "Creating account..." : "Sign Up"}
+            {loading ? "Creating your account..." : "Sign Up"}
           </button>
         </form>
 
-        <p className="text-center">
+        <p className="text-center text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
-            Login
+          <Link to="/login" className="text-blue-500 hover:underline font-medium">
+            Log in here
           </Link>
         </p>
       </div>
