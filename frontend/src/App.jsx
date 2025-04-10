@@ -7,12 +7,12 @@ import Slider from "./Components/Slider";
 import Contact from "./Pages/Contact";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
-import Signup from "./Signup";
-import Login from "./Login";
 import Footer from "./Components/Footer"; // Import Footer
 import HotelPage from "./Components/HotelPage";
 import Activities from "./Pages/Activities";
 import Listings from "./Pages/Listings";
+import Signup from "./Pages/signup";
+import Login from "./Pages/Login";
 // okay hi
 function App() {
   return (
@@ -20,6 +20,8 @@ function App() {
       <div className="min-h-screen" style={{ backgroundImage: `url(${bg_main})` }}>
         <Navbar />
         <Routes>
+          
+          
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
