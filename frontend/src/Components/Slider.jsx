@@ -23,17 +23,18 @@ const Slider = () => {
         const interval = setInterval(() => {
             nextSlide();
         }, 3000);
-
         return () => clearInterval(interval);
     }, [currentIndex]);
 
     return (
         <div className="relative w-full h-screen overflow-hidden">
+            {/* Background Images */}
             {images.map((image, index) => (
                 <div
                     key={index}
-                    className={`absolute inset-0 transition-opacity duration-1000 ${index === currentIndex ? 'opacity-100' : 'opacity-0'
-                        }`}
+                    className={`absolute inset-0 transition-opacity duration-1000 ${
+                        index === currentIndex ? 'opacity-100' : 'opacity-0'
+                    }`}
                 >
                     <img
                         src={image}
@@ -43,57 +44,46 @@ const Slider = () => {
                 </div>
             ))}
 
-            {/* Centered Text */}
-            <div className="absolute  top-3/5 left-1/2 bg-white/30 rounded-2xl transform -translate-x-1/2 -translate-y-1/2 text-center text-white p-6 w-11/12 md:w-2/3 lg:w-1/2">
-                {/* Title */}
-                <h1 className="text-3xl text-black sm:text-4xl md:text-5xl font-bold drop-shadow-lg">Explore Varanasi, The Oldest City With Kashi BnB</h1>
-              
-
-                {/* Buttons with Links */}
-                {/* <ul className="flex flex-wrap justify-center gap-3 mt-4">
-                    <li>
-                        <a href="/restaurants" className="flex items-center bg-white text-black px-3 py-2 rounded-md shadow-md hover:bg-red-400 transition">
-                            <img className="h-6 w-6 mr-2" src="/images/fork.png" alt="Restaurant" />
-                            <span className="font-semibold">Restaurant</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/hotels" className="flex items-center bg-white text-black px-3 py-2 rounded-md shadow-md hover:bg-red-400 transition">
-                            <img className="h-6 w-6 mr-2" src="/images/hotel.png" alt="Hotel" />
-                            <span className="font-semibold">Hotel</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/locations" className="flex items-center bg-white text-black px-3 py-2 rounded-md shadow-md hover:bg-red-400 transition">
-                            <img className="h-6 w-6 mr-2" src="/images/location.png" alt="Location" />
-                            <span className="font-semibold">Location</span>
-                        </a>
-                    </li>
-                </ul> */}
+            {/* Text Overlay */}
+            <div className="absolute top-1/2 left-1/2 bg-white/70 backdrop-blur-sm rounded-2xl transform -translate-x-1/2 -translate-y-1/2 text-center p-6 w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 shadow-xl">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight drop-shadow-lg">
+                    🏡 Homestay & Guesthouse Owners:<br className="hidden sm:block" />
+                    <span className="text-purple-700">Ditch High Commissions</span> from Airbnb & MMT!<br />
+                    <span className="text-black">Go Local with <span className="text-purple-700">KashiBnB</span> — Earn More 💰, Stress Less 🧘</span>
+                </h1>
+                <p className="mt-4 text-base sm:text-lg md:text-xl font-medium text-gray-800">
+                    🧳 Tourists: Save More ➡️ Enjoy More 😍 with <span className="font-semibold text-purple-700">KashiBnB's Trust & Hospitality</span>!
+                </p>
             </div>
 
-            {/* Navigation Buttons */}
+            {/* Prev Button */}
             <button
                 onClick={prevSlide}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-md hover:bg-opacity-75"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 sm:p-3 rounded-full hover:bg-black/70 transition"
+                aria-label="Previous Slide"
             >
-                &lt;
-            </button>
-            <button
-                onClick={nextSlide}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-md hover:bg-opacity-75"
-            >
-                &gt;
+                ❮
             </button>
 
-            {/* Dots Indicator */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            {/* Next Button */}
+            <button
+                onClick={nextSlide}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 sm:p-3 rounded-full hover:bg-black/70 transition"
+                aria-label="Next Slide"
+            >
+                ❯
+            </button>
+
+            {/* Dots */}
+            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
                 {images.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setCurrentIndex(index)}
-                        className={`w-3 h-3 rounded-full transition-all ${index === currentIndex ? 'bg-white w-4 h-4' : 'bg-gray-500'
-                            }`}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                            index === currentIndex ? 'bg-white scale-125' : 'bg-gray-400'
+                        }`}
+                        aria-label={`Go to slide ${index + 1}`}
                     />
                 ))}
             </div>
