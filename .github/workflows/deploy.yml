@@ -1,0 +1,28 @@
+name: Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Make script executable
+        run: chmod +x ./scripts/deploy.sh
+
+      - name: Run deployment script
+        env:
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          GIT_PASSPHRASE: ${{ secrets.GIT_PASSPHRASE }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          PROJECT_DIR: ${{ secrets.PROJECT_DIR }}   
+          NPM_PATH: ${{ secrets.NPM_PATH }}
+        run: ./scripts/deploy.sh
