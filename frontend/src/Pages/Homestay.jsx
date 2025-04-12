@@ -160,7 +160,7 @@ const Homestay = () => {
         initial="hidden"
         animate="visible"
       >
-        Book Your Dream Homestay Today
+        For Tourist Book Your Dream Homestay Today
       </motion.h1>
 
       {/* Search Bar */}
