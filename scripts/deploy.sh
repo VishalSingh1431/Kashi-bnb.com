@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# SSH into the VPS and run deployment commands
 sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" << EOF
   echo "➜ Changing to project directory: $PROJECT_DIR"
   cd "$PROJECT_DIR" || { echo "❌ Failed to cd into $PROJECT_DIR"; exit 1; }
