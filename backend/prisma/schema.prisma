@@ -14,21 +14,22 @@ datasource db {
 }
 
 model users {
-  id          String   @id @default(uuid())
-  email       String   @unique
+  id          String    @id @default(uuid())
+  email       String    @unique
   name        String
   password    String
+  phone       String?   
   token       String?
-  time        DateTime @updatedAt
-  has_hotel   Boolean  @default(false)
-  has_restr   Boolean  @default(false)
-  is_admin    Boolean  @default(false)
-  verified    Boolean  @default(false)
-
+  time        DateTime  @updatedAt
+  has_hotel   Boolean   @default(false)
+  has_restr   Boolean   @default(false)
+  is_admin    Boolean   @default(false)
+  verified    Boolean   @default(false)
+  p_verified  Boolean   @default(false)
+  
   hotels_name hotels[]
   restr_name  restr[]
   blogs_name  blogs[]
-
   bookings    bookings[]
 }
 
@@ -39,7 +40,7 @@ model hotels {
   gmap      String    @db.Text
   totalRoom Int       @default(2)
   maxInRoom Int       @default(2)
-  details   String    @db.Text
+  details   String?   @db.Text
   rate      Decimal   @default(0.0) // Provide a default value
   s1        String    @default("")
   s2        String    @default("")
