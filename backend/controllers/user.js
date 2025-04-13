@@ -184,7 +184,6 @@ export const makeRequest = async (req,res,nex)=>{
     }
 }
 
-
 export const sendProfile = async (req,res,nex)=>{
     try{
         const reqId = req.params.uid;
@@ -196,15 +195,19 @@ export const sendProfile = async (req,res,nex)=>{
         }
         const allData = await prisma.users.findUnique({
             where: {
-                id : req.user.id
+              id: req.user.id
             },
-            include : {
-                bookings : true,
-                hotels_name : true,
-                restr_name : true,
-                blogs_name : true
+            include: {
+              bookings: true,
+              hotels_name: {
+                include: {
+                  bookings: true
+                }
+              },
+              restr_name: true,
+              blogs_name: true
             }
-        });
+          });
         allData.password=null;
         allData.token=null;
         return res.status(200).json({
