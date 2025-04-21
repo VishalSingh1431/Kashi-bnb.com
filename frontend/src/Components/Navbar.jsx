@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, ChevronDown } from "lucide-react";
 import Profile from "./Profile";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [whyKashiOpen, setWhyKashiOpen] = useState(false);
+  const [mobileWhyKashiOpen, setMobileWhyKashiOpen] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token") !== null;
   
@@ -32,10 +34,9 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div>
-          
           <Link to="/">
             <img
-              className="w-20 h-20 md:w-40 md:h-40 rounded-lg"
+              className="w-10 h-10 md:w-25 md:h-25 rounded-lg"
               src="https://kashibnb.in/wp-content/uploads/2024/09/Image-3-1.jpg"
               alt="Logo"
             />
@@ -63,23 +64,72 @@ const Navbar = () => {
             </button>
 
             <ul className="pt-20 px-4 space-y-4">
-              {[
-                { name: "Home", path: "/" }, 
-                { name: "Why KashiBnB", path: "/about" },
-                { name: "Add Your Listing", path: "/add-listing" },
-                { name: "Activities", path: "/activities" },
-                { name: "Contact", path: "/contact" },
-              ].map((item) => (
-                <li key={item.name} className="rounded-2xl py-2 px-4 hover:bg-gray-100">
-                  <Link
-                    to={item.path}
-                    onClick={() => setIsOpen(false)}
-                    className="block w-full text-xl font-bold text-black"
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+              <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+                <Link
+                  to="/"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-xl font-bold text-black"
+                >
+                  Home
+                </Link>
+              </li>
+              
+              {/* Mobile Why KashiBnB Dropdown */}
+              <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+                <button 
+                  onClick={() => setMobileWhyKashiOpen(!mobileWhyKashiOpen)}
+                  className="flex items-center justify-between w-full text-xl font-bold text-black"
+                >
+                  Why KashiBnB
+                  <ChevronDown className={`transition-transform ${mobileWhyKashiOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {mobileWhyKashiOpen && (
+                  <div className="pl-4 mt-2 space-y-2">
+                    <Link
+                      to="/for-homestay-owner"
+                      onClick={() => setIsOpen(false)}
+                      className="block text-lg font-semibold text-gray-700 hover:text-blue-500"
+                    >
+                      For Owner
+                    </Link>
+                    <Link
+                      to="/for-tourist"
+                      onClick={() => setIsOpen(false)}
+                      className="block text-lg font-semibold text-gray-700 hover:text-blue-500"
+                    >
+                      For Tourist
+                    </Link>
+                  </div>
+                )}
+              </li>
+
+              <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+                <Link
+                  to="/add-listing"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-xl font-bold text-black"
+                >
+                  Add Your Listing
+                </Link>
+              </li>
+              {/* <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+                <Link
+                  to="/activities"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-xl font-bold text-black"
+                >
+                  Activities
+                </Link>
+              </li> */}
+              <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+                <Link
+                  to="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-xl font-bold text-black"
+                >
+                  Contact
+                </Link>
+              </li>
 
               {isLoggedIn ? (
                 <>
@@ -120,19 +170,55 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-5">
           <ul className="flex gap-5 font-bold text-black text-xl">
-            {[
-              { name: "Home", path: "/" }, 
-              { name: "Why KashiBnB", path: "/about" },
-              { name: "Add Your Listing", path: "/add-listing" },
-              { name: "Activities", path: "/activities" },
-              { name: "Contact", path: "/contact" },
-            ].map((item) => (
-              <li key={item.name} className="rounded-2xl py-2 px-4 hover:text-blue-500">
-                <Link to={item.path} className="cursor-pointer">
-                  {item.name}
-                </Link>
-              </li>
-            ))}
+            <li className="rounded-2xl py-2 px-4 hover:text-blue-500">
+              <Link to="/" className="cursor-pointer">
+                Home
+              </Link>
+            </li>
+            
+            {/* Desktop Why KashiBnB Dropdown */}
+            <li 
+              className="relative rounded-2xl py-2 px-4 hover:text-blue-500"
+              onMouseEnter={() => setWhyKashiOpen(true)}
+              onMouseLeave={() => setWhyKashiOpen(false)}
+            >
+              <div className="flex items-center gap-1 cursor-pointer">
+                Why KashiBnB
+                <ChevronDown className={`transition-transform ${whyKashiOpen ? 'rotate-0' : ''}`} size={18} />
+              </div>
+              {whyKashiOpen && (
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-30">
+                  <Link
+                    to="/for-homestay-owner"
+                    className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white"
+                  >
+                    For Owner
+                  </Link>
+                  <Link
+                    to="/for-tourist"
+                    className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white"
+                  >
+                    For Tourist
+                  </Link>
+                </div>
+              )}
+            </li>
+
+            <li className="rounded-2xl py-2 px-4 hover:text-blue-500">
+              <Link to="/add-listing" className="cursor-pointer">
+                Add Your Listing
+              </Link>
+            </li>
+            {/* <li className="rounded-2xl py-2 px-4 hover:text-blue-500">
+              <Link to="/activities" className="cursor-pointer">
+                Activities
+              </Link>
+            </li> */}
+            <li className="rounded-2xl py-2 px-4 hover:text-blue-500">
+              <Link to="/contact" className="cursor-pointer">
+                Contact
+              </Link>
+            </li>
           </ul>
 
           {isLoggedIn ? (
@@ -177,7 +263,6 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-
   );
 };
 

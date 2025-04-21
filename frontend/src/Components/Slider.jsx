@@ -14,7 +14,7 @@ const Slider = () => {
     };
 
     const prevSlide = () => {
-        setCurrentIndex((prevIndex) =>
+        setCurrentIndex((prevIndex) => 
             prevIndex === 0 ? images.length - 1 : prevIndex - 1
         );
     };
@@ -27,55 +27,126 @@ const Slider = () => {
     }, [currentIndex]);
 
     return (
-        <div className="relative w-full h-screen overflow-hidden">
-            {/* Background Images */}
-            {images.map((image, index) => (
-                <div
-                    key={index}
-                    className={`absolute inset-0 transition-opacity duration-1000 ${
-                        index === currentIndex ? 'opacity-100' : 'opacity-0'
-                    }`}
-                >
-                    <img
-                        src={image}
-                        alt={`Slide ${index + 1}`}
-                        className="w-full h-full object-cover"
-                    />
-                </div>
-            ))}
-
-            {/* Text Overlay */}
-            <div className="absolute top-1/2 left-1/2 bg-white/70 backdrop-blur-sm rounded-2xl transform -translate-x-1/2 -translate-y-1/2 text-center p-6 w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 shadow-xl">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight drop-shadow-lg">
-                    🏡 Homestay & Guesthouse Owners:<br className="hidden sm:block" />
-                    <span className="text-purple-700">Ditch High Commissions</span> from Airbnb & MMT!<br />
-                    <span className="text-black">Go Local with <span className="text-purple-700">KashiBnB</span> — Earn More 💰, Stress Less 🧘</span>
-                </h1>
-                <p className="mt-4 text-base sm:text-lg md:text-xl font-medium text-gray-800">
-                    🧳 Tourists: Save More ➡️ Enjoy More 😍 with <span className="font-semibold text-purple-700">KashiBnB's Trust & Hospitality</span>!
-                </p>
+        <div className="relative">
+            {/* Background Image Slider - Full width */}
+            <div className="absolute inset-0 -z-10 w-full h-full">
+                {images.map((image, index) => (
+                    <div
+                        key={index}
+                        className={`absolute inset-0 transition-opacity duration-1000 ${
+                            index === currentIndex ? 'opacity-100' : 'opacity-0'
+                        }`}
+                    >
+                        <img
+                            src={image}
+                            alt={`Slide ${index + 1}`}
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                ))}
             </div>
 
-            {/* Prev Button */}
+            {/* Your Original Container - Not Changed At All */}
+            <div className="min-h-screen pt-52 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                {/* Grid Container */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                    {/* Owners Section */}
+                    <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                        <div className="flex flex-col h-full">
+                            <div className="flex items-center justify-center mb-4">
+                                <div className="bg-purple-100 p-3 rounded-full">
+                                    <span className="text-xl">🏡</span>
+                                </div>
+                            </div>
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 text-center mb-4">
+                                Hello Homestay/PG/Hotel Owners!
+                            </h1>
+
+                            <p className="text-lg font-semibold text-purple-700 mb-4 text-center">
+                                Tired of paying 15-30% commissions on OTA Platforms like AirBnB or MMT?<br />
+                                <span><em>Go Local with KashiBnB & Earn More!</em></span>
+                            </p>
+
+                            <ul className="space-y-1 mb-4">
+                                <li className="flex items-start bg-purple-50/50 p-3 rounded-lg">
+                                    <span className="text-purple-600 mr-3 text-xl">💰</span>
+                                    <span className="text-lg font-medium text-gray-800"><b>Keep 100% earnings</b> - Zero commission</span>
+                                </li>
+                                <li className="flex items-start bg-purple-50/50 p-3 rounded-lg">
+                                    <span className="text-purple-600 mr-3 text-xl">👨‍👩‍👧‍👦</span>
+                                    <span className="text-lg font-medium text-gray-800"><b>Direct bookings</b> from travelers</span>
+                                </li>
+                                <li className="flex items-start bg-purple-50/50 p-3 rounded-lg">
+                                    <span className="text-purple-600 mr-3 text-xl">📈</span>
+                                    <span className="text-lg font-medium text-gray-800"><b>Premium visibility</b> locally</span>
+                                </li>
+                            </ul>
+
+                            <button className="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                                List Your Property FREE Today!
+                            </button>
+                        </div>
+                    </div>
+
+
+                    {/* Travelers Section */}
+                    <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                        <div className="flex flex-col h-full">
+                            <div className="flex items-center justify-center mb-4">
+                                <div className="bg-green-100 p-3 rounded-full">
+                                    <span className="text-xl">🛕</span>
+                                </div>
+                            </div>
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 text-center mb-4">
+                                Dear Travelers!
+                            </h1>
+
+                            <p className="text-lg font-semibold text-green-700 mb-4 text-center">
+                                Why pay 15-30% more on OTA Platforms?<br />
+                                <span className="font-bold">Sacred Stays in Varanasi</span>
+                                <div><em>"Experience the spiritual heart of India for less"</em></div>
+                            </p>
+
+                            <ul className="space-y-1 mb-4">
+                                <li className="flex items-start bg-green-50/50 p-3 rounded-lg">
+                                    <span className="text-lg font-medium text-gray-800"><b>💰 Save 15-30%</b> on premium stays</span>
+                                </li>
+                                <li className="flex items-start bg-green-50/50 p-3 rounded-lg">
+                                    <span className="text-lg font-medium text-gray-800"><b>🛡️ Physically audited</b> properties</span>
+                                </li>
+                                <li className="flex items-start bg-green-50/50 p-3 rounded-lg">
+                                    <span className="text-lg font-medium text-gray-800"><b>🕉️ Empowering travelers,</b> hosts & ecosystem</span>
+                                </li>
+                            </ul>
+
+                            <button className="bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                                Book Authentic Kashi Stays!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Navigation Controls */}
             <button
                 onClick={prevSlide}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 sm:p-3 rounded-full hover:bg-black/70 transition"
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition z-10"
                 aria-label="Previous Slide"
             >
                 ❮
             </button>
 
-            {/* Next Button */}
             <button
                 onClick={nextSlide}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 sm:p-3 rounded-full hover:bg-black/70 transition"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition z-10"
                 aria-label="Next Slide"
             >
                 ❯
             </button>
 
-            {/* Dots */}
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            {/* Indicators */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
                 {images.map((_, index) => (
                     <button
                         key={index}

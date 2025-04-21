@@ -18,7 +18,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen" style={{ backgroundImage: `url(${bg_main})` }}>
-        {/* <Navbar /> */}
+        <Navbar />
         <Routes>
 
           
