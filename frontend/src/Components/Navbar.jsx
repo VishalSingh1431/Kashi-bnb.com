@@ -37,7 +37,7 @@ const Navbar = () => {
           <Link to="/">
             <img
               className="w-10 h-10 md:w-25 md:h-25 rounded-lg"
-              src="https://kashibnb.in/wp-content/uploads/2024/09/Image-3-1.jpg"
+              src="/images\newlogo.jpg"
               alt="Logo"
             />
           </Link>
