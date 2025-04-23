@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { BACKEND } from "../assets/Vars";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +29,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://kashi-bnb-production.up.railway.app/api/v1/user/login",
+        `${BACKEND}/api/v1/user/login`,
         formData
       );
       console.log(response);
@@ -42,6 +43,7 @@ const Login = () => {
         navigate("/", { replace: true });
       }
     } catch (err) {
+      console.log(err);
       let errorMessage = "Login failed. Please try again.";
       
       if (err.response) {

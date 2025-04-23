@@ -21,10 +21,7 @@ const Home = () => {
       <Navbar/>
       <Slider/>  
       <Homestay/> 
-      {/* <Hotel/> */}
-      {/* <AdminBookings/> */}
-      {/* <Listings/> */}
-      
+     
       {/* <About/> */}
       {/* <Contact/> */}
       {/* <Signup/>  */}

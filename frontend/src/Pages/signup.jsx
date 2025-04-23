@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { BACKEND } from '../assets/Vars';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -30,14 +31,14 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "https://kashi-bnb-production.up.railway.app/api/v1/user/signup", 
+        `${BACKEND}app/api/v1/user/signup`, 
         formData
       );
 
       if (response.status === 201) {
         try {
           await axios.post(
-            "https://kashi-bnb-production.up.railway.app/api/v1/user/send-verification",
+            `${BACKEND}app/api/v1/user/send-verification`,
             { email: formData.email }
           );
           setVerificationSent(true);
@@ -70,7 +71,7 @@ const Signup = () => {
   const handleResendVerification = async () => {
     try {
       await axios.post(
-        "https://kashi-bnb-production.up.railway.app/api/v1/user/send-verification",
+        `${BACKEND}app/api/v1/user/send-verification`,
         { email: formData.email }
       );
       // alert("Verification email has been resent successfully!");

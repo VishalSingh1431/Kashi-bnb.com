@@ -4,6 +4,7 @@ import Card from "../Components/Card";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FiSearch, FiFilter } from "react-icons/fi";
+import { BACKEND } from "../assets/Vars";
 
 const Homestay = () => {
   const headingVariants = {
@@ -14,6 +15,7 @@ const Homestay = () => {
   const [hotels, setHotels] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [showFilters, setShowFilters] = useState(false);
@@ -23,7 +25,9 @@ const Homestay = () => {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const response = await axios.get("https://kashi-bnb-production.up.railway.app/api/v1/hotel/hotels");
+        setLoading(true);
+        setError(null);
+        const response = await axios.get(`${BACKEND}/api/v1/hotel/hotels`);
         // Combine API hotels with additional static hotels
         const allHotels = [
           ...(response.data.hotels || []),
@@ -95,9 +99,54 @@ const Homestay = () => {
         ];
         setHotels(allHotels);
         setFilteredHotels(allHotels);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching hotels:", error);
+      } catch (err) {
+        // console.error("Error fetching hotels:", err);
+        setError("Failed to load hotels. Showing demo properties instead.");
+        // Fallback to static hotels if API fails
+        const fallbackHotels = [
+          {
+            id: "premium-suite",
+            name: "Premium Suite",
+            rate: 1999,
+            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            city: "Varanasi",
+            description: "Luxurious suite with premium amenities",
+            s1: "Free WiFi",
+            s2: "Breakfast Included",
+            s3: "Pool Access",
+            s4: "24/7 Support",
+            rating: 4.8
+          },
+          {
+            id: "luxury-villa",
+            name: "Luxury Villa",
+            rate: 2999,
+            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            city: "Varanasi",
+            description: "Spacious villa with modern facilities",
+            s1: "AC",
+            s2: "Parking",
+            s3: "Kitchen",
+            s4: "Laundry",
+            rating: 4.9
+          },
+          {
+            id: "budget-room",
+            name: "Budget Room",
+            rate: 999,
+            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            city: "Varanasi",
+            description: "Affordable accommodation with basic amenities",
+            s1: "WiFi",
+            s2: "24/7 Support",
+            s3: "TV",
+            s4: "Attached Bath",
+            rating: 4.2
+          }
+        ];
+        setHotels(fallbackHotels);
+        setFilteredHotels(fallbackHotels);
+      } finally {
         setLoading(false);
       }
     };
@@ -160,7 +209,7 @@ const Homestay = () => {
         initial="hidden"
         animate="visible"
       >
-        For Tourist Book Your Dream Homestay Today
+        Book Your Dream Homestay Today
       </motion.h1>
 
       {/* Search Bar */}
@@ -219,11 +268,17 @@ const Homestay = () => {
           </div>
         </div>
         
-        {/* Expanded Filters - Only Price Range */}
+        {/* Expanded Filters */}
         {showFilters && (
           <div className="mt-4 p-6 border border-gray-100 rounded-lg shadow-sm bg-white">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold text-gray-700">Filters</h3>
+              <button 
+                onClick={() => setShowFilters(false)}
+                className="text-sm text-blue-500 hover:text-blue-700"
+              >
+                Close
+              </button>
             </div>
             
             <div className="mb-6">
@@ -247,17 +302,26 @@ const Homestay = () => {
         )}
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="w-full max-w-6xl mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+          <p>{error}</p>
+        </div>
+      )}
+
       {/* Results */}
       <div className="w-full max-w-6xl">
         {loading ? (
-          <p className="text-center text-gray-600">Loading hotels...</p>
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
         ) : filteredHotels.length === 0 ? (
           <div className="text-center py-12">
             <h3 className="text-xl font-semibold text-gray-700">No properties found</h3>
-            <p className="text-gray-500">Try adjusting your search</p>
+            <p className="text-gray-500">Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 px-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5">
             {filteredHotels.map((hotel) => (
               <Card
                 key={hotel.id}

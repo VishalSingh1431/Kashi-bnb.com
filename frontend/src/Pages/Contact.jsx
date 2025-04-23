@@ -45,8 +45,38 @@ const itemVariants = {
 };
 
 const Contact = () => {
+  const [formData, setFormData] = React.useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically send the form data to your backend
+    console.log('Form submitted:', formData);
+    alert('Thank you for your message! We will get back to you soon.');
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: ''
+    });
+  };
+
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 ">
+    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 pb-20">
       {/* Hero Image */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -82,7 +112,7 @@ const Contact = () => {
             alt="Mission"
           />
           <p className="text-gray-700 text-base leading-relaxed font-light">
-            At KashiBnB, our mission is to make every guest’s stay in Varanasi comfortable, memorable, and hassle-free. 
+            At KashiBnB, our mission is to make every guest's stay in Varanasi comfortable, memorable, and hassle-free. 
             We simplify the search for the perfect homestay in this culturally rich city, offering a seamless, personalized 
             experience from booking to checkout. Our dedication to exceptional service and warm hospitality ensures you 
             feel like part of the KashiBnB family, with cozy rooms, local insights, and a truly unforgettable stay.
@@ -136,20 +166,132 @@ const Contact = () => {
           variants={itemVariants}
           className="text-3xl font-extrabold text-gray-900 mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600"
         >
-          “Join Us for a Stay that Feels Like Family, in the Soul of Varanasi”
+          "Join Us for a Stay that Feels Like Family, in the Soul of Varanasi"
         </motion.h2>
         <motion.p
           variants={itemVariants}
           className="text-gray-700 text-base leading-relaxed font-light"
         >
           At KashiBnB, we offer more than just a stay – we provide a home away from home. 
-          Nestled in Varanasi’s heart, our warm hospitality and cozy accommodations create 
-          a family-like atmosphere. Whether you’re exploring ancient streets or unwinding, 
+          Nestled in Varanasi's heart, our warm hospitality and cozy accommodations create 
+          a family-like atmosphere. Whether you're exploring ancient streets or unwinding, 
           we ensure your time in this spiritual city is unforgettable.
         </motion.p>
       </motion.div>
 
-      {/* Contact Us */}
+      {/* Contact Form */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="max-w-5xl mx-auto mt-12 bg-white p-8 rounded-xl shadow-xl border border-gray-100"
+      >
+        <motion.h2
+          variants={itemVariants}
+          className="text-4xl font-extrabold text-gray-900 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600"
+        >
+          Send Us a Message
+        </motion.h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div variants={itemVariants}>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                placeholder="Your name"
+              />
+            </motion.div>
+            
+            <motion.div variants={itemVariants}>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                placeholder="your.email@example.com"
+              />
+            </motion.div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div variants={itemVariants}>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                placeholder="+91 12345 67890"
+              />
+            </motion.div>
+            
+            <motion.div variants={itemVariants}>
+              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                Subject <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                placeholder="What's this about?"
+              />
+            </motion.div>
+          </div>
+          
+          <motion.div variants={itemVariants}>
+            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+              Your Message <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+              rows="5"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+              placeholder="Write your message here..."
+            ></textarea>
+          </motion.div>
+          
+          <motion.div variants={itemVariants} className="pt-2">
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Send Message
+            </motion.button>
+          </motion.div>
+        </form>
+      </motion.div>
+
+      {/* Contact Info */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
