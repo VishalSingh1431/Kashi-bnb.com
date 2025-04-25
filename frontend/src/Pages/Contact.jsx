@@ -76,7 +76,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 pb-20 " style={{ backgroundColor: '#f3eadb' }}>
+    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 pb-20 text-black" style={{ backgroundColor: '#f3eadb' }}>
       {/* Hero Image */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -97,11 +97,11 @@ const Contact = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="max-w-5xl mx-auto mt-12 bg-white p-8 rounded-xl shadow-xl border border-gray-100"
+        className="max-w-5xl mx-auto mt-12  p-8 rounded-xl shadow-xl border "
       >
         <motion.h2
           variants={itemVariants}
-          className="text-4xl font-extrabold text-gray-900 mb-6 bg-clip-text  bg-gradient-to-r from-teal-500 to-blue-600"
+          className="text-4xl font-extrabold text-gray-900 mb-6 bg-clip-text  bg-gradient-to-r "
         >
           Our Mission
         </motion.h2>
@@ -126,11 +126,11 @@ const Contact = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="max-w-5xl mx-auto mt-12 bg-white p-8 rounded-xl shadow-xl border border-gray-100"
+        className="max-w-5xl mx-auto mt-12 p-8 rounded-xl shadow-xl border "
       >
         <motion.h2
           variants={itemVariants}
-          className="text-4xl font-extrabold text-gray-900 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600"
+          className="text-4xl font-extrabold text-black mb-8 bg-clip-text  bg-gradient-to-r "
         >
           Our Team
         </motion.h2>
@@ -139,11 +139,11 @@ const Contact = () => {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="text-center bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+              className="text-center  border p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
               whileHover={{ scale: 1.05, rotate: 1 }}
             >
               <img
-                className="w-28 h-28 mx-auto rounded-full object-cover border-4 border-teal-500 shadow-lg transform hover:scale-110 transition-transform duration-300"
+                className="w-28 h-28 mx-auto rounded-full object-cover border-4  shadow-lg transform hover:scale-110 transition-transform duration-300"
                 src={member.image}
                 alt={member.name}
               />
@@ -160,11 +160,11 @@ const Contact = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="max-w-5xl mx-auto mt-12 bg-white p-8 rounded-xl shadow-xl border border-gray-100"
+        className="max-w-5xl mx-auto mt-12   p-8 rounded-xl shadow-xl border "
       >
         <motion.h2
           variants={itemVariants}
-          className="text-3xl font-extrabold text-gray-900 mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600"
+          className="text-3xl font-extrabold text-black mb-6 bg-clip-text   bg-gradient-to-r   "
         >
           "Join Us for a Stay that Feels Like Family, in the Soul of Varanasi"
         </motion.h2>
@@ -185,11 +185,11 @@ const Contact = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="max-w-5xl mx-auto mt-12 bg-white p-8 rounded-xl shadow-xl border border-gray-100"
+        className="max-w-5xl mx-auto mt-12   p-8 rounded-xl shadow-xl border"
       >
         <motion.h2
           variants={itemVariants}
-          className="text-4xl font-extrabold text-gray-900 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600"
+          className="text-4xl font-extrabold text-black mb-8 bg-clip-text  bg-gradient-to-r  "
         >
           Send Us a Message
         </motion.h2>
@@ -198,7 +198,7 @@ const Contact = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <motion.div variants={itemVariants}>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name <span className="text-red-500">*</span>
+                Full Name <span className="">*</span>
               </label>
               <input
                 type="text"
@@ -207,14 +207,14 @@ const Contact = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                className="w-full px-4 py-3 rounded-lg border transition-all duration-200"
                 placeholder="Your name"
               />
             </motion.div>
             
             <motion.div variants={itemVariants}>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address <span className="text-red-500">*</span>
+                Email Address <span className= "">*</span>
               </label>
               <input
                 type="email"
@@ -223,7 +223,7 @@ const Contact = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                className="w-full px-4 py-3 rounded-lg border  transition-all duration-200"
                 placeholder="your.email@example.com"
               />
             </motion.div>
@@ -240,14 +240,14 @@ const Contact = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                className="w-full px-4 py-3 rounded-lg border  transition-all duration-200"
                 placeholder="+91 12345 67890"
               />
             </motion.div>
             
             <motion.div variants={itemVariants}>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-                Subject <span className="text-red-500">*</span>
+              <label htmlFor="subject" className="block text-sm font-medium text- black mb-1">
+                Subject <span className=" ">*</span>
               </label>
               <input
                 type="text"
@@ -256,7 +256,7 @@ const Contact = () => {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                className="w-full px-4 py-3 rounded-lg border  transition-all duration-200"
                 placeholder="What's this about?"
               />
             </motion.div>
@@ -264,7 +264,7 @@ const Contact = () => {
           
           <motion.div variants={itemVariants}>
             <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-              Your Message <span className="text-red-500">*</span>
+              Your Message <span className=" ">*</span>
             </label>
             <textarea
               id="message"
@@ -273,7 +273,7 @@ const Contact = () => {
               onChange={handleChange}
               required
               rows="5"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+              className="w-full px-4 py-3 rounded-lg border   focus:ring-2  transition-all duration-200"
               placeholder="Write your message here..."
             ></textarea>
           </motion.div>
@@ -283,7 +283,7 @@ const Contact = () => {
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              className="w-full    text-black font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Send Message
             </motion.button>
@@ -301,7 +301,7 @@ const Contact = () => {
       >
         <motion.h2
           variants={itemVariants}
-          className="text-4xl font-extrabold text-gray-900 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600"
+          className="text-4xl font-extrabold text-black mb-8 bg-clip-text  bg-gradient-to-r"
         >
           Get in Touch
         </motion.h2>
