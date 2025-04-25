@@ -30,7 +30,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="shadow-md p-4 absolute z-10 w-full bg-white/20">
+    <nav className="shadow-md p-4 absolute z-10 w-full" style={{ backgroundColor: '#f3eadb' }}>
+
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div>
@@ -54,8 +55,8 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Content */}
-        <div className={`fixed inset-0 bg-white bg-opacity-95 z-20 transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-          <div className="relative h-full w-auto min-w-[250px] max-w-[90%] bg-white shadow-xl">
+        <div className={`fixed inset-0 bg-opacity-95 z-20 transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`} style={{ backgroundColor: '#f3eadb' }}>
+          <div className="relative h-full w-auto min-w-[250px] max-w-[90%]shadow-xl" style={{ backgroundColor: '#f3eadb' }}>
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-4 right-4 p-2"
@@ -64,7 +65,7 @@ const Navbar = () => {
             </button>
 
             <ul className="pt-20 px-4 space-y-4">
-              <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+              <li className="rounded-2xl py-2 px-4" style={{ backgroundColor: '#f3eadb' }}>
                 <Link
                   to="/"
                   onClick={() => setIsOpen(false)}
@@ -75,7 +76,7 @@ const Navbar = () => {
               </li>
               
               {/* Mobile Why KashiBnB Dropdown */}
-              <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+              <li className="rounded-2xl py-2 px-4 " style={{ backgroundColor: '#f3eadb' }}>
                 <button 
                   onClick={() => setMobileWhyKashiOpen(!mobileWhyKashiOpen)}
                   className="flex items-center justify-between w-full text-xl font-bold text-black"
@@ -88,14 +89,14 @@ const Navbar = () => {
                     <Link
                       to="/for-homestay-owner"
                       onClick={() => setIsOpen(false)}
-                      className="block text-lg font-semibold text-gray-700 hover:text-blue-500"
+                      className="block text-lg font-semibold text-gray-700 "
                     >
                       For Owner
                     </Link>
                     <Link
                       to="/for-tourist"
                       onClick={() => setIsOpen(false)}
-                      className="block text-lg font-semibold text-gray-700 hover:text-blue-500"
+                      className="block text-lg font-semibold text-gray-700 "
                     >
                       For Tourist
                     </Link>
@@ -103,7 +104,7 @@ const Navbar = () => {
                 )}
               </li>
 
-              <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+              <li className="rounded-2xl py-2 px-4" style={{ backgroundColor: '#f3eadb' }}>
                 <Link
                   to="/add-listing"
                   onClick={() => setIsOpen(false)}
@@ -157,7 +158,7 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     onClick={() => setIsOpen(false)}
-                    className="block w-full text-center bg-blue-500 text-white py-3 px-6 rounded-2xl text-xl font-bold hover:bg-blue-600 transition-colors"
+                    className="block w-full text-center text-white py-3 px-6 rounded-2xl text-xl font-bold  transition-colors"
                   >
                     Login / Signup
                   </Link>
@@ -170,7 +171,7 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-5">
           <ul className="flex gap-5 font-bold text-black text-xl">
-            <li className="rounded-2xl py-2 px-4 hover:text-blue-500">
+            <li className="rounded-2xl py-2 px-4  ">
               <Link to="/" className="cursor-pointer">
                 Home
               </Link>
@@ -178,7 +179,7 @@ const Navbar = () => {
             
             {/* Desktop Why KashiBnB Dropdown */}
             <li 
-              className="relative rounded-2xl py-2 px-4 hover:text-blue-500"
+              className="relative rounded-2xl py-2 px-4  "
               onMouseEnter={() => setWhyKashiOpen(true)}
               onMouseLeave={() => setWhyKashiOpen(false)}
             >
@@ -190,13 +191,13 @@ const Navbar = () => {
                 <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-30">
                   <Link
                     to="/for-homestay-owner"
-                    className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white"
+                    className="block px-4 py-2 text-gray-800  hover:text-white"
                   >
                     For Owner
                   </Link>
                   <Link
                     to="/for-tourist"
-                    className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white"
+                    className="block px-4 py-2 text-gray-800  hover:text-white"
                   >
                     For Tourist
                   </Link>
@@ -204,7 +205,7 @@ const Navbar = () => {
               )}
             </li>
 
-            <li className="rounded-2xl py-2 px-4 hover:text-blue-500">
+            <li className="rounded-2xl py-2 px-4 ">
               <Link to="/add-listing" className="cursor-pointer">
                 Add Your Listing
               </Link>
@@ -214,7 +215,7 @@ const Navbar = () => {
                 Activities
               </Link>
             </li> */}
-            <li className="rounded-2xl py-2 px-4 hover:text-blue-500">
+            <li className="rounded-2xl py-2 px-4 ">
               <Link to="/contact" className="cursor-pointer">
                 Contact
               </Link>
@@ -228,7 +229,7 @@ const Navbar = () => {
                 onMouseEnter={() => setIsProfileOpen(true)}
                 onMouseLeave={() => setIsProfileOpen(false)}
               >
-                <button className="flex items-center gap-2 bg-blue-500 text-white py-3 px-6 rounded-2xl text-lg font-bold hover:bg-blue-600 transition-colors cursor-pointer">
+                <button className="flex items-center gap-2   text-white py-3 px-6 rounded-2xl text-lg font-bold  transition-colors cursor-pointer">
                   <User size={20} />
                   {user.name || "Profile"}
                 </button>
@@ -239,13 +240,13 @@ const Navbar = () => {
                 >
                   <Link
                     to="/profile"
-                    className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white cursor-pointer"
+                    className="block px-4 py-2 text-gray-800 hover:text-white cursor-pointer"
                   >
                     My Profile
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-gray-800 hover:bg-red-500 hover:text-white cursor-pointer"
+                    className="w-full text-left px-4 py-2 text-gray-800  hover:text-white cursor-pointer"
                   >
                     Logout
                   </button>
@@ -255,7 +256,7 @@ const Navbar = () => {
           ) : (
             <Link
               to="/login"
-              className="bg-blue-500 text-white py-3 px-6 rounded-2xl text-lg font-bold hover:bg-blue-600 transition-colors cursor-pointer"
+              className="  text-black border rounded-3xl py-3 px-6   text-lg font-bold   transition-colors cursor-pointer"
             >
               Login / Signup
             </Link>

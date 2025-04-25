@@ -202,9 +202,9 @@ const Homestay = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col items-center bg-white min-h-screen">
+    <div className="p-4 flex flex-col items-center min-h-screen" style={{ backgroundColor: '#f3eadb' }}>
       <motion.h1
-        className="text-4xl font-bold text-center mb-8 bg-blue-100 p-4 rounded-2xl hover:bg-blue-200 transition-colors text-gray-800"
+        className="text-4xl font-bold text-center mb-8p-4 rounded-2xl  transition-colors text-gray-800" style={{ backgroundColor: '#f3eadb' }}
         variants={headingVariants}
         initial="hidden"
         animate="visible"
@@ -213,15 +213,16 @@ const Homestay = () => {
       </motion.h1>
 
       {/* Search Bar */}
-      <div className="w-full max-w-4xl mb-8 bg-white rounded-lg">
+      <div className="w-full max-w-4xl mb-8 rounded-lg" style={{ backgroundColor: '#f3eadb' }}>
         <form onSubmit={handleSearch} className="relative">
-          <div className="flex items-center border border-gray-200 rounded-full p-3 shadow-sm bg-white">
-            <div className="flex-1 px-4 flex items-center">
-              <FiSearch className="text-gray-400 mr-3" />
-              <input
+          <div className="flex items-center border rounded-full p-3 shadow-sm" style={{ backgroundColor: '#f3eadb' }}>
+            <div className="flex-1 px-4 flex items-center ">
+              <FiSearch className="mr-3" />
+              <input 
+                
                 type="text"
                 placeholder="Search by hotel name, amenities, or keywords..."
-                className="w-full outline-none bg-transparent text-gray-700 placeholder-gray-400"
+                className="w-full  text-black font-bold"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -229,7 +230,7 @@ const Homestay = () => {
             
             <button
               type="submit"
-              className="bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 transition-colors ml-2"
+              className=" p-3 rounded-full transition-colors ml-2"
             >
               <FiSearch size={18} />
             </button>
@@ -238,22 +239,22 @@ const Homestay = () => {
       </div>
 
       {/* Filters and Sorting */}
-      <div className="w-full max-w-6xl mb-8">
+      <div className="w-full max-w-6xl mb-8" style={{ backgroundColor: '#f3eadb' }}>
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
             <button 
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 border border-gray-200 rounded-full px-4 py-2 hover:shadow-md transition-shadow bg-white text-gray-700"
+              className="flex items-center space-x-2 border rounded-full px-4 py-2 hover:shadow-md \" style={{ backgroundColor: '#f3eadb' }}
             >
               <FiFilter />
               <span>Filters</span>
             </button>
             
-            <div className="relative">
+            <div className="relative border rounded-3xl">
               <select
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}
-                className="border border-gray-200 rounded-full px-4 py-2 appearance-none hover:shadow-md transition-shadow pr-8 bg-white text-gray-700"
+                className="border border-gray-200 rounded-full px-4 py-2 appearance-none hover:shadow-md transition-shadow pr-8" style={{ backgroundColor: '#f3eadb' }}
               >
                 <option value="recommended">Recommended</option>
                 <option value="price-low">Price: Low to High</option>

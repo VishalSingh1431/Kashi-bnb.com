@@ -10,7 +10,7 @@ const Card = ({ name, price, image, rating, options, address, gmap, onClick }) =
 
   return (
     <motion.div
-      className="max-w-sm w-80 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+      className="max-w-sm w-80  rounded-2xl shadow-lg overflow-hidden border border-black hover:shadow-xl transition-shadow duration-300 cursor-pointer"
       variants={cardVariants}
       initial="hidden"
       animate="visible"
@@ -25,24 +25,24 @@ const Card = ({ name, price, image, rating, options, address, gmap, onClick }) =
       <div className="p-4">
         <h2 className="text-xl font-semibold">{name}</h2>
         <div className="flex justify-between items-center mt-2">
-          <p className="text-lg text-gray-700">₹{price}/night</p>
+          <p className="text-lg text-black">₹{price}/night</p>
           <div className="flex items-center space-x-1">
-            <span className="text-gray-700">{rating}</span>
+            <span className="text-black">{rating}</span>
           </div>
         </div>
-        {address && <p className="mt-2 text-gray-600 text-sm">{address}</p>}
+        {address && <p className="mt-2 text-black text-sm">{address}</p>}
         {gmap && (
           <a
             href={gmap}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 text-blue-600 text-sm hover:underline"
+            className="mt-2  text-sm hover:underline"
             onClick={(e) => e.stopPropagation()} // Prevent map link click from triggering card navigation
           >
             View on Google Maps
           </a>
         )}
-        <div className="mt-3 text-gray-600">
+        <div className="mt-3 text-black">
           <div className="grid grid-cols-2 gap-2">
             {options.map((option, index) => (
               <div key={index} className="flex items-center">
@@ -52,7 +52,7 @@ const Card = ({ name, price, image, rating, options, address, gmap, onClick }) =
           </div>
         </div>
         <motion.button
-          className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          className="mt-4 w-full border  text-black py-2 rounded-3xl"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >

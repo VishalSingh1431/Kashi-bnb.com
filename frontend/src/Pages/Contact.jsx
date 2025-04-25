@@ -76,7 +76,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 pb-20">
+    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 pb-20 " style={{ backgroundColor: '#f3eadb' }}>
       {/* Hero Image */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -101,7 +101,7 @@ const Contact = () => {
       >
         <motion.h2
           variants={itemVariants}
-          className="text-4xl font-extrabold text-gray-900 mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600"
+          className="text-4xl font-extrabold text-gray-900 mb-6 bg-clip-text  bg-gradient-to-r from-teal-500 to-blue-600"
         >
           Our Mission
         </motion.h2>

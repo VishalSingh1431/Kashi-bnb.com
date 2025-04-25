@@ -52,7 +52,7 @@ const Slider = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                     {/* Owners Section */}
-                    <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                    <div className="flex-1  backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1" style={{ backgroundColor: '#f3eadb' }}>
                         <div className="flex flex-col h-full">
                             <div className="flex items-center justify-center mb-4">
                                 <div className="bg-purple-100 p-3 rounded-full">
@@ -63,27 +63,27 @@ const Slider = () => {
                                 Hello Homestay/PG/Hotel Owners!
                             </h1>
 
-                            <p className="text-lg font-semibold text-purple-700 mb-4 text-center">
+                            <p className="text-lg font-semibold  mb-4 text-center">
                                 Tired of paying 15-30% commissions on OTA Platforms like AirBnB or MMT?<br />
                                 <span><em>Go Local with KashiBnB & Earn More!</em></span>
                             </p>
 
                             <ul className="space-y-1 mb-4">
-                                <li className="flex items-start bg-purple-50/50 p-3 rounded-lg">
-                                    <span className="text-purple-600 mr-3 text-xl">💰</span>
+                                <li className="flex items-start  p-3 rounded-lg">
+                                    <span className=" mr-3 text-xl">💰</span>
                                     <span className="text-lg font-medium text-gray-800"><b>Keep 100% earnings</b> - Zero commission</span>
                                 </li>
-                                <li className="flex items-start bg-purple-50/50 p-3 rounded-lg">
-                                    <span className="text-purple-600 mr-3 text-xl">👨‍👩‍👧‍👦</span>
+                                <li className="flex items-start  p-3 rounded-lg">
+                                    <span className=" mr-3 text-xl">👨‍👩‍👧‍👦</span>
                                     <span className="text-lg font-medium text-gray-800"><b>Direct bookings</b> from travelers</span>
                                 </li>
-                                <li className="flex items-start bg-purple-50/50 p-3 rounded-lg">
-                                    <span className="text-purple-600 mr-3 text-xl">📈</span>
+                                <li className="flex items-start  p-3 rounded-lg">
+                                    <span className=" mr-3 text-xl">📈</span>
                                     <span className="text-lg font-medium text-gray-800"><b>Premium visibility</b> locally</span>
                                 </li>
                             </ul>
 
-                            <button className="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                            <button className="bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
                                 List Your Property FREE Today!
                             </button>
                         </div>
@@ -91,7 +91,7 @@ const Slider = () => {
 
 
                     {/* Travelers Section */}
-                    <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                    <div className="flex-1 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1" style={{ backgroundColor: '#f3eadb' }}>
                         <div className="flex flex-col h-full">
                             <div className="flex items-center justify-center mb-4">
                                 <div className="bg-green-100 p-3 rounded-full">
@@ -102,25 +102,25 @@ const Slider = () => {
                                 Dear Travelers!
                             </h1>
 
-                            <p className="text-lg font-semibold text-green-700 mb-4 text-center">
+                            <p className="text-lg font-semibold  mb-4 text-center">
                                 Why pay 15-30% more on OTA Platforms?<br />
                                 <span className="font-bold">Sacred Stays in Varanasi</span>
                                 <div><em>"Experience the spiritual heart of India for less"</em></div>
                             </p>
 
                             <ul className="space-y-1 mb-4">
-                                <li className="flex items-start bg-green-50/50 p-3 rounded-lg">
+                                <li className="flex items-start  p-3 rounded-lg">
                                     <span className="text-lg font-medium text-gray-800"><b>💰 Save 15-30%</b> on premium stays</span>
                                 </li>
-                                <li className="flex items-start bg-green-50/50 p-3 rounded-lg">
+                                <li className="flex items-start  p-3 rounded-lg">
                                     <span className="text-lg font-medium text-gray-800"><b>🛡️ Physically audited</b> properties</span>
                                 </li>
-                                <li className="flex items-start bg-green-50/50 p-3 rounded-lg">
+                                <li className="flex items-start  p-3 rounded-lg">
                                     <span className="text-lg font-medium text-gray-800"><b>🕉️ Empowering travelers,</b> hosts & ecosystem</span>
                                 </li>
                             </ul>
 
-                            <button className="bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                            <button className="bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
                                 Book Authentic Kashi Stays!
                             </button>
                         </div>
