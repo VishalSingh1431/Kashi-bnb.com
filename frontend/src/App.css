@@ -6,7 +6,7 @@ body{
 }
 
 .sec{
-  background-color: #0a9396;
+  background-color: #f3eadb;
 }
 
 .tex{
@@ -16,7 +16,7 @@ body{
 }
 
 .sec:hover{
- background: #027890 ;
+ background: #f3eadb;
 }
 
 /* 606c38 */

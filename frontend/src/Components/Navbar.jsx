@@ -87,14 +87,14 @@ const Navbar = () => {
                 {mobileWhyKashiOpen && (
                   <div className="pl-4 mt-2 space-y-2">
                     <Link
-                      to="/for-homestay-owner"
+                      to="/owner"
                       onClick={() => setIsOpen(false)}
                       className="block text-lg font-semibold text-gray-700 "
                     >
                       For Owner
                     </Link>
                     <Link
-                      to="/for-tourist"
+                      to="/tourist"
                       onClick={() => setIsOpen(false)}
                       className="block text-lg font-semibold text-gray-700 "
                     >
@@ -122,7 +122,7 @@ const Navbar = () => {
                   Activities
                 </Link>
               </li> */}
-              <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+              <li className="rounded-2xl py-2 px-4">
                 <Link
                   to="/contact"
                   onClick={() => setIsOpen(false)}
@@ -134,7 +134,7 @@ const Navbar = () => {
 
               {isLoggedIn ? (
                 <>
-                  <li className="rounded-2xl py-2 px-4 hover:bg-gray-100">
+                  <li className="rounded-2xl py-2 px-4 ">
                     <Link
                       to="/profile"
                       onClick={() => setIsOpen(false)}
@@ -147,7 +147,7 @@ const Navbar = () => {
                   <li className="mt-8">
                     <button
                       onClick={handleLogout}
-                      className="w-full text-center bg-red-500 text-white py-3 px-6 rounded-2xl text-xl font-bold hover:bg-red-600 transition-colors"
+                      className="w-full text-center bg-red-500 py-3 px-6 rounded-2xl text-xl font-bold hover:bg-red-600 transition-colors"
                     >
                       Logout
                     </button>
@@ -158,7 +158,7 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     onClick={() => setIsOpen(false)}
-                    className="block w-full text-center text-white py-3 px-6 rounded-2xl text-xl font-bold  transition-colors"
+                    className="block w-full text-center py-3 px-6 rounded-2xl text-xl font-bold  transition-colors"
                   >
                     Login / Signup
                   </Link>
@@ -188,16 +188,16 @@ const Navbar = () => {
                 <ChevronDown className={`transition-transform ${whyKashiOpen ? 'rotate-0' : ''}`} size={18} />
               </div>
               {whyKashiOpen && (
-                <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-30">
+                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 z-30" style={{ backgroundColor: '#f3eadb' }} >
                   <Link
-                    to="/for-homestay-owner"
-                    className="block px-4 py-2 text-gray-800  hover:text-white"
+                    to="/owner"
+                    className="block px-4 py-2 text-gray-800 "
                   >
                     For Owner
                   </Link>
                   <Link
-                    to="/for-tourist"
-                    className="block px-4 py-2 text-gray-800  hover:text-white"
+                    to="/tourist"
+                    className="block px-4 py-2 text-gray-800 "
                   >
                     For Tourist
                   </Link>
@@ -229,24 +229,24 @@ const Navbar = () => {
                 onMouseEnter={() => setIsProfileOpen(true)}
                 onMouseLeave={() => setIsProfileOpen(false)}
               >
-                <button className="flex items-center gap-2   text-white py-3 px-6 rounded-2xl text-lg font-bold  transition-colors cursor-pointer">
+                <button className="flex items-center gap-2    py-3 px-6 rounded-2xl text-lg font-bold  transition-colors cursor-pointer">
                   <User size={20} />
                   {user.name || "Profile"}
                 </button>
                 <div 
-                  className={`absolute top-full left-0 right-0 bg-white rounded-md shadow-lg py-1 z-30 ${isProfileOpen ? 'block' : 'hidden'}`}
+                  className={`absolute top-full left-0 right-0  rounded-md shadow-lg py-1 z-30 ${isProfileOpen ? 'block' : 'hidden'}`}
                   onMouseEnter={() => setIsProfileOpen(true)}
                   onMouseLeave={() => setIsProfileOpen(false)}
                 >
                   <Link
                     to="/profile"
-                    className="block px-4 py-2 text-gray-800 hover:text-white cursor-pointer"
+                    className="block px-4 py-2 text-gray-800   cursor-pointer"
                   >
                     My Profile
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-gray-800  hover:text-white cursor-pointer"
+                    className="w-full text-left px-4 py-2 text-gray-800   cursor-pointer"
                   >
                     Logout
                   </button>

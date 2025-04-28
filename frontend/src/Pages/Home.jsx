@@ -12,7 +12,9 @@ import AdminBookings from './AdminBookings'
 import Listings from './Listings'
 import Signup from './signup'
 import Login from './Login'
+// import owner from './owner'
 import Profile from '../Components/Profile'
+// import Owner from './Owner'
 
 const Home = () => {
   return (
@@ -21,7 +23,7 @@ const Home = () => {
       <Navbar/>
       <Slider/>  
       <Homestay/> 
-     
+      {/* <Owner/> */}
       {/* <About/> */}
       {/* <Contact/> */}
       {/* <Signup/>  */}

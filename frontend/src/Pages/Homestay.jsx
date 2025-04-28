@@ -204,7 +204,7 @@ const Homestay = () => {
   return (
     <div className="p-4 flex flex-col items-center min-h-screen" style={{ backgroundColor: '#f3eadb' }}>
       <motion.h1
-        className="text-4xl font-bold text-center mb-8p-4 rounded-2xl  transition-colors text-gray-800" style={{ backgroundColor: '#f3eadb' }}
+        className="text-4xl font-bold text-center mb-8 p-4 rounded-2xl transition-colors text-gray-800" style={{ backgroundColor: '#f3eadb' }}
         variants={headingVariants}
         initial="hidden"
         animate="visible"
