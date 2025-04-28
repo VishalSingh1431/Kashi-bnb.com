@@ -54,7 +54,7 @@ const Tourist = () => {
   };
 
   return (
-    <div className='min-h-screen pt-52 px-4 sm:px-6 lg:px-8' style={{ backgroundColor: '#f3eadb' }}>
+    <div className='min-h-screen pt-40 px-4 sm:px-6 lg:px-8' style={{ backgroundColor: '#f3eadb' }}>
       {/* Hero Section */}
       {/* <div className='mb-8 p-6 text-center border border-black rounded-lg' style={{ backgroundColor: '#f3eadb' }}>
         <h1 className='text-3xl font-bold mb-4 text-black'>Book Direct, Pay Less!</h1>

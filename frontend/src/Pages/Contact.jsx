@@ -76,7 +76,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 pb-20 text-black" style={{ backgroundColor: '#f3eadb' }}>
+    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 pb-20 text-black" style={{ backgroundColor: '#f3eadb' }}>
       {/* Hero Image */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}

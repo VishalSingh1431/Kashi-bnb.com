@@ -83,15 +83,15 @@ const Signup = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center items-center bg-gray-100">
-        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg text-center">
+      <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 flex justify-center items-center  ">
+        <div className="w-full max-w-md p-8 space-y-6 shadow-lg rounded-lg text-center">
           <div className="flex justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
           
-          <h2 className="text-2xl font-bold text-green-600">Registration Successful!</h2>
+          <h2 className="text-2xl font-bold ">Registration Successful!</h2>
           
           <p className="text-gray-700">
             We've sent a verification email to <span className="font-semibold">{formData.email}</span>.
@@ -124,12 +124,12 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
+    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center items-center ">
+      <div className="w-full max-w-md p-8 space-y-6   shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center">Create Your Account</h2>
         
         {error && (
-          <div className="p-3 bg-red-100 text-red-700 rounded text-center">
+          <div className="p-3  rounded text-center">
             {error}
           </div>
         )}
@@ -142,7 +142,7 @@ const Signup = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2  "
               required
             />
           </div>
@@ -154,7 +154,7 @@ const Signup = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 "
               required
             />
           </div>
@@ -166,7 +166,7 @@ const Signup = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 "
               required
               minLength="6"
             />
@@ -175,7 +175,7 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+            className={`w-full  transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
           >
             {loading ? "Creating your account..." : "Sign Up"}
           </button>

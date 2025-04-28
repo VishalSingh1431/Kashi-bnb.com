@@ -185,7 +185,7 @@ const Listings = () => {
   };
 
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 " style={{ backgroundColor: '#f3eadb' }}>
+    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 " style={{ backgroundColor: '#f3eadb' }}>
       <div className="flex justify-between mb-8">
         <h1 className="text-2xl font-bold">Create New Listing</h1>
         <div className="flex gap-2">

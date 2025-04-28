@@ -14,7 +14,7 @@ import { IoMdPhotos } from 'react-icons/io';
 
 const Activities = () => {
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto  py-8 font-sans  ">
+    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto  py-8 font-sans  ">
       {/* Header */}
       <header className="text-center mb-10">
         <h1 className="text-4xl font-bold text-blue-800 mb-2">Kashi Tour Services</h1>

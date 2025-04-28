@@ -63,12 +63,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
+    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+      <div className="w-full max-w-md p-8 space-y-6 shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center">Login to KashiBnB</h2>
         
         {error && (
-          <div className="p-3 bg-red-100 text-red-700 rounded text-center">
+          <div className="p-3 text-black rounded text-center">
             {error}
           </div>
         )}
@@ -81,7 +81,7 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 "
               required
             />
           </div>
@@ -93,7 +93,7 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2  "
               required
             />
           </div>
@@ -101,7 +101,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+            className={`w-full py-2 rounded   transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
