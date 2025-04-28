@@ -52,7 +52,7 @@ const Slider = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                     {/* Owners Section */}
-                    <div className="flex-1  backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1" style={{ backgroundColor: '#f3eadb' }}>
+                    <div className="border-6 border-black flex-1  backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1" style={{ backgroundColor: '#f3eadb' }}>
                         <div className="flex flex-col h-full">
                             <div className="flex items-center justify-center mb-4">
                                 <div className="bg-purple-100 p-3 rounded-full">
@@ -83,7 +83,7 @@ const Slider = () => {
                                 </li>
                             </ul>
 
-                            <button className="bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                            <button className="border-2 bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
                                 List Your Property FREE Today!
                             </button>
                         </div>
@@ -91,9 +91,9 @@ const Slider = () => {
 
 
                     {/* Travelers Section */}
-                    <div className="flex-1 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1" style={{ backgroundColor: '#f3eadb' }}>
-                        <div className="flex flex-col h-full">
-                            <div className="flex items-center justify-center mb-4">
+                    <div className=" border-6 border-black flex-1 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1" style={{ backgroundColor: '#f3eadb' }}>
+                        <div className="flex flex-col h-full ">
+                            <div className=" flex items-center justify-center mb-4">
                                 <div className="bg-green-100 p-3 rounded-full">
                                     <span className="text-xl">🛕</span>
                                 </div>
@@ -108,7 +108,7 @@ const Slider = () => {
                                 <div><em>"Experience the spiritual heart of India for less"</em></div>
                             </p>
 
-                            <ul className="space-y-1 mb-4">
+                            <ul className=" space-y-1 mb-4">
                                 <li className="flex items-start  p-3 rounded-lg">
                                     <span className="text-lg font-medium text-gray-800"><b>💰 Save 15-30%</b> on premium stays</span>
                                 </li>
@@ -120,7 +120,7 @@ const Slider = () => {
                                 </li>
                             </ul>
 
-                            <button className="bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                            <button className="border-2 border-black bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
                                 Book Authentic Kashi Stays!
                             </button>
                         </div>
