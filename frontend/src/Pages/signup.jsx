@@ -35,7 +35,7 @@ const Signup = () => {
         formData
       );
 
-      if (response.status === 201) {
+      if (response.success === 201) {
         try {
           await axios.post(
             `${BACKEND}app/api/v1/user/send-verification`,
