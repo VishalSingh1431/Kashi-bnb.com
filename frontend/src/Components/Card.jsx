@@ -52,7 +52,7 @@ const Card = ({ name, price, image, rating, options, address, gmap, onClick }) =
           </div>
         </div>
         <motion.button
-          className="mt-4 w-full border  text-black py-2 rounded-3xl"
+          className="mt-4 w-full border  text-black py-2 rounded-3xl hover:bg-black hover:text-white"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
