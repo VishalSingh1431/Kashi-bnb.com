@@ -152,7 +152,7 @@ const Footer = () => {
                 <span>Address: Bhelupur, Varanasi Uttar Pradesh, 221010</span>
               </motion.li>
               <motion.li className="flex items-center gap-3" whileHover={{ scale: 1.02 }}>
-                <Phone className="h-5 w-5animate-pulse" />
+                <Phone className="h-5 w-5 animate-pulse" />
                 <span>+91 8011708595,</span>
                 <span>+91 7054347998</span>
               </motion.li>
@@ -177,7 +177,7 @@ const Footer = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
-                  className="w-full p-3 rounded-l-lg text-black focus:outline-none focus:ring-2 transition-all duration-300"
+                  className="w-full p-3 border rounded-l-lg text-black focus:outline-none focus:ring-2 transition-all duration-300"
                   required
                 />
                 <motion.button

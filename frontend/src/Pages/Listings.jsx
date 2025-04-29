@@ -191,14 +191,14 @@ const Listings = () => {
         <div className="flex gap-2">
           <button
             onClick={() => nav('/')}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg border transition hover:bg-black hover:text-white"
           >
             <FiX /> Cancel
           </button>
           <button
             onClick={handleSubmitListing}
             disabled={isSubmitting}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:bg-indigo-400"
+            className="flex items-center gap-2 px-4 py-2 border  rounded-lg  transition hover:bg-black hover:text-white"
           >
             <FiSave /> {isSubmitting ? 'Saving...' : 'Save Listing'}
           </button>
@@ -529,7 +529,7 @@ const Listings = () => {
                     startDate={startDate}
                     endDate={endDate}
                     placeholderText="Add date"
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2"
                     popperPlacement="auto"
                   />
                 </div>
@@ -544,7 +544,7 @@ const Listings = () => {
                     endDate={endDate}
                     minDate={startDate}
                     placeholderText="Add date"
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2  "
                     popperPlacement="auto"
                   />
                 </div>
@@ -555,7 +555,7 @@ const Listings = () => {
                   id="guests"
                   value={guestCount}
                   onChange={(e) => setGuestCount(Number(e.target.value))}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 "
                 >
                   {Array.from({ length: listing.maxInRoom || 2 }, (_, i) => i + 1).map((num) => (
                     <option key={num} value={num}>

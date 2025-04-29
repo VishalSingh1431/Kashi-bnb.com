@@ -81,7 +81,7 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 "
+              className="w-full p-2 border rounded-2xl focus:outline-none focus:ring-2 "
               required
             />
           </div>
@@ -93,7 +93,7 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2  "
+              className="w-full p-2 border rounded-2xl focus:outline-none focus:ring-2  "
               required
             />
           </div>
@@ -101,7 +101,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 rounded   transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+            className={`w-full py-2 rounded-2xl border  transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>

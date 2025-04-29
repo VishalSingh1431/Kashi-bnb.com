@@ -309,42 +309,42 @@ const Contact = () => {
           {/* Phone Numbers */}
           <motion.div
             variants={itemVariants}
-            className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="  border p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
             whileHover={{ scale: 1.03 }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <FaPhoneAlt className="text-teal-500 text-2xl animate-pulse" />
+              <FaPhoneAlt className="text-black text-2xl animate-pulse" />
               <h3 className="text-lg font-semibold text-gray-800">Phone</h3>
             </div>
-            <p className="text-gray-600">+91 70543 47998</p>
-            <p className="text-gray-600">+91 99360 56789</p>
-            <p className="text-gray-500 text-sm mt-2">9 AM – 6 PM IST, Mon-Sat</p>
+            <p className="text-black">+91 70543 47998</p>
+            <p className="text-black">+91 99360 56789</p>
+            <p className="text-black text-sm mt-2">9 AM – 6 PM IST, Mon-Sat</p>
           </motion.div>
 
           {/* Email */}
           <motion.div
             variants={itemVariants}
-            className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="border p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
             whileHover={{ scale: 1.03 }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <FaEnvelope className="text-teal-500 text-2xl animate-pulse" />
-              <h3 className="text-lg font-semibold text-gray-800">Email</h3>
+              <FaEnvelope className="text-black text-2xl animate-pulse" />
+              <h3 className="text-lg font-semibold text-black">Email</h3>
             </div>
-            <p className="text-gray-600">kashibnb@gmail.com</p>
+            <p className="text-black">kashibnb@gmail.com</p>
           </motion.div>
 
           {/* Office Address */}
           <motion.div
             variants={itemVariants}
-            className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="border p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
             whileHover={{ scale: 1.03 }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <FaMapMarkerAlt className="text-teal-500 text-2xl animate-pulse" />
-              <h3 className="text-lg font-semibold text-gray-800">Address</h3>
+              <FaMapMarkerAlt className="text-black text-2xl animate-pulse" />
+              <h3 className="text-lg font-semibold text-black">Address</h3>
             </div>
-            <p className="text-gray-600 text-sm">
+            <p className="text-black text-sm">
               N 16/68 K-2, R-1 Sudamapur, Vinayaka, Kamchachha, Varanasi, Uttar Pradesh, 221010, India
             </p>
           </motion.div>
@@ -352,37 +352,37 @@ const Contact = () => {
           {/* Social Media Links */}
           <motion.div
             variants={itemVariants}
-            className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className= " border p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
             whileHover={{ scale: 1.03 }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Social Media</h3>
+              <h3 className="text-lg font-semibold text-black">Social Media</h3>
             </div>
             <div className="flex gap-4">
               <motion.a
                 href="#"
-                className="text-teal-500 hover:text-teal-600 transition-colors"
+                className="text-black hover:text-black transition-colors"
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
                 <FaFacebook className="text-2xl" />
               </motion.a>
               <motion.a
                 href="#"
-                className="text-teal-500 hover:text-teal-600 transition-colors"
+                className="text-black hover:text-black transition-colors"
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
                 <FaInstagram className="text-2xl" />
               </motion.a>
               <motion.a
                 href="#"
-                className="text-teal-500 hover:text-teal-600 transition-colors"
+                className="text-black   transition-colors"
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
                 <FaTwitter className="text-2xl" />
               </motion.a>
               <motion.a
                 href="#"
-                className="text-teal-500 hover:text-teal-600 transition-colors"
+                className="text-black 0  transition-colors"
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
                 <FaLinkedin className="text-2xl" />

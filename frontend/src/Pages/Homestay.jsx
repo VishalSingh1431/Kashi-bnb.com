@@ -215,14 +215,14 @@ const Homestay = () => {
       {/* Search Bar */}
       <div className="w-full max-w-4xl mb-8 rounded-lg" style={{ backgroundColor: '#f3eadb' }}>
         <form onSubmit={handleSearch} className="relative">
-          <div className="flex items-center border rounded-full p-3 shadow-sm" style={{ backgroundColor: '#f3eadb' }}>
-            <div className="flex-1 px-4 flex items-center ">
+          <div className="flex items-center border rounded-full p-3 shadow-sm " style={{ backgroundColor: '#f3eadb' }}>
+            <div className="flex-1 px-4 flex items-center  ">
               <FiSearch className="mr-3" />
               <input 
                 
                 type="text"
                 placeholder="Search by hotel name, amenities, or keywords..."
-                className="w-full  text-black font-bold"
+                className="w-full  text-black font-bold "
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -239,9 +239,9 @@ const Homestay = () => {
       </div>
 
       {/* Filters and Sorting */}
-      <div className="w-full max-w-6xl mb-8" style={{ backgroundColor: '#f3eadb' }}>
-        <div className="flex justify-between items-center">
-          <div className="flex space-x-4">
+      <div className="w-full max-w-6xl mb-8 " style={{ backgroundColor: '#f3eadb' }}>
+        <div className="flex justify-between items-center ">
+          <div className="flex space-x-4 hover">
             <button 
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center space-x-2 border rounded-full px-4 py-2 hover:shadow-md \" style={{ backgroundColor: '#f3eadb' }}
@@ -271,19 +271,19 @@ const Homestay = () => {
         
         {/* Expanded Filters */}
         {showFilters && (
-          <div className="mt-4 p-6 border border-gray-100 rounded-lg shadow-sm bg-white">
+          <div className="mt-4 p-6 borderrounded-lg shadow-sm border rounded">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-gray-700">Filters</h3>
+              <h3 className="font-semibold text-black">Filters</h3>
               <button 
                 onClick={() => setShowFilters(false)}
-                className="text-sm text-blue-500 hover:text-blue-700"
+                className="text-sm text-black hover:text-black"
               >
                 Close
               </button>
             </div>
             
             <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-3">Price Range (₹)</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-3 ">Price Range (₹)</h4>
               <div className="flex items-center space-x-4">
                 <input
                   type="range"
@@ -292,7 +292,7 @@ const Homestay = () => {
                   step="100"
                   value={priceRange[1]}
                   onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer border"
                 />
                 <div className="text-sm text-gray-600 whitespace-nowrap">
                   ₹{priceRange[0]} - ₹{priceRange[1]}
@@ -311,14 +311,14 @@ const Homestay = () => {
       )}
 
       {/* Results */}
-      <div className="w-full max-w-6xl">
+      <div className="w-full max-w-6xl ">
         {loading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="flex justify-center items-center py-12 ">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black-500 "></div>
           </div>
         ) : filteredHotels.length === 0 ? (
-          <div className="text-center py-12">
-            <h3 className="text-xl font-semibold text-gray-700">No properties found</h3>
+          <div className="text-center py-12 ">
+            <h3 className="text-xl font-semibold text-gray-700 ">No properties found</h3>
             <p className="text-gray-500">Try adjusting your search or filters</p>
           </div>
         ) : (

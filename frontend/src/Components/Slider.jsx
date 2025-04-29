@@ -83,7 +83,7 @@ const Slider = () => {
                                 </li>
                             </ul>
 
-                            <button className="border-2 bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                            <button className="border-2 bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:bg-black hover:text-white">
                                 List Your Property FREE Today!
                             </button>
                         </div>
@@ -120,7 +120,7 @@ const Slider = () => {
                                 </li>
                             </ul>
 
-                            <button className="border-2 border-black bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+                            <button className="border-2 border-black bg-gradient-to-r  font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:bg-black hover:text-white ">
                                 Book Authentic Kashi Stays!
                             </button>
                         </div>
