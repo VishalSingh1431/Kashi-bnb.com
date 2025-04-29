@@ -103,7 +103,7 @@ export const verification = async (req,res,nex)=>{
 
 export const signupControl = async (req,res,nex)=>{
     try{
-        const user = await prisma.users.findUnique({
+        let user = await prisma.users.findUnique({
             where:{
                 email : req.body.email
             }
