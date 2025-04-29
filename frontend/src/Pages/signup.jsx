@@ -13,7 +13,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
-  
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -28,28 +28,24 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess(false);
 
     try {
       const response = await axios.post(
-        `${BACKEND}app/api/v1/user/signup`, 
+        `${BACKEND}/api/v1/user/signup`,
         formData
       );
 
-      if (response.status === 201) {
-        try {
-          await axios.post(
-            `${BACKEND}app/api/v1/user/send-verification`,
-            { email: formData.email }
-          );
-          setVerificationSent(true);
-        } catch (verificationError) {
-          console.error("Verification email failed:", verificationError);
-        }
+      if (response.data?.message === "verify user to finish") {
+        setVerificationSent(true);
+        setSuccess(true);
+      } else {
         setSuccess(true);
       }
     } catch (err) {
+      console.log(err);
       let errorMessage = "Signup failed. Please try again.";
-      
+
       if (err.response) {
         if (err.response.status === 400) {
           errorMessage = "Validation error. Please check your inputs.";
@@ -61,7 +57,7 @@ const Signup = () => {
       } else if (err.request) {
         errorMessage = "No response from server. Check your connection.";
       }
-      
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -71,36 +67,34 @@ const Signup = () => {
   const handleResendVerification = async () => {
     try {
       await axios.post(
-        `${BACKEND}app/api/v1/user/send-verification`,
+        `${BACKEND}/api/v1/user/send-verification`,
         { email: formData.email }
       );
-      // alert("Verification email has been resent successfully!");
+      alert("Verification email has been resent successfully!");
     } catch (error) {
-      // alert("Failed to resend verification. Please try again later.");
-      setSuccess(false); // Return to signup form with prefilled data
+      alert("Failed to resend verification. Please try again later.");
     }
   };
 
   if (success) {
     return (
-      <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 flex justify-center items-center  ">
+      <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
         <div className="w-full max-w-md p-8 space-y-6 shadow-lg rounded-lg text-center">
           <div className="flex justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          
-          <h2 className="text-2xl font-bold ">Registration Successful!</h2>
-          
+
+          <h2 className="text-2xl font-bold">Almost there!</h2>
           <p className="text-gray-700">
             We've sent a verification email to <span className="font-semibold">{formData.email}</span>.
           </p>
-          
+
           <p className="text-gray-600 text-sm">
             Please check your inbox and click the verification link to activate your account.
             <br />
-            <span className="text-gray-500">If you don't see the email, please check your spam folder.</span>
+            <span className="text-gray-500">If you don't see the email, check your spam folder.</span>
           </p>
 
           <div className="pt-4 space-y-3">
@@ -110,7 +104,7 @@ const Signup = () => {
             >
               Go to Login
             </button>
-            
+
             <button
               onClick={handleResendVerification}
               className="w-full text-blue-500 hover:underline font-medium py-2"
@@ -124,12 +118,12 @@ const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center items-center ">
-      <div className="w-full max-w-md p-8 space-y-6   shadow-lg rounded-lg">
+    <div className="min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+      <div className="w-full max-w-md p-8 space-y-6 shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center">Create Your Account</h2>
-        
+
         {error && (
-          <div className="p-3  rounded text-center">
+          <div className="p-3 text-red-600 rounded text-center bg-red-50 border border-red-200">
             {error}
           </div>
         )}
@@ -142,7 +136,7 @@ const Signup = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2  "
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2"
               required
             />
           </div>
@@ -154,7 +148,7 @@ const Signup = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 "
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2"
               required
             />
           </div>
@@ -166,7 +160,7 @@ const Signup = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 "
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2"
               required
               minLength="6"
             />
@@ -175,7 +169,7 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full  transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+            className={`w-full bg-blue-600 text-white py-2 rounded transition hover:bg-blue-700 ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
           >
             {loading ? "Creating your account..." : "Sign Up"}
           </button>
