@@ -148,6 +148,7 @@ export const signupControl = async (req,res,nex)=>{
         })
     }
     catch(e){
+        console.log(e);
         return res.status(411).json({
             success : false ,
             message:"unable to signup",
