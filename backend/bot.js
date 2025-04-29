@@ -16,14 +16,14 @@
 // }
 
 import { prisma } from './utils/client.js'
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 
 
-const me = await prisma.users.findUnique({
-    where: {
-        email : "subrat.singh.cer21@itbhu.ac.in"
-    }
-})
+// const me = await prisma.users.findUnique({
+//     where: {
+//         email : "subrat.singh.cer21@itbhu.ac.in"
+//     }
+// })
 
 // const hotel = await prisma.hotels.create({
 //     data:{
@@ -42,31 +42,30 @@ const me = await prisma.users.findUnique({
 //     }
 // });
 
-// let hotel = await prisma.hotels.update({
-//     where : {
-//         id : "35bf912c-956e-48bb-90a6-7ad745bc6282",
-//     },
-//     data : {
-//             rate : 100,
-//             s1 : 'wifi',
-//             s2 : 'wifi',
-//             s3 : 'wifi',
-//             s4 : 'wifi',
-//     }
-// });
-// let newp = await bcrypt.hash(me.password,10);
 let hotel = await prisma.users.update({
     where : {
-        email : me.email,
+        email : "subrat.singh.cer21@itbhu.ac.in",
     },
     data : {
-        has_hotel : true,
+            is_admin : true ,
+            has_hotel : true 
     }
-    // select : "owner"
 });
 
-// // console.log(me);
 console.log(hotel);
+// let newp = await bcrypt.hash(me.password,10);
+// let hotel = await prisma.users.update({
+//     where : {
+//         email : me.email,
+//     },
+//     data : {
+//         has_hotel : true,
+//     }
+//     // select : "owner"
+// });
+
+// // console.log(me);
+// console.log(hotel);
 // // console.log(img);
 
 
