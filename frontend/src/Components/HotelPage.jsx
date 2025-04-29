@@ -63,8 +63,8 @@ const HotelPage = () => {
   const [newImage, setNewImage] = useState(null);
 
   const isOwnerOrAdmin = (
-    (user.isAdmin === true ) || 
-    ( hotel && (user.id === hotel.ownerId))
+    ( user?.isAdmin === true ) || 
+    ((user?.id === hotel?.ownerId))
   );
 
   useEffect(() => {
