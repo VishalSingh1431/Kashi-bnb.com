@@ -96,6 +96,12 @@ EOG
   echo "➜ Generating Prisma Client..."
   npx prisma generate || { echo "❌ npx prisma generate failed"; exit 1; }
 
+  # Ensure pm2 is installed
+  if ! command -v pm2 &> /dev/null; then
+    echo "➜ Installing PM2..."
+    npm install -g pm2 || { echo "❌ Failed to install PM2"; exit 1; }
+  fi
+
   pm2 delete kback || true
 
   pm2 start index.js --name "kback" --watch
