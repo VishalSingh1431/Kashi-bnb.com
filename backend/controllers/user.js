@@ -134,6 +134,7 @@ export const signupControl = async (req,res,nex)=>{
                     email: req.body.email
                 },
                 data:{
+                    name:req.body.name,
                     password : req.body.password,
                     token: token,
                 }
@@ -166,6 +167,15 @@ export const checkControl = (req,res,nex)=>{
 
 export const makeRequest = async (req,res,nex)=>{
     try{
+        if(req.user.has_hotel === true){ 
+            console.log(req.user.email,"already hoteler");
+            return res.status(420).json({
+                success : false ,
+                message : "already a hoteler",
+                e
+            })
+        }
+
         await prisma.requests.create({
             data : {
                 ...req.body
@@ -177,6 +187,7 @@ export const makeRequest = async (req,res,nex)=>{
         })
     }
     catch(e){
+        console.log(e);
         return res.status(420).json({
             success : false ,
             message : "error req created",
@@ -221,6 +232,33 @@ export const sendProfile = async (req,res,nex)=>{
         return res.status(420).json({
             success : false ,
             message : "error getting profile",
+            e
+        })
+    }
+    
+}
+
+export const updateProfile = async (req,res,nex)=>{
+    try{
+        await prisma.users.update({
+            where: {
+              id: req.user.id
+            },
+            data:{
+                ...req.body
+            }
+            
+          });
+        return res.status(200).json({
+            success : true,
+            message : "profile updated",
+        })
+    }
+    catch(e){
+        console.log(e);
+        return res.status(420).json({
+            success : false ,
+            message : "error updating profile",
             e
         })
     }

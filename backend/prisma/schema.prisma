@@ -20,6 +20,7 @@ model users {
   password    String
   phone       String?   
   token       String?
+  address     String?
   time        DateTime  @updatedAt
   has_hotel   Boolean   @default(false)
   has_restr   Boolean   @default(false)
