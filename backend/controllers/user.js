@@ -56,7 +56,7 @@ export const verification = async (req,res,nex)=>{
             });
         }
         
-        console.log("token ver : ",token);
+        // console.log("token ver : ",token);
 
         const user = await prisma.users.findUnique({
             where : {
@@ -64,7 +64,7 @@ export const verification = async (req,res,nex)=>{
             }
         });
         
-        console.log(user);
+        // console.log(user);
 
         if(user.token === token){
             const user = await prisma.users.update({
@@ -117,9 +117,9 @@ export const signupControl = async (req,res,nex)=>{
         }
 
         const token = cryptoRandomString({length:15});
-        console.log("token is : ",token);
+        // console.log("token is : ",token);
         req.body.password= await bcrypt.hash(req.body.password,10);
-        console.log("salt",req.body.password);
+        // console.log("salt",req.body.password);
         if(!user){
             user = await prisma.users.create({
                 data: {
