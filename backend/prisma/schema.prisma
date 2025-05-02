@@ -32,6 +32,7 @@ model users {
   restr_name  restr[]
   blogs_name  blogs[]
   bookings    bookings[]
+  requests    requests[]
 }
 
 model hotels {
@@ -100,11 +101,20 @@ model rimages {
   restrId String
 }
 
+enum UserType {
+  admin
+  hotelowner
+  restaurantowner
+}
+
 model requests {
   id        String @id @default(uuid())
+  user      users      @relation(fields: [userId], references: [id])
+  userId    String
   email     String
   message   String
   phone     String
+  type      UserType
 }
 
 model bookings {
