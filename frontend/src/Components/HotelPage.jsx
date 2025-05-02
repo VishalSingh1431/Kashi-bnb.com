@@ -151,7 +151,7 @@ const HotelPage = () => {
             return;
           }
 
-          console.log(changedHotel);
+          // console.log(changedHotel);
 
         const response = await axios.post(
             `${BACKEND}/api/v1/hotel/hotel/${id}/update-hotel`, 
