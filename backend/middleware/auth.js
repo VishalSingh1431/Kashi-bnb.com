@@ -40,7 +40,7 @@ const isAdmin = async (req,res,nex)=>{
     try
     {    
         const user= req.user;
-        console.log(user);
+        // console.log(user);
         if(user.is_admin==true){
             nex();
         }
