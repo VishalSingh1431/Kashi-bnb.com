@@ -14,13 +14,23 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState({
+  
+  // Separate state for user profile updates
+  const [profileFormData, setProfileFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    address: '',
+    address: ''
+  });
+  
+  // Separate state for listing access requests
+  const [listingRequestData, setListingRequestData] = useState({
+    name: '',
+    email: '',
+    phone: '',
     message: ''
   });
+
   const [activeTab, setActiveTab] = useState('personal');
   const [requestSent, setRequestSent] = useState(false);
   const [accessRequests, setAccessRequests] = useState([]);
@@ -42,11 +52,16 @@ const Profile = () => {
           }
         });
         setUserData(response.data.allData);
-        setFormData({
+        setProfileFormData({
           name: response.data.allData.name || '',
           email: response.data.allData.email || '',
           phone: response.data.allData.phone || '',
-          address: response.data.allData.address || '',
+          address: response.data.allData.address || ''
+        });
+        setListingRequestData({
+          name: response.data.allData.name || '',
+          email: response.data.allData.email || '',
+          phone: response.data.allData.phone || '',
           message: ''
         });
       } catch (err) {
@@ -81,24 +96,32 @@ const Profile = () => {
     }
   }, [activeTab, userData?.is_admin]);
 
-  const handleInputChange = (e) => {
+  const handleProfileInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setProfileFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  const handleSave = async () => {
+  const handleListingRequestInputChange = (e) => {
+    const { name, value } = e.target;
+    setListingRequestData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSaveProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.put(`${BACKEND}/api/v1/user/profile`, formData, {
+      const response = await axios.put(`${BACKEND}/api/v1/user/profile`, profileFormData, {
         headers: {
           'Authorization': token
         }
       });
       
-      setUserData({...userData, ...formData});
+      setUserData({...userData, ...profileFormData});
       setEditMode(false);
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -117,14 +140,7 @@ const Profile = () => {
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
       
-      const requestData = {
-        userId: user.id,
-        email: userData.email,
-        phone: userData.phone,
-        message: formData.message
-      };
-
-      await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, requestData, {
+      await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, listingRequestData, {
         headers: {
           'Authorization': token,
           'Content-Type': 'application/json'
@@ -145,9 +161,8 @@ const Profile = () => {
       const endpoint = type === 'admin' 
         ? `${BACKEND}/api/v1/user/admin/makeAdmin` 
         : `${BACKEND}/api/v1/user/admin/makeHoteler`;
-        console.log(email);
-      const data=await axios.post(
-
+        
+      await axios.post(
         endpoint,
         { email },
         { headers: { 'Authorization': token } }
@@ -275,7 +290,7 @@ const Profile = () => {
               {editMode ? (
                 <>
                   <button 
-                    onClick={handleSave}
+                    onClick={handleSaveProfile}
                     className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                   >
                     <FiSave className="mr-2" /> Save
@@ -333,8 +348,8 @@ const Profile = () => {
                       <input
                         type="text"
                         name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
+                        value={profileFormData.name}
+                        onChange={handleProfileInputChange}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     ) : (
@@ -363,8 +378,8 @@ const Profile = () => {
                       <input
                         type="tel"
                         name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
+                        value={profileFormData.phone}
+                        onChange={handleProfileInputChange}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     ) : (
@@ -382,8 +397,8 @@ const Profile = () => {
                     {editMode ? (
                       <textarea
                         name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
+                        value={profileFormData.address}
+                        onChange={handleProfileInputChange}
                         rows={3}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                       />
@@ -589,7 +604,7 @@ const Profile = () => {
                 <p className="text-gray-600">You can now add and manage your hotel listings.</p>
               </div>
               <button 
-                onClick={() => navigate('/add-hotel')}
+                onClick={() => navigate('/add-listing')}
                 className="flex items-center justify-center mx-auto px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
               >
                 <FiPlus className="mr-2" /> Add New Hotel
@@ -617,8 +632,9 @@ const Profile = () => {
                     className="w-full border border-gray-300 rounded-md p-3 focus:ring-indigo-500 focus:border-indigo-500"
                     rows={4}
                     placeholder="Please describe your property (type, location, amenities, etc.)"
-                    value={formData.message || ''}
-                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                    name="message"
+                    value={listingRequestData.message}
+                    onChange={handleListingRequestInputChange}
                   />
                 </div>
                 
@@ -644,9 +660,9 @@ const Profile = () => {
               <div className="text-center">
                 <button 
                   onClick={handleRequestListingAccess}
-                  disabled={!formData.message}
+                  disabled={!listingRequestData.message}
                   className={`px-6 py-3 text-white rounded-lg font-medium ${
-                    formData.message 
+                    listingRequestData.message 
                       ? 'bg-indigo-600 hover:bg-indigo-700' 
                       : 'bg-gray-400 cursor-not-allowed'
                   }`}
