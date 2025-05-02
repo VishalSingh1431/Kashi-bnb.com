@@ -20,6 +20,7 @@ model users {
   password    String
   phone       String?   
   token       String?
+  address     String?
   time        DateTime  @updatedAt
   has_hotel   Boolean   @default(false)
   has_restr   Boolean   @default(false)
@@ -31,6 +32,7 @@ model users {
   restr_name  restr[]
   blogs_name  blogs[]
   bookings    bookings[]
+  requests    requests[]
 }
 
 model hotels {
@@ -99,11 +101,21 @@ model rimages {
   restrId String
 }
 
+enum UserType {
+  admin
+  hotelowner
+  restaurantowner
+}
+
 model requests {
   id        String @id @default(uuid())
   email     String
   message   String
   phone     String
+  type      UserType
+  
+  user      users      @relation(fields: [userId], references: [id])
+  userId    String
 }
 
 model bookings {
