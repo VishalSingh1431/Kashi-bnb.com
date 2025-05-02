@@ -178,9 +178,12 @@ export const makeRequest = async (req,res,nex)=>{
 
         await prisma.requests.create({
             data : {
-                ...req.body
+                ...req.body,
+                type : "hotelowner",
+                userId : req.user.id
             }
         })
+        
         return res.status(200).json({
             success : true,
             message : "request created"
@@ -190,7 +193,7 @@ export const makeRequest = async (req,res,nex)=>{
         console.log(e);
         return res.status(420).json({
             success : false ,
-            message : "error req created",
+            message : "error creating req",
             e
         })
     }
@@ -229,6 +232,7 @@ export const sendProfile = async (req,res,nex)=>{
         })
     }
     catch(e){
+        console.log(e);
         return res.status(420).json({
             success : false ,
             message : "error getting profile",
