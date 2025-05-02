@@ -221,8 +221,8 @@ export const uploadHotImage = async (req,res,nex) => {
             }))
           });
 
-          console.log("urls" , imageUrlsNames);
-          console.log("db" , insertedImages);
+        //   console.log("urls" , imageUrlsNames);
+        //   console.log("db" , insertedImages);
         return res.status(200).json({
             success : true,
             message: "Images uploaded successfully!", 
