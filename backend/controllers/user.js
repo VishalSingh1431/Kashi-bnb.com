@@ -165,39 +165,52 @@ export const checkControl = (req,res,nex)=>{
     });
 }
 
-export const makeRequest = async (req,res,nex)=>{
-    try{
-        if(req.user.has_hotel === true){ 
-            console.log(req.user.email,"already hoteler");
+export const makeRequest = async (req, res, next) => {
+    try {
+        if (req.user.has_hotel === true) {
+            console.log(req.user.email, "already hoteler");
             return res.status(420).json({
-                success : false ,
-                message : "already a hoteler",
-                e
-            })
+                success: false,
+                message: "already a hoteler"
+            });
+        }
+
+        const existingRequest = await prisma.requests.findFirst({
+            where: {
+                userId: req.user.id,
+                type: "hotelowner"
+            }
+        });
+
+        if (existingRequest) {
+            console.log(req.user.email, "already requested");
+            return res.status(420).json({
+                success: false,
+                message: "request already exists"
+            });
         }
 
         await prisma.requests.create({
-            data : {
+            data: {
                 ...req.body,
-                type : "hotelowner",
-                userId : req.user.id
+                type: "hotelowner",
+                userId: req.user.id
             }
-        })
-        
+        });
+
         return res.status(200).json({
-            success : true,
-            message : "request created"
-        })
-    }
-    catch(e){
+            success: true,
+            message: "request created"
+        });
+    } catch (e) {
         console.log(e);
-        return res.status(420).json({
-            success : false ,
-            message : "error creating req",
-            e
-        })
+        return res.status(500).json({
+            success: false,
+            message: "error creating request",
+            error: e.message
+        });
     }
-}
+};
 
 export const sendProfile = async (req,res,nex)=>{
     try{
