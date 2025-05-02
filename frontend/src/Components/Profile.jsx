@@ -4,7 +4,7 @@ import { BACKEND } from '../assets/Vars';
 import { 
   FiEdit, FiSave, FiLogOut, FiUser, FiMail, FiPhone, 
   FiMapPin, FiClock, FiHome, FiCalendar, FiPlus, FiStar,
-  FiChevronRight
+  FiChevronRight, FiTrash2
 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,10 +18,13 @@ const Profile = () => {
     name: '',
     email: '',
     phone: '',
-    address: ''
+    address: '',
+    message: ''
   });
   const [activeTab, setActiveTab] = useState('personal');
   const [requestSent, setRequestSent] = useState(false);
+  const [accessRequests, setAccessRequests] = useState([]);
+  const [requestsLoading, setRequestsLoading] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -43,7 +46,8 @@ const Profile = () => {
           name: response.data.allData.name || '',
           email: response.data.allData.email || '',
           phone: response.data.allData.phone || '',
-          address: response.data.allData.address || ''
+          address: response.data.allData.address || '',
+          message: ''
         });
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch user data');
@@ -55,6 +59,27 @@ const Profile = () => {
 
     fetchUserData();
   }, [navigate, user.id]);
+
+  const fetchAccessRequests = async () => {
+    try {
+      setRequestsLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${BACKEND}/api/v1/user/admin/request`, {
+        headers: { 'Authorization': token }
+      });
+      setAccessRequests(response.data.request || []);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to fetch access requests');
+    } finally {
+      setRequestsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'accessRequests' && userData?.is_admin) {
+      fetchAccessRequests();
+    }
+  }, [activeTab, userData?.is_admin]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -90,15 +115,65 @@ const Profile = () => {
   const handleRequestListingAccess = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`${BACKEND}/api/v1/user/update_request`, {}, {
+      const user = JSON.parse(localStorage.getItem("user"));
+      
+      const requestData = {
+        userId: user.id,
+        email: userData.email,
+        phone: userData.phone,
+        message: formData.message
+      };
+
+      await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, requestData, {
         headers: {
-          'Authorization': token
+          'Authorization': token,
+          'Content-Type': 'application/json'
         }
       });
+      
       setRequestSent(true);
+      setError(null);
     } catch (err) {
       console.error('Error requesting listing access:', err);
-      setError(err.response?.data?.message || 'Failed to send request');
+      setError(err.response?.data?.message || 'Failed to send request. Please try again.');
+    }
+  };
+
+  const handlePromoteUser = async (email, type) => {
+    try {
+      const token = localStorage.getItem("token");
+      const endpoint = type === 'admin' 
+        ? `${BACKEND}/api/v1/user/admin/makeAdmin` 
+        : `${BACKEND}/api/v1/user/admin/makeHoteler`;
+        console.log(email);
+      const data=await axios.post(
+
+        endpoint,
+        { email },
+        { headers: { 'Authorization': token } }
+      );
+      
+      await fetchAccessRequests();
+      setError(null);
+      alert(`User ${email} has been promoted to ${type}`);
+    } catch (err) {
+      console.log(err);
+      setError(err.response?.data?.message || 'Failed to promote user');
+    }
+  };
+
+  const handleDeleteRequest = async (requestId) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${BACKEND}/api/v1/user/admin/accessRequests/${requestId}`, {
+        headers: { 'Authorization': token }
+      });
+      
+      await fetchAccessRequests();
+      setError(null);
+      alert('Request has been rejected');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to delete request');
     }
   };
 
@@ -178,6 +253,14 @@ const Profile = () => {
         >
           Listing Access
         </button>
+        {userData.is_admin && (
+          <button
+            onClick={() => setActiveTab('accessRequests')}
+            className={`px-4 py-2 font-medium whitespace-nowrap ${activeTab === 'accessRequests' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500'}`}
+          >
+            Access Requests
+          </button>
+        )}
       </div>
 
       {/* Personal Info Tab */}
@@ -489,9 +572,22 @@ const Profile = () => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-6">Listing Access</h1>
           
-          {userData.has_hotel ? (
+          {userData.is_admin ? (
             <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">You already have listing access as a hotel owner.</p>
+              <p className="text-gray-600 mb-4">You have admin privileges and can manage all listings.</p>
+              <button 
+                onClick={() => navigate('/admin')}
+                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              >
+                Go to Admin Dashboard
+              </button>
+            </div>
+          ) : userData.has_hotel ? (
+            <div className="text-center py-8">
+              <div className="mb-6 p-4 bg-green-50 rounded-lg">
+                <p className="text-green-600 font-medium mb-2">Your listing access has been approved!</p>
+                <p className="text-gray-600">You can now add and manage your hotel listings.</p>
+              </div>
               <button 
                 onClick={() => navigate('/add-hotel')}
                 className="flex items-center justify-center mx-auto px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
@@ -501,18 +597,130 @@ const Profile = () => {
             </div>
           ) : requestSent ? (
             <div className="text-center py-8">
-              <p className="text-green-600 mb-4">Your request for listing access has been sent successfully!</p>
-              <p className="text-gray-600">We'll review your request and get back to you soon.</p>
+              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                <p className="text-blue-600 font-medium mb-2">Your request has been submitted!</p>
+                <p className="text-gray-600">Thank you for your interest. We'll review your message and get back to you soon.</p>
+              </div>
             </div>
           ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">Request access to list your property on our platform.</p>
-              <button 
-                onClick={handleRequestListingAccess}
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                Request Listing Access
-              </button>
+            <div className="max-w-2xl mx-auto">
+              <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+                <h2 className="text-xl font-semibold mb-4">Become a Hotel Partner</h2>
+                <p className="text-gray-600 mb-6">
+                  List your property on our platform to reach thousands of travelers. 
+                  Get bookings, manage availability, and grow your business.
+                </p>
+                
+                <div className="mb-6">
+                  <h3 className="font-medium mb-3">Tell us about your property:</h3>
+                  <textarea
+                    className="w-full border border-gray-300 rounded-md p-3 focus:ring-indigo-500 focus:border-indigo-500"
+                    rows={4}
+                    placeholder="Please describe your property (type, location, amenities, etc.)"
+                    value={formData.message || ''}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  />
+                </div>
+                
+                <div className="mb-6">
+                  <h3 className="font-medium mb-3">Benefits:</h3>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-start">
+                      <FiChevronRight className="flex-shrink-0 h-5 w-5 text-indigo-500 mt-0.5 mr-2" />
+                      <span>Increase your property's visibility</span>
+                    </li>
+                    <li className="flex items-start">
+                      <FiChevronRight className="flex-shrink-0 h-5 w-5 text-indigo-500 mt-0.5 mr-2" />
+                      <span>Manage bookings and availability easily</span>
+                    </li>
+                    <li className="flex items-start">
+                      <FiChevronRight className="flex-shrink-0 h-5 w-5 text-indigo-500 mt-0.5 mr-2" />
+                      <span>Get paid securely and on time</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <button 
+                  onClick={handleRequestListingAccess}
+                  disabled={!formData.message}
+                  className={`px-6 py-3 text-white rounded-lg font-medium ${
+                    formData.message 
+                      ? 'bg-indigo-600 hover:bg-indigo-700' 
+                      : 'bg-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  Submit Request
+                </button>
+                <p className="mt-3 text-sm text-gray-500">
+                  By submitting, you agree to our Partner Terms and Conditions
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Access Requests Tab (Admin Only) */}
+      {activeTab === 'accessRequests' && (
+        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
+          <h1 className="text-2xl font-bold text-gray-800 mb-6">Access Requests</h1>
+          
+          {requestsLoading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+            </div>
+          ) : error ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {error}
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {accessRequests.length > 0 ? (
+                accessRequests.map((request) => (
+                  <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-medium text-lg">{request.email}</h3>
+                        <p className="text-gray-600">{request.phone}</p>
+                        <p className="text-gray-600 mt-2">{request.message}</p>
+                        <p className="text-sm text-indigo-600 mt-1">
+                          Requested as: {request.type === 'admin' ? 'Admin' : 'Hotel Owner'}
+                        </p>
+                      </div>
+                      <div className="flex space-x-2">
+                        {request.type === 'hotelowner' && (
+                          <button
+                            onClick={() => handlePromoteUser(request.email, 'hotelowner')}
+                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center"
+                          >
+                            <FiPlus className="mr-2" /> Approve Hotel Owner
+                          </button>
+                        )}
+                        {request.type === 'admin' && (
+                          <button
+                            onClick={() => handlePromoteUser(request.email, 'admin')}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+                          >
+                            <FiUser className="mr-2" /> Promote to Admin
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteRequest(request.id)}
+                          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center"
+                        >
+                          <FiTrash2 className="mr-2" /> Reject
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No pending access requests.</p>
+                </div>
+              )}
             </div>
           )}
         </div>
