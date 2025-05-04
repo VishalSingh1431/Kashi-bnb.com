@@ -16,6 +16,7 @@ import Login from "./Pages/Login";
 import Profile from "./Components/Profile"; 
 import Owner from "./Pages/owner";
 import Tourist from "./Pages/Tourist";
+import Checkout from './Pages/Checkout';
  
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/hotel/:id" element={<HotelPage/>} />
+          <Route path="/checkout/:id" element={<Checkout />} />
         </Routes>
         <Footer />
       </div>

@@ -4,15 +4,18 @@ import rateLimit from 'express-rate-limit';
 const authorisation = async (req,res,nex)=>{
     // console.log(req.headers);
     try{
-        const token = req.get('Authorization').split(" ")[1];
-        // console.log(token," tot ")
+        let token = req.get('Authorization');
+
         if(!token){
-            console.log("no token");
+            // console.log("no token");
             return res.status(411).json({
                 success : false,
                 message : "no token",
             });
         }
+
+        token = token.split(" ")[1];
+        // console.log(token," tot ")
         const user=await jwt.verify(token,process.env.JWT_SEX);
         if(user){
             req.user=user;
