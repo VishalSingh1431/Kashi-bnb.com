@@ -246,6 +246,19 @@ const HotelPage = () => {
     });
   };
 
+
+  const handleReserve = () => {
+    nav(`/checkout/${hotel.id}`, {
+      state: {
+        startDate,
+        endDate,
+        guests: guestCount,
+        total: calculateTotal(),
+        hotelName: hotel.name,
+      },
+    });
+  };
+
   if (loading) return <div className="text-center py-10 text-gray-600">Loading...</div>;
   if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
 
@@ -811,6 +824,7 @@ const HotelPage = () => {
             </div>
             
             <button 
+              onClick={handleReserve}
               className="w-full bg-rose-500 text-white py-3 rounded-lg font-semibold hover:bg-rose-600 transition focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
               disabled={!startDate || !endDate}
             >

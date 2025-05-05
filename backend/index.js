@@ -2,6 +2,7 @@ import express from 'express';
 import { limiter } from './middleware/auth.js';
 import userRouter from './routes/user.js';
 import hotelRouter from './routes/hotel.js'
+import paymentRouter from './routes/payments.js'
 import cors from 'cors'
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/v1/user',userRouter);
 app.use('/api/v1/hotel',hotelRouter);
+app.use('/api/v1/payments',paymentRouter);
 
 
 app.get('/',(req,res)=>{
