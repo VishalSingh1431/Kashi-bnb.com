@@ -13,7 +13,8 @@ import Listings from './Listings'
 import Signup from './signup'
 import Login from './Login'
 // import owner from './owner'
-import Profile from '../Components/Profile'
+import Profile from '../Components/Profile'  
+import CheckOut from '../Components/CheckOut'
 // import Owner from './Owner'
 
 const Home = () => {
@@ -23,6 +24,7 @@ const Home = () => {
       <Navbar/>
       <Slider/>  
       <Homestay/> 
+      <CheckOut/>
       {/* <Owner/> */}
       {/* <About/> */}
       {/* <Contact/> */}

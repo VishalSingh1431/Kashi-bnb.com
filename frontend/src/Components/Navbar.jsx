@@ -30,7 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="shadow-md p-4 absolute z-10 w-full" style={{ backgroundColor: '#f3eadb' }}>
+    <nav className="shadow-md p-4 absolute z-10 w-full" >
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div>
@@ -54,7 +54,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Content */}
-        <div className={`fixed inset-0 bg-opacity-95 z-20 transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`} style={{ backgroundColor: '#f3eadb' }}>
+        <div className={`fixed inset-0 bg-opacity-95 z-20 transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
           <div className="relative h-full w-full flex flex-col items-center overflow-y-auto">
             <button
               onClick={() => setIsOpen(false)}
@@ -120,7 +120,7 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                   className="block w-full text-xl font-bold text-black"
                 >
-                  Contact
+                 8011708595
                 </Link>
               </li>
 
@@ -204,7 +204,7 @@ const Navbar = () => {
             </li>
             <li className="rounded-2xl py-2 px-4 transition-colors">
               <Link to="/contact" className="cursor-pointer">
-                Contact
+              8011708595
               </Link>
             </li>
           </ul>

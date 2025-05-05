@@ -5,7 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FiSearch, FiFilter } from "react-icons/fi";
 import { BACKEND } from "../assets/Vars";
-
+import { FiChevronDown } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';  
 const Homestay = () => {
   const headingVariants = {
     hidden: { opacity: 0, y: -50 },
@@ -202,106 +203,122 @@ const Homestay = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col items-center min-h-screen" style={{ backgroundColor: '#f3eadb' }}>
-      <motion.h1
-        className="text-4xl font-bold text-center mb-8 p-4 rounded-2xl transition-colors text-gray-800" style={{ backgroundColor: '#f3eadb' }}
-        variants={headingVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        Book Your Dream Homestay Today
-      </motion.h1>
+    <div className="p-4 flex flex-col items-center min-h-screen -mt-85 relative z-10" >
+   
+   <div 
+  className="shadow-lg shadow-white w-2/3 rounded-2xl h-fit items-center mx-auto m-5 " 
+  style={{ backgroundColor: '#f3eadb', maxWidth: '90vw' }}
+>
+  <motion.h1
+    className="text-5xl font-bold text-center mb-10 p-6 rounded-2xl transition-colors text-gray-800 mx-auto" 
+    style={{ backgroundColor: '#f3eadb', maxWidth: 'fit-content' }}
+    variants={headingVariants}
+    initial="hidden"
+    animate="visible"
+  >
+    Book Your Dream Homestay Today
+  </motion.h1>
 
-      {/* Search Bar */}
-      <div className="w-full max-w-4xl mb-8 rounded-lg" style={{ backgroundColor: '#f3eadb' }}>
-        <form onSubmit={handleSearch} className="relative">
-          <div className="flex items-center border rounded-full p-3 shadow-sm " style={{ backgroundColor: '#f3eadb' }}>
-            <div className="flex-1 px-4 flex items-center  ">
-              <FiSearch className="mr-3" />
-              <input 
-                
-                type="text"
-                placeholder="Search by hotel name, amenities, or keywords..."
-                className="w-full  text-black font-bold "
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            
-            <button
-              type="submit"
-              className=" p-3 rounded-full transition-colors ml-2"
-            >
-              <FiSearch size={18} />
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Filters and Sorting */}
-      <div className="w-full max-w-6xl mb-8 " style={{ backgroundColor: '#f3eadb' }}>
-        <div className="flex justify-between items-center ">
-          <div className="flex space-x-4 hover">
-            <button 
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 border rounded-full px-4 py-2 hover:shadow-md \" style={{ backgroundColor: '#f3eadb' }}
-            >
-              <FiFilter />
-              <span>Filters</span>
-            </button>
-            
-            <div className="relative border rounded-3xl">
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-                className="border border-gray-200 rounded-full px-4 py-2 appearance-none hover:shadow-md transition-shadow pr-8" style={{ backgroundColor: '#f3eadb' }}
-              >
-                <option value="recommended">Recommended</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Rating</option>
-              </select>
-            </div>
+  {/* Search Bar - Enlarged */}
+  <div className="w-full flex justify-center mb-10">
+    <div className="w-full max-w-5xl rounded-lg mx-4" style={{ backgroundColor: '#f3eadb' }}>
+      <form onSubmit={handleSearch} className="relative">
+        <div className="flex items-center border-2 border-gray-300 rounded-full p-4 shadow-lg mx-auto" 
+             style={{ backgroundColor: '#f3eadb', maxWidth: '900px' }}>
+          <div className="flex-1 px-5 flex items-center">
+            <FiSearch className="mr-4 text-2xl" />
+            <input 
+              type="text"
+              placeholder="Search by hotel name, amenities, or keywords..."
+              className="w-full text-xl text-black font-bold bg-transparent placeholder-gray-600"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           
-          <div className="text-gray-600">
-            {filteredHotels.length} {filteredHotels.length === 1 ? 'property' : 'properties'} found
+          <button
+            type="submit"
+            className="p-4 rounded-full transition-colors ml-3 hover:bg-gray-200"
+          >
+            <FiSearch size={24} />
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {/* Filters and Sorting - Enlarged */}
+  <div className="w-full flex justify-center mb-10">
+    <div className="w-full max-w-6xl mx-4" style={{ backgroundColor: '#f3eadb' }}>
+      <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+        <div className="flex space-x-6">
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center space-x-3 border-2 border-gray-300 rounded-full px-6 py-3 hover:shadow-lg text-lg"
+            style={{ backgroundColor: '#f3eadb' }}
+          >
+            <FiFilter size={20} />
+            <span>Filters</span>
+          </button>
+          
+          <div className="relative border-2 border-gray-300 rounded-3xl">
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="border border-gray-300 rounded-full px-6 py-3 appearance-none hover:shadow-lg transition-shadow pr-10 text-lg" 
+              style={{ backgroundColor: '#f3eadb' }}
+            >
+              <option value="recommended">Recommended</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Rating</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <FiChevronDown size={20} />
+            </div>
           </div>
         </div>
         
-        {/* Expanded Filters */}
-        {showFilters && (
-          <div className="mt-4 p-6 borderrounded-lg shadow-sm border rounded">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-black">Filters</h3>
-              <button 
-                onClick={() => setShowFilters(false)}
-                className="text-sm text-black hover:text-black"
-              >
-                Close
-              </button>
-            </div>
-            
-            <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-3 ">Price Range (₹)</h4>
-              <div className="flex items-center space-x-4">
-                <input
-                  type="range"
-                  min="0"
-                  max="10000"
-                  step="100"
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer border"
-                />
-                <div className="text-sm text-gray-600 whitespace-nowrap">
-                  ₹{priceRange[0]} - ₹{priceRange[1]}
-                </div>
+        <div className="text-xl text-gray-600 font-medium">
+          {filteredHotels.length} {filteredHotels.length === 1 ? 'property' : 'properties'} found
+        </div>
+      </div>
+      
+      {/* Expanded Filters - Enlarged */}
+      {showFilters && (
+        <div className="mt-6 p-8 border-2 border-gray-300 rounded-xl shadow-md mx-auto" style={{ maxWidth: '900px' }}>
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-semibold text-2xl text-black">Filters</h3>
+            <button 
+              onClick={() => setShowFilters(false)}
+              className="text-lg text-black hover:text-gray-700"
+            >
+              <FiX size={24} />
+            </button>
+          </div>
+          
+          <div className="mb-8">
+            <h4 className="text-xl font-medium text-gray-700 mb-4">Price Range (₹)</h4>
+            <div className="flex flex-col space-y-6 md:flex-row md:space-y-0 md:space-x-6 md:items-center">
+              <input
+                type="range"
+                min="0"
+                max="10000"
+                step="100"
+                value={priceRange[1]}
+                onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                className="w-full h-3 bg-gray-300 rounded-lg appearance-none cursor-pointer border-0"
+              />
+              <div className="text-xl text-gray-600 whitespace-nowrap font-medium">
+                ₹{priceRange[0]} - ₹{priceRange[1]}
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
       {/* Error Message */}
       {error && (
@@ -311,9 +328,9 @@ const Homestay = () => {
       )}
 
       {/* Results */}
-      <div className="w-full max-w-6xl ">
+      <div className="w-full max-w-fit ">
         {loading ? (
-          <div className="flex justify-center items-center py-12 ">
+          <div className="flex justify-center items-center  ">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black-500 "></div>
           </div>
         ) : filteredHotels.length === 0 ? (
@@ -322,7 +339,7 @@ const Homestay = () => {
             <p className="text-gray-500">Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-5">
             {filteredHotels.map((hotel) => (
               <Card
                 key={hotel.id}

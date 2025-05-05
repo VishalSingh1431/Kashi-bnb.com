@@ -85,7 +85,7 @@ export const makeRestr = async (req,res,nex)=>{
 
         return res.status(200).json({
             success : true,
-            message : "promoted to restr wala bhosdi wala"
+            message : "promoted to restr  wala"
         })
     }
     catch(e){

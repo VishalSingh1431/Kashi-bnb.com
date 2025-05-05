@@ -7,6 +7,7 @@ import {
   FiChevronRight, FiTrash2
 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+const user=JSON.parse(localStorage.getItem("user"));
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -23,11 +24,10 @@ const Profile = () => {
     address: ''
   });
   
-  // Separate state for listing access requests
+  // Separate state for listing access requests (removed name field)
   const [listingRequestData, setListingRequestData] = useState({
-    name: '',
-    email: '',
-    phone: '',
+    email: user?.email,
+    phone: user?.phone,
     message: ''
   });
 
@@ -35,7 +35,7 @@ const Profile = () => {
   const [requestSent, setRequestSent] = useState(false);
   const [accessRequests, setAccessRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user"));
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -59,7 +59,6 @@ const Profile = () => {
           address: response.data.allData.address || ''
         });
         setListingRequestData({
-          name: response.data.allData.name || '',
           email: response.data.allData.email || '',
           phone: response.data.allData.phone || '',
           message: ''
@@ -162,11 +161,12 @@ const Profile = () => {
         ? `${BACKEND}/api/v1/user/admin/makeAdmin` 
         : `${BACKEND}/api/v1/user/admin/makeHoteler`;
         
-      await axios.post(
+     const data= await axios.post(
         endpoint,
         { email },
         { headers: { 'Authorization': token } }
       );
+      console.lod(data);
       
       await fetchAccessRequests();
       setError(null);

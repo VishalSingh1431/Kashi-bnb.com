@@ -250,7 +250,7 @@ const HotelPage = () => {
   if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
 
   return (
-    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto p-4 ">
+    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto p-4">
       {isOwnerOrAdmin && (
         <div className="flex justify-end mb-4">
           <button
@@ -817,7 +817,6 @@ const HotelPage = () => {
               Reserve
             </button>
             
-            <p className="text-center mt-4 text-sm text-gray-600">You won't be charged yet</p>
             
             <div className="mt-6 grid grid-cols-2 gap-y-4 text-sm">
               <div>
