@@ -203,7 +203,7 @@ const Homestay = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col items-center min-h-screen -mt-85 relative z-10" >
+    <div className="p-4 flex flex-col items-center min-h-screen -mt-60 relative z-10" >
    
    <div 
   className="shadow-lg shadow-white w-2/3 rounded-2xl h-fit items-center mx-auto m-5" 
