@@ -206,11 +206,11 @@ const Homestay = () => {
     <div className="p-4 flex flex-col items-center min-h-screen -mt-85 relative z-10" >
    
    <div 
-  className="shadow-lg shadow-white w-2/3 rounded-2xl h-fit items-center mx-auto m-5 " 
+  className="shadow-lg shadow-white w-2/3 rounded-2xl h-fit items-center mx-auto m-5" 
   style={{ backgroundColor: '#f3eadb', maxWidth: '90vw' }}
 >
   <motion.h1
-    className="text-5xl font-bold text-center mb-10 p-6 rounded-2xl transition-colors text-gray-800 mx-auto" 
+    className="text-3xl font-bold text-center mb-6 p-4 rounded-2xl transition-colors text-gray-800 mx-auto" 
     style={{ backgroundColor: '#f3eadb', maxWidth: 'fit-content' }}
     variants={headingVariants}
     initial="hidden"
@@ -219,18 +219,18 @@ const Homestay = () => {
     Book Your Dream Homestay Today
   </motion.h1>
 
-  {/* Search Bar - Enlarged */}
-  <div className="w-full flex justify-center mb-10">
-    <div className="w-full max-w-5xl rounded-lg mx-4" style={{ backgroundColor: '#f3eadb' }}>
+  {/* Search Bar - Normal Size */}
+  <div className="w-full flex justify-center mb-6">
+    <div className="w-full max-w-4xl rounded-lg mx-4" style={{ backgroundColor: '#f3eadb' }}>
       <form onSubmit={handleSearch} className="relative">
-        <div className="flex items-center border-2 border-gray-300 rounded-full p-4 shadow-lg mx-auto" 
-             style={{ backgroundColor: '#f3eadb', maxWidth: '900px' }}>
-          <div className="flex-1 px-5 flex items-center">
-            <FiSearch className="mr-4 text-2xl" />
+        <div className="flex items-center border border-gray-300 rounded-full p-2 shadow-md mx-auto" 
+             style={{ backgroundColor: '#f3eadb', maxWidth: '700px' }}>
+          <div className="flex-1 px-3 flex items-center">
+            <FiSearch className="mr-2 text-lg" />
             <input 
               type="text"
               placeholder="Search by hotel name, amenities, or keywords..."
-              className="w-full text-xl text-black font-bold bg-transparent placeholder-gray-600"
+              className="w-full text-base text-black font-bold bg-transparent placeholder-gray-600"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -238,34 +238,34 @@ const Homestay = () => {
           
           <button
             type="submit"
-            className="p-4 rounded-full transition-colors ml-3 hover:bg-gray-200"
+            className="p-2 rounded-full transition-colors ml-2 hover:bg-gray-200"
           >
-            <FiSearch size={24} />
+            <FiSearch size={18} />
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  {/* Filters and Sorting - Enlarged */}
-  <div className="w-full flex justify-center mb-10">
-    <div className="w-full max-w-6xl mx-4" style={{ backgroundColor: '#f3eadb' }}>
-      <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-        <div className="flex space-x-6">
+  {/* Filters and Sorting - Normal Size */}
+  <div className="w-full flex justify-center mb-6">
+    <div className="w-full max-w-5xl mx-4" style={{ backgroundColor: '#f3eadb' }}>
+      <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div className="flex space-x-4">
           <button 
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-3 border-2 border-gray-300 rounded-full px-6 py-3 hover:shadow-lg text-lg"
+            className="flex items-center space-x-2 border border-gray-300 rounded-full px-4 py-2 hover:shadow-md text-base"
             style={{ backgroundColor: '#f3eadb' }}
           >
-            <FiFilter size={20} />
+            <FiFilter size={16} />
             <span>Filters</span>
           </button>
           
-          <div className="relative border-2 border-gray-300 rounded-3xl">
+          <div className="relative border border-gray-300 rounded-3xl">
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="border border-gray-300 rounded-full px-6 py-3 appearance-none hover:shadow-lg transition-shadow pr-10 text-lg" 
+              className="border border-gray-300 rounded-full px-4 py-2 appearance-none hover:shadow-md transition-shadow pr-8 text-base" 
               style={{ backgroundColor: '#f3eadb' }}
             >
               <option value="recommended">Recommended</option>
@@ -273,33 +273,33 @@ const Homestay = () => {
               <option value="price-high">Price: High to Low</option>
               <option value="rating">Rating</option>
             </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              <FiChevronDown size={20} />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <FiChevronDown size={16} />
             </div>
           </div>
         </div>
         
-        <div className="text-xl text-gray-600 font-medium">
+        <div className="text-base text-gray-600 font-medium">
           {filteredHotels.length} {filteredHotels.length === 1 ? 'property' : 'properties'} found
         </div>
       </div>
       
-      {/* Expanded Filters - Enlarged */}
+      {/* Expanded Filters - Normal Size */}
       {showFilters && (
-        <div className="mt-6 p-8 border-2 border-gray-300 rounded-xl shadow-md mx-auto" style={{ maxWidth: '900px' }}>
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-semibold text-2xl text-black">Filters</h3>
+        <div className="mt-4 p-4 border border-gray-300 rounded-lg shadow-sm mx-auto" style={{ maxWidth: '700px' }}>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold text-lg text-black">Filters</h3>
             <button 
               onClick={() => setShowFilters(false)}
-              className="text-lg text-black hover:text-gray-700"
+              className="text-base text-black hover:text-gray-700"
             >
-              <FiX size={24} />
+              <FiX size={18} />
             </button>
           </div>
           
-          <div className="mb-8">
-            <h4 className="text-xl font-medium text-gray-700 mb-4">Price Range (₹)</h4>
-            <div className="flex flex-col space-y-6 md:flex-row md:space-y-0 md:space-x-6 md:items-center">
+          <div className="mb-4">
+            <h4 className="text-base font-medium text-gray-700 mb-2">Price Range (₹)</h4>
+            <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-4 md:items-center">
               <input
                 type="range"
                 min="0"
@@ -307,9 +307,9 @@ const Homestay = () => {
                 step="100"
                 value={priceRange[1]}
                 onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                className="w-full h-3 bg-gray-300 rounded-lg appearance-none cursor-pointer border-0"
+                className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer border-0"
               />
-              <div className="text-xl text-gray-600 whitespace-nowrap font-medium">
+              <div className="text-base text-gray-600 whitespace-nowrap font-medium">
                 ₹{priceRange[0]} - ₹{priceRange[1]}
               </div>
             </div>
