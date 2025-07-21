@@ -216,7 +216,7 @@ const Homestay = () => {
     initial="hidden"
     animate="visible"
   >
-    Book Your Dream Homestay Today
+    Book Your Kashi Stay Today
   </motion.h1>
 
   {/* Search Bar - Normal Size */}

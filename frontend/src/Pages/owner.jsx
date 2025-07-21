@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Owner = () => {
+  const navigate = useNavigate();
   return (
     <div className='min-h-screen pt-40 px-4 sm:px-6 lg:px-8' style={{ backgroundColor: '#f3eadb' }}>
       {/* Hero Section */}
@@ -80,7 +82,10 @@ const Owner = () => {
               <span className='text-black'>No commission on bookings</span>
             </li>
           </ul>
-          <button className='mt-6 w-full py-2 rounded-lg font-medium border border-black text-black hover:bg-black hover:text-white'>
+          <button
+            onClick={() => navigate('/number')}
+            className='mt-6 w-full py-2 rounded-lg font-medium border border-black text-black hover:bg-black hover:text-white transition-colors duration-300'
+          >
             Choose Plan
           </button>
         </div>
@@ -110,7 +115,10 @@ const Owner = () => {
               <span className='text-black'>Monthly insights & recommendations</span>
             </li>
           </ul>
-          <button className='mt-6 w-full py-2 rounded-lg font-medium border border-black text-black hover:bg-black hover:text-white'>
+           <button
+            onClick={() => navigate('/number')}
+            className='mt-6 w-full py-2 rounded-lg font-medium border border-black text-black hover:bg-black hover:text-white transition-colors duration-300'
+          >
             Choose Plan
           </button>
         </div>
@@ -137,17 +145,20 @@ const Owner = () => {
               <span className='text-black'>Hospitality training for staff</span>
             </li>
           </ul>
-          <button className='mt-6 w-full py-2 rounded-lg font-medium border border-black text-black hover:bg-black hover:text-white'>
+          <button
+            onClick={() => navigate('/number')}
+            className='mt-6 w-full py-2 rounded-lg font-medium border border-black text-black hover:bg-black hover:text-white transition-colors duration-300'
+          >
             Choose Plan
           </button>
         </div>
       </div>
 
       {/* Host School Section */}
-      <div className='p-6 rounded-lg border border-black mb-12' style={{ backgroundColor: '#f3eadb' }}>
+      {/* <div className='p-6 rounded-lg border border-black mb-12' style={{ backgroundColor: '#f3eadb' }}>
         <h2 className='text-2xl font-bold mb-4 text-black'>KashiBnB Host School</h2>
         <p className='mb-6 text-black'>Learn how to maximize your earnings and provide excellent guest experiences</p>
-        
+
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
           <div className='p-4 rounded-lg border border-black'>
             <h3 className='font-bold mb-2 text-black'>Better Guest Experience</h3>
@@ -162,14 +173,14 @@ const Owner = () => {
             <p className='text-sm text-black'>Smart pricing strategies and occupancy optimization</p>
           </div>
         </div>
-        
+
         <button className='mt-6 px-6 py-2 rounded-lg font-medium border border-black text-black hover:bg-black hover:text-white'>
           Join Host School
         </button>
-      </div>
+      </div> */}
 
       {/* FAQ Section */}
-      
+
     </div>
   );
 };
