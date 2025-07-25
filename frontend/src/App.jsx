@@ -18,6 +18,7 @@ import Owner from "./Pages/owner";
 import Tourist from "./Pages/Tourist";
 import Checkout from './Pages/Checkout';
 import NumberForm from "./Components/NumberForm";
+import Tour from "./Pages/Tour"; 
  
 function App() {
   return (
@@ -32,7 +33,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/activities" element={<Activities/>} />
           <Route path="/add-listing" element={<Listings/>} />
-          
+           
+          <Route path="/tour" element={<Tour/>} /> 
           <Route path="/profile" element={<Profile/>} />
           <Route path="/owner" element={<Owner/>} />
           <Route path="/tourist" element={<Tourist/>} />

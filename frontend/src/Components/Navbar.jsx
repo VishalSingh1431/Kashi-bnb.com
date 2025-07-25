@@ -9,8 +9,6 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [whyKashiOpen, setWhyKashiOpen] = useState(false);
   const [mobileWhyKashiOpen, setMobileWhyKashiOpen] = useState(false);
-  const [tourTravelOpen, setTourTravelOpen] = useState(false);
-  const [mobileTourTravelOpen, setMobileTourTravelOpen] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token") !== null;
   
@@ -109,35 +107,15 @@ const Navbar = () => {
                   </div>
                 </li>
 
-                {/* Mobile Tour & Travels Dropdown - Centered */}
+                {/* Direct link to Tours in mobile menu */}
                 <li className="rounded-2xl py-2 px-4 text-center" style={{ backgroundColor: '#f3eadb' }}>
-                  <div className="flex flex-col items-center">
-                    <button 
-                      onClick={() => setMobileTourTravelOpen(!mobileTourTravelOpen)}
-                      className="flex items-center justify-center gap-2 text-xl font-bold text-black"
-                    >
-                      Tour & Travels
-                      <ChevronDown className={`transition-transform ${mobileTourTravelOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    {mobileTourTravelOpen && (
-                      <div className="w-full mt-2 space-y-2">
-                        <Link
-                          to="/tours"
-                          onClick={() => setIsOpen(false)}
-                          className="block w-full py-2 text-lg font-bold text-black rounded-lg"
-                        >
-                          Tours
-                        </Link>
-                        <Link
-                          to="/travel-packages"
-                          onClick={() => setIsOpen(false)}
-                          className="block w-full py-2 text-lg font-bold text-black rounded-lg"
-                        >
-                          Travel Packages
-                        </Link>
-                      </div>
-                    )}
-                  </div>
+                  <Link
+                    to="/tour"
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full text-xl font-bold text-black"
+                  >
+                     Tour & Travels
+                  </Link>
                 </li>
 
                 <li className="rounded-2xl py-2 px-4 text-center" style={{ backgroundColor: '#f3eadb' }}>
@@ -235,32 +213,11 @@ const Navbar = () => {
               )}
             </li>
 
-            {/* Desktop Tour & Travels Dropdown */}
-            <li 
-              className="relative rounded-2xl py-2 px-4 transition-colors"
-              onMouseEnter={() => setTourTravelOpen(true)}
-              onMouseLeave={() => setTourTravelOpen(false)}
-            >
-              <div className="flex items-center gap-1 cursor-pointer">
-                Tour & Travels
-                <ChevronDown className={`transition-transform ${tourTravelOpen ? 'rotate-180' : ''}`} size={18} />
-              </div>
-              {tourTravelOpen && (
-                <div className="border absolute left-0 mt-2 w-48 rounded-md py-1 z-30 shadow-lg" style={{ backgroundColor: '#f3eadb' }}>
-                  <Link
-                    to="/tours"
-                    className="block px-4 py-2 font-bold text-black hover:bg-gray-100"
-                  >
-                    Tours
-                  </Link>
-                  <Link
-                    to="/travel-packages"
-                    className="block px-4 py-2 font-bold text-black hover:bg-gray-100"
-                  >
-                    Travel Packages
-                  </Link>
-                </div>
-              )}
+            {/* Direct link to Tours in desktop menu */}
+            <li className="rounded-2xl py-2 px-4 transition-colors">
+              <Link to="/tour" className="cursor-pointer">
+                 Tour & Travels
+              </Link>
             </li>
 
             <li className="rounded-2xl py-2 px-4 transition-colors">
