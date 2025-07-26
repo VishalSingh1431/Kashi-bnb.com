@@ -1,30 +1,50 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FiChevronRight, FiCheck, FiInfo, FiMapPin, FiClock, FiHome, FiUsers, FiDollarSign } from "react-icons/fi";
+import { FiCheck, FiInfo } from "react-icons/fi";
 
-const BookNowButton = ({ size = "md" }) => {
+// BookNowButton with fullWidth and size props
+const BookNowButton = ({
+  size = "md",
+  label = "Book Now",
+  emoji = "📅",
+  fullWidth = false,
+  className = "",
+  message = "I want to know about booking details"
+}) => {
   const handleClick = () => {
     const phoneNumber = "+918011708595";
-    const message = "I want to know about booking details";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
+  };
+
+  const sizeClasses = {
+    sm: "px-3 py-2 text-xs",
+    md: "px-6 py-3 text-base",
+    lg: "px-8 py-4 text-lg",
   };
 
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.97 }}
+      type="button"
       onClick={handleClick}
-      className={`bg-gradient-to-r from-blue-600 to-blue-500 text-white ${
-        size === "sm" ? "px-4 py-2 text-sm" : "px-6 py-3"
-      } rounded-lg font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center`}
+      className={`
+        bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg font-bold shadow
+        hover:shadow-lg transition-all flex items-center justify-center
+        ${sizeClasses[size] || sizeClasses.md}
+        ${fullWidth ? "w-full" : ""}
+        ${className}
+      `}
+      aria-label={label}
     >
-      <span className="mr-2">📅</span> Book Now
+      {emoji && <span className="mr-2">{emoji}</span>} {label}
     </motion.button>
   );
 };
+
 const Tour = () => {
-  // Animation variants
+  // Framer variants
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -52,6 +72,7 @@ const Tour = () => {
       variants={container}
       className="pt-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 font-sans"
     >
+
       {/* Hero Section */}
       <motion.section variants={item} className="text-center mb-16">
         <motion.div 
@@ -79,20 +100,8 @@ const Tour = () => {
         </motion.p>
         
         <motion.div variants={item} className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all"
-          >
-            🚀 Book Now
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all"
-          >
-            💬 WhatsApp Inquiry
-          </motion.button>
+          <BookNowButton label="Book Now" emoji="📅" size="md" />
+          <BookNowButton label="WhatsApp Inquiry" emoji="💬" size="md" message="I have a question about the package" />
         </motion.div>
         
         <motion.div variants={item} className="bg-blue-50 p-4 rounded-xl inline-block">
@@ -108,7 +117,7 @@ const Tour = () => {
             <span className="absolute inset-0 bg-blue-100 opacity-50 -rotate-1 rounded-lg"></span>
             <span className="relative z-10">🌟 Why Choose KashiBnB?</span>
           </span>
-        </motion.h2> 
+        </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
@@ -161,10 +170,10 @@ const Tour = () => {
             <table className="w-full">
               <thead>
                 <tr className="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-                  <th className="p-4 text-left rounded-tl-xl">👥 Group Size</th>
-                  <th className="p-4 text-right">💰 Total Cost</th>
-                  <th className="p-4 text-right rounded-tr-xl">🧑 Per Person</th>
-                  <th className="p-4 text-right">Action</th>
+                  <th className="p-3 text-left rounded-tl-xl">👥 Group Size</th>
+                  <th className="p-3 text-right">💰 Total Cost</th>
+                  <th className="p-3 text-right">🧑 Per Person</th>
+                  <th className="p-3 text-center rounded-tr-xl">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -179,18 +188,18 @@ const Tour = () => {
                   { size: "24 Pax", total: "₹1,09,996", pp: "₹4,583" },
                   { size: "30 Pax", total: "₹1,37,495", pp: "₹4,583" }
                 ].map((row, idx) => (
-                  <motion.tr 
-                    key={idx}
+                  <motion.tr
+                    key={row.size}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: idx * 0.05 }}
                     className={`border-b ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}
                   >
-                    <td className="p-4 font-medium">{row.size}</td>
-                    <td className="p-4 text-right">{row.total}</td>
-                    <td className="p-4 text-right font-bold text-blue-600">{row.pp}</td>
-                    <td className="p-4 text-right">
-                      <BookNowButton size="sm" />
+                    <td className="p-3">{row.size}</td>
+                    <td className="p-3 text-right">{row.total}</td>
+                    <td className="p-3 text-right font-bold text-blue-600">{row.pp}</td>
+                    <td className="p-3 text-center align-middle">
+                      <BookNowButton size="sm" fullWidth />
                     </td>
                   </motion.tr>
                 ))}
@@ -209,13 +218,13 @@ const Tour = () => {
           <table className="w-full">
             <thead>
               <tr className="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-                <th className="p-4 text-left rounded-tl-xl">Group</th>
-                <th className="p-4 text-left">Stay Details</th>
-                <th className="p-4 text-left">Ayodhya Cab</th>
-                <th className="p-4 text-left">Prayagraj Cab</th>
-                <th className="p-4 text-left">Varanasi Tour</th>
-                <th className="p-4 text-left rounded-tr-xl">Pickup/Drop</th>
-                <th className="p-4 text-left">Action</th>
+                <th className="p-3 text-left rounded-tl-xl">Group</th>
+                <th className="p-3 text-left">Stay Details</th>
+                <th className="p-3 text-left">Ayodhya Cab</th>
+                <th className="p-3 text-left">Prayagraj Cab</th>
+                <th className="p-3 text-left">Varanasi Tour</th>
+                <th className="p-3 text-left">Pickup/Drop</th>
+                <th className="p-3 text-center rounded-tr-xl">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -246,20 +255,20 @@ const Tour = () => {
                 }
               ].map((row, idx) => (
                 <motion.tr 
-                  key={idx}
+                  key={row.group + idx}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: idx * 0.05 }}
                   className={`border-b ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}
                 >
-                  <td className="p-4 font-medium ">{row.group}</td>
-                  <td className="p-4">{row.stay}</td>
-                  <td className="p-4">{row.ayodhya}</td>
-                  <td className="p-4">{row.prayagraj}</td>
-                  <td className="p-4">{row.varanasi}</td>
-                  <td className="p-4">{row.pickup}</td>
-                  <td className="p-4">
-                    <BookNowButton size="sm" />
+                  <td className="p-3 font-medium">{row.group}</td>
+                  <td className="p-3">{row.stay}</td>
+                  <td className="p-3">{row.ayodhya}</td>
+                  <td className="p-3">{row.prayagraj}</td>
+                  <td className="p-3">{row.varanasi}</td>
+                  <td className="p-3">{row.pickup}</td>
+                  <td className="p-3 text-center align-middle">
+                    <BookNowButton size="sm" fullWidth />
                   </td>
                 </motion.tr>
               ))}
@@ -423,6 +432,78 @@ const Tour = () => {
               ))}
             </ul>
           </motion.div>
+
+          {/* Day 3 */}
+          <motion.div 
+            variants={item}
+            whileHover={{ y: -5 }}
+            className="bg-white p-6 rounded-xl shadow-lg border border-orange-100 hover:shadow-xl transition-all"
+          >
+            <div className="flex items-center mb-4">
+              <div className="bg-orange-100 text-orange-800 font-bold px-4 py-2 rounded-full mr-3">
+                3
+              </div>
+              <h3 className="text-xl font-bold">Day 3: Ayodhya Pilgrimage</h3>
+            </div>
+            <ul className="space-y-4">
+              {[
+                "🚗 Early morning departure to Ayodhya (3hr drive)",
+                "🛕 Visit Shri Ram Janmabhoomi Temple",
+                "🐒 Explore Hanuman Garhi Temple",
+                "🏞️ Panoramic city views from hilltop",
+                "🍽️ Local cuisine lunch experience",
+                "🛍️ Explore local markets & souvenirs",
+                "🌆 Return to Varanasi by evening"
+              ].map((item, idx) => (
+                <motion.li 
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="flex items-start border-b border-gray-100 pb-3 last:border-0 last:pb-0"
+                >
+                  <span className="text-orange-500 mr-2 mt-1">•</span>
+                  <span>{item}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Day 4 */}
+          <motion.div 
+            variants={item}
+            whileHover={{ y: -5 }}
+            className="bg-white p-6 rounded-xl shadow-lg border border-purple-100 hover:shadow-xl transition-all"
+          >
+            <div className="flex items-center mb-4">
+              <div className="bg-purple-100 text-purple-800 font-bold px-4 py-2 rounded-full mr-3">
+                4
+              </div>
+              <h3 className="text-xl font-bold">Day 4: Prayagraj Exploration</h3>
+            </div>
+            <ul className="space-y-4">
+              {[
+                "🌊 Sacred bath in Triveni Sangam",
+                "🏛️ Visit Anand Bhavan Museum",
+                "🏰 Explore Allahabad Fort",
+                "🌳 Stroll through Khusro Bagh",
+                "🐒 Lying Hanuman Temple visit",
+                "🍽️ Traditional Prayagraj lunch",
+                "🌅 Return to Varanasi by sunset"
+              ].map((item, idx) => (
+                <motion.li 
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="flex items-start border-b border-gray-100 pb-3 last:border-0 last:pb-0"
+                >
+                  <span className="text-purple-500 mr-2 mt-1">•</span>
+                  <span>{item}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
         </div>
       </motion.section>
 
@@ -569,19 +650,101 @@ const Tour = () => {
                     </li>
                   ))}
                 </ul>
-                <BookNowButton size="sm" />
+                <BookNowButton size="sm" fullWidth />
               </div>
             </motion.div>
           ))}
         </div>
       </motion.section>
 
-     
-    
-        
-          
-          
-       
+      {/* Guest Reviews Section */}
+      <motion.section variants={container} className="mb-20">
+        <motion.h2 variants={item} className="text-3xl font-bold text-center mb-12">
+          <span className="relative inline-block">
+            <span className="absolute inset-0 bg-yellow-100 opacity-50 -rotate-1 rounded-lg"></span>
+            <span className="relative z-10">⭐ Guest Reviews</span>
+          </span>
+        </motion.h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Review 1 */}
+          <motion.div
+            variants={item}
+            whileHover={{ scale: 1.02 }}
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all"
+          >
+            <div className="flex items-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold mr-4">
+                AM
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">Aarav & Meera Sharma</h3>
+                <div className="flex text-yellow-400">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-4">
+              "KashiBnB Tours & Travel is awesome, and staying in The Ghat House is exceptional! The hospitality was beyond our expectations."
+            </p>
+            <p className="text-sm text-gray-500">Stayed: March 2025 • Family of 4</p>
+          </motion.div>
+
+          {/* Review 2 */}
+          <motion.div
+            variants={item}
+            whileHover={{ scale: 1.02 }}
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all"
+          >
+            <div className="flex items-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-2xl font-bold mr-4">
+                PK
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">Priya & Karan Joshi</h3>
+                <div className="flex text-yellow-400">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-4">
+              "The spiritual journey was perfectly planned. Our guide knew all the hidden gems of Varanasi. Will definitely recommend to friends!"
+            </p>
+            <p className="text-sm text-gray-500">Stayed: January 2025 • Couple</p>
+          </motion.div>
+
+          {/* Review 3 */}
+          <motion.div
+            variants={item}
+            whileHover={{ scale: 1.02 }}
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all"
+          >
+            <div className="flex items-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-green-400 to-teal-500 flex items-center justify-center text-white text-2xl font-bold mr-4">
+                SG
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">Sunita Gupta</h3>
+                <div className="flex text-yellow-400">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-4">
+              "As a solo female traveler, I felt completely safe and cared for. The team went above and beyond to make my pilgrimage special."
+            </p>
+            <p className="text-sm text-gray-500">Stayed: December 2024 • Solo Traveler</p>
+          </motion.div>
+        </div>
+
+         
+      </motion.section>
 
       {/* Final CTA */}
       <motion.section 
@@ -611,20 +774,8 @@ const Tour = () => {
             transition={{ delay: 0.6 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-white text-blue-600 px-8 py-4 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-all"
-            >
-              📅 Book Now
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-green-500 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-all"
-            >
-              💬 WhatsApp Us
-            </motion.button>
+            <BookNowButton label="Book Now" emoji="📅" size="md" />
+            <BookNowButton label="WhatsApp Us" emoji="💬" size="md" message="I want to know more about the packages" />
           </motion.div>
         </div>
       </motion.section>
