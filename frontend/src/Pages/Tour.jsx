@@ -2,18 +2,27 @@ import React from "react";
 import { motion } from "framer-motion";
 import { FiChevronRight, FiCheck, FiInfo, FiMapPin, FiClock, FiHome, FiUsers, FiDollarSign } from "react-icons/fi";
 
-const BookNowButton = ({ size = "md" }) => (
-  <motion.button
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    className={`bg-gradient-to-r from-blue-600 to-blue-500 text-white ${
-      size === "sm" ? "px-4 py-2 text-sm" : "px-6 py-3"
-    } rounded-lg font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center`}
-  >
-    <span className="mr-2">📅</span> Book Now
-  </motion.button>
-);
+const BookNowButton = ({ size = "md" }) => {
+  const handleClick = () => {
+    const phoneNumber = "+918011708595";
+    const message = "I want to know about booking details";
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+  };
 
+  return (
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={handleClick}
+      className={`bg-gradient-to-r from-blue-600 to-blue-500 text-white ${
+        size === "sm" ? "px-4 py-2 text-sm" : "px-6 py-3"
+      } rounded-lg font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center`}
+    >
+      <span className="mr-2">📅</span> Book Now
+    </motion.button>
+  );
+};
 const Tour = () => {
   // Animation variants
   const container = {
@@ -110,12 +119,12 @@ const Tour = () => {
             {
               icon: "🏡",
               title: "Certified Stays",
-              desc: "Kanti Villa, Serene Stay, The Ghat House"
+              desc: "Kanti Villa, Serene Stay, The Ghat House and others"
             },
             {
               icon: "🚗",
-              title: "Premium Fleet",
-              desc: "Ertiga, Desire & Tempo Traveller available"
+              title: "Premium Fleet by Subh travels",
+              desc: "Ertiga, Desire, EV, Scooty, & Tempo Traveller available"
             },
             {
               icon: "👳",
@@ -220,7 +229,7 @@ const Tour = () => {
                   pickup: "Airport ₹1,200 • Railway ₹1,000"
                 },
                 {
-                  group: "4 Guests (Opt 1)",
+                  group: "4 Guests ",
                   stay: "2 AC rooms • 4 nights",
                   ayodhya: "Desire – ₹5,000",
                   prayagraj: "Ertiga – ₹3,000",
@@ -228,7 +237,7 @@ const Tour = () => {
                   pickup: "Airport ₹1,000 • Railway ₹800"
                 },
                 {
-                  group: "4 Guests (Opt 2)",
+                  group: "4 Guests ",
                   stay: "2 AC rooms • 4 nights",
                   ayodhya: "Desire – ₹5,000",
                   prayagraj: "Ertiga – ₹3,000",
@@ -518,7 +527,7 @@ const Tour = () => {
             {
               name: "Kanti Villa",
               emoji: "🏛️",
-              desc: "12-bedroom retreat 2 km from Assi Ghat with courtyard & rooftop lounge.",
+              desc: "12-bedroom retreat 2 km from Assi Ghat.",
               features: ["12 bedrooms", "Courtyard", "Rooftop lounge", "2km from Assi Ghat"],
               price: "₹5,999/night"
             },
@@ -567,101 +576,12 @@ const Tour = () => {
         </div>
       </motion.section>
 
-      {/* FAQ */}
-      <motion.section variants={container} className="mb-20">
-        <motion.h2 variants={item} className="text-3xl font-bold text-center mb-12">
-          <span className="relative inline-block">
-            <span className="absolute inset-0 bg-gray-100 opacity-50 -rotate-1 rounded-lg"></span>
-            <span className="relative z-10">❓ Frequently Asked Questions</span>
-          </span>
-        </motion.h2>
+     
+    
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Aarti Timings */}
-          <motion.div 
-            variants={item}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100"
-          >
-            <h3 className="text-xl font-bold mb-4 flex items-center">
-              <FiClock className="mr-2 text-blue-500" /> Aarti Timings
-            </h3>
-            <div className="space-y-3">
-              {[
-                { name: "Mangala Aarti", time: "3:00 AM – 4:00 AM" },
-                { name: "Bhog Aarti", time: "11:15 AM – 12:20 PM" },
-                { name: "Sandhya Aarti", time: "7:00 PM – 8:15 PM" },
-                { name: "Shayana Aarti", time: "10:30 PM – 11:00 PM" }
-              ].map((item, idx) => (
-                <div key={idx} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                  <span className="font-medium">{item.name}</span>
-                  <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm">
-                    {item.time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
           
-          {/* Darshan Timings */}
-          <motion.div 
-            variants={item}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100"
-          >
-            <h3 className="text-xl font-bold mb-4 flex items-center">
-              <FiClock className="mr-2 text-purple-500" /> Darshan Timings
-            </h3>
-            <div className="space-y-3">
-              {[
-                { name: "Morning", time: "4:00 AM – 11:00 AM" },
-                { name: "Daytime", time: "1:00 PM – 7:00 PM" },
-                { name: "Evening", time: "8:30 PM – 10:30 PM" }
-              ].map((item, idx) => (
-                <div key={idx} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                  <span className="font-medium">{item.name}</span>
-                  <span className="bg-purple-50 text-purple-600 px-3 py-1 rounded-full text-sm">
-                    {item.time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
           
-          {/* How to Reach */}
-          <motion.div 
-            variants={item}
-            className="bg-white p-6 rounded-xl shadow-md border border-gray-100 md:col-span-2"
-          >
-            <h3 className="text-xl font-bold mb-4 flex items-center">
-              <FiMapPin className="mr-2 text-green-500" /> How to Reach
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                {
-                  icon: "✈️",
-                  title: "By Air",
-                  desc: "Lal Bahadur Shastri Intl Airport (VNS), ~20 km – taxis/app cabs available"
-                },
-                {
-                  icon: "🚂",
-                  title: "By Train",
-                  desc: "Varanasi Junction, ~3 km – autos, cycle rickshaws available"
-                },
-                {
-                  icon: "🛣️",
-                  title: "By Road",
-                  desc: "NH 19 & 31 – buses & taxis from major cities"
-                }
-              ].map((item, idx) => (
-                <div key={idx} className="bg-gray-50 p-4 rounded-lg">
-                  <div className="text-2xl mb-2">{item.icon}</div>
-                  <h4 className="font-bold mb-1">{item.title}</h4>
-                  <p className="text-gray-600">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </motion.section>
+       
 
       {/* Final CTA */}
       <motion.section 
