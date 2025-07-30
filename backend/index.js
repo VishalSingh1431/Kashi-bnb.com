@@ -28,4 +28,4 @@ app.use('/api/v1/payments', paymentRouter);
 
 app.get('/', (req, res) => res.send("APIs for Kashi-BnB"));
 
-app.listen(443, () => console.log("Server running on port 443"));
+app.listen(5000, () => console.log("Server running on port 5000"));
