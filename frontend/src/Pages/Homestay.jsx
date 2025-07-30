@@ -36,7 +36,7 @@ const Homestay = () => {
             id: "premium-suite",
             name: "Premium Suite",
             rate: 1999,
-            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            image: "#",
             city: "Varanasi",
             description: "Luxurious suite with premium amenities",
             s1: "Free WiFi",
@@ -49,7 +49,7 @@ const Homestay = () => {
             id: "luxury-villa",
             name: "Luxury Villa",
             rate: 2999,
-            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            image: "#",
             city: "Varanasi",
             description: "Spacious villa with modern facilities",
             s1: "AC",
@@ -62,7 +62,7 @@ const Homestay = () => {
             id: "budget-room",
             name: "Budget Room",
             rate: 999,
-            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            image: "#",
             city: "Varanasi",
             description: "Affordable accommodation with basic amenities",
             s1: "WiFi",
@@ -75,7 +75,7 @@ const Homestay = () => {
             id: "river-view-suite",
             name: "River View Suite",
             rate: 2499,
-            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            image: "#",
             city: "Varanasi",
             description: "Beautiful view of the Ganges river",
             s1: "Ganga View",
@@ -88,7 +88,7 @@ const Homestay = () => {
             id: "family-apartment",
             name: "Family Apartment",
             rate: 3499,
-            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            image: "#",
             city: "Varanasi",
             description: "Perfect for family stays with multiple rooms",
             s1: "3 Bedrooms",
@@ -109,7 +109,7 @@ const Homestay = () => {
             id: "premium-suite",
             name: "Premium Suite",
             rate: 1999,
-            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            image: "#",
             city: "Varanasi",
             description: "Luxurious suite with premium amenities",
             s1: "Free WiFi",
@@ -122,7 +122,7 @@ const Homestay = () => {
             id: "luxury-villa",
             name: "Luxury Villa",
             rate: 2999,
-            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
+            image: "#",
             city: "Varanasi",
             description: "Spacious villa with modern facilities",
             s1: "AC",
@@ -135,9 +135,7 @@ const Homestay = () => {
             id: "budget-room",
             name: "Budget Room",
             rate: 999,
-            image: "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg",
-            city: "Varanasi",
-            description: "Affordable accommodation with basic amenities",
+            image: "#",
             s1: "WiFi",
             s2: "24/7 Support",
             s3: "TV",
@@ -345,7 +343,7 @@ const Homestay = () => {
                 key={hotel.id}
                 name={hotel.name}
                 price={hotel.rate || "N/A"}
-                image={hotel.image || "https://kashibnb.in/wp-content/uploads/2024/12/WhatsApp-Image-2024-12-25-at-1.05.58-PM-3-400x314.jpeg"}
+                image={hotel.image || "#"}
                 rating={hotel.rating}
                 options={[
                   hotel.s1 || "Free WiFi",

@@ -5,42 +5,51 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 
-export const loginControl = async (req,res,nex)=>{
-    try{
+export const loginControl = async (req, res, nex) => {
+    try {
         const user = await prisma.users.findUnique({
-            where:{
+            where: {
                 email: req.body.email
             }
-        })
-        if(!user||(user.verified==false)){
-            return res.status(411).json({
-                success : false ,
-                message : "email not verified"
+        });
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "User not found. Please check your email or sign up."
             });
         }
-        if(await bcrypt.compare(req.body.password,user.password)){
-            const token = await jwt.sign(user,process.env.JWT_SEX);
-            user.password=null;
-            user.token=null;
-            return res.status(200).json({
-                success : true,
-                message : "logged in",
-                token : `Bearer ${token}`,
-                user
+
+        if (user.verified === false) {
+            return res.status(403).json({
+                success: false,
+                message: "Email not verified. Please verify your email before logging in."
             });
         }
-        else{
-            return res.status(411).json({
-                success : false ,
-                message : "wrong username or password"
+
+        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+        if (!passwordMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Incorrect password. Please try again."
             });
         }
-    }
-    catch(e){
-        return res.status(411).json({
-            success : false ,
-            message : "error logingin",
-            e
+
+        const token = await jwt.sign(user, process.env.JWT_SEX);
+        user.password = null;
+        user.token = null;
+        return res.status(200).json({
+            success: true,
+            message: "Logged in successfully.",
+            token: `Bearer ${token}`,
+            user
+        });
+    } catch (e) {
+        console.error("Login error:", e);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while logging in.",
+            error: e.message || e
         });
     }
 };
@@ -171,7 +180,7 @@ export const makeRequest = async (req, res, next) => {
             console.log(req.user.email, "already hoteler");
             return res.status(420).json({
                 success: false,
-                message: "already a hoteler"
+                message: "User is already a hotel owner."
             });
         }
 

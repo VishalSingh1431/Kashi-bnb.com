@@ -7,7 +7,12 @@ import {
   FiChevronRight, FiTrash2
 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-const user=JSON.parse(localStorage.getItem("user"));
+import PersonalInfo from './Profile/PersonalInfo';
+import UserBookings from './Profile/UserBookings';
+import MyHotels from './Profile/MyHotels';
+import HotelBookings from './Profile/HotelBookings';
+import ListingAccess from './Profile/ListingAccess';
+import AccessRequests from './Profile/AccessRequests';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -24,10 +29,13 @@ const Profile = () => {
     address: ''
   });
   
-  // Separate state for listing access requests (removed name field)
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+  // Separate state for listing access requests
   const [listingRequestData, setListingRequestData] = useState({
-    email: user?.email,
-    phone: user?.phone,
+    email: '',
+    phone: '',
     message: ''
   });
 
@@ -36,12 +44,12 @@ const Profile = () => {
   const [accessRequests, setAccessRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
 
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
+        if (!token || !user) {
+          // If no token or user, redirect to login
           navigate('/login');
           return;
         }
@@ -51,6 +59,7 @@ const Profile = () => {
             'Authorization': token
           }
         });
+        
         setUserData(response.data.allData);
         setProfileFormData({
           name: response.data.allData.name || '',
@@ -72,7 +81,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [navigate, user.id]);
+  }, [navigate, user?.id]);
 
   const fetchAccessRequests = async () => {
     try {
@@ -137,7 +146,6 @@ const Profile = () => {
   const handleRequestListingAccess = async () => {
     try {
       const token = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user"));
       
       await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, listingRequestData, {
         headers: {
@@ -160,20 +168,28 @@ const Profile = () => {
       const endpoint = type === 'admin' 
         ? `${BACKEND}/api/v1/user/admin/makeAdmin` 
         : `${BACKEND}/api/v1/user/admin/makeHoteler`;
-        
-     const data= await axios.post(
+      
+      const response = await axios.post(
         endpoint,
         { email },
         { headers: { 'Authorization': token } }
       );
-      console.lod(data);
-      
+      console.log(response);
       await fetchAccessRequests();
-      setError(null);
-      alert(`User ${email} has been promoted to ${type}`);
+      if (response.data && response.data.success) {
+        setError(null);
+        alert(`User ${email} has been promoted to ${type}`);
+      } else {
+        setError(response.data?.message || 'Failed to promote user');
+      }
     } catch (err) {
       console.log(err);
-      setError(err.response?.data?.message || 'Failed to promote user');
+      const backendMsg = err.response?.data?.message;
+      if (backendMsg === 'User is already a hotel owner.') {
+        setError('User is already a hotel owner.');
+      } else {
+        setError(backendMsg || 'Failed to promote user');
+      }
     }
   };
 
@@ -216,16 +232,11 @@ const Profile = () => {
     );
   }
 
+  // If userData is still null after loading, show loading spinner
   if (!userData) {
     return (
-      <div className='min-h-screen pt-52 px-4 sm:px-6 lg:px-8 text-center'>
-        <p>No user data found. Please login.</p>
-        <button 
-          onClick={() => navigate('/login')}
-          className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-        >
-          Go to Login
-        </button>
+      <div className='min-h-screen pt-52 px-4 sm:px-6 lg:px-8 flex justify-center'>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
       </div>
     );
   }
@@ -280,466 +291,48 @@ const Profile = () => {
 
       {/* Personal Info Tab */}
       {activeTab === 'personal' && (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
-          <div className="flex justify-between items-start mb-8">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">Personal Information</h1>
-              <p className="text-gray-600">Manage your account details</p>
-            </div>
-            <div className="flex space-x-2">
-              {editMode ? (
-                <>
-                  <button 
-                    onClick={handleSaveProfile}
-                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                  >
-                    <FiSave className="mr-2" /> Save
-                  </button>
-                  <button 
-                    onClick={() => setEditMode(false)}
-                    className="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <button 
-                  onClick={() => setEditMode(true)}
-                  className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                >
-                  <FiEdit className="mr-2" /> Edit Profile
-                </button>
-              )}
-              <button 
-                onClick={handleLogout}
-                className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-              >
-                <FiLogOut className="mr-2" /> Logout
-              </button>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="md:col-span-1">
-              <div className="flex flex-col items-center">
-                <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mb-4 overflow-hidden">
-                  <span className="text-4xl text-gray-500">
-                    {userData.name?.charAt(0).toUpperCase() || 'U'}
-                  </span>
-                </div>
-                <h2 className="text-xl font-semibold mt-2 capitalize">{userData.name}</h2>
-                <p className="text-gray-600">{userData.is_admin ? 'Admin' : 'User'}</p>
-                <div className="mt-4 flex items-center text-gray-500">
-                  <FiClock className="mr-2" />
-                  <span>Member since {new Date(userData.time).toLocaleDateString()}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="md:col-span-2">
-              <div className="space-y-6">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 pt-1">
-                    <FiUser className="h-5 w-5 text-gray-500" />
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-lg font-medium text-gray-800">Name</h3>
-                    {editMode ? (
-                      <input
-                        type="text"
-                        name="name"
-                        value={profileFormData.name}
-                        onChange={handleProfileInputChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                      />
-                    ) : (
-                      <p className="mt-1 text-gray-600 capitalize">{userData.name}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 pt-1">
-                    <FiMail className="h-5 w-5 text-gray-500" />
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-lg font-medium text-gray-800">Email</h3>
-                    <p className="mt-1 text-gray-600">{userData.email}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 pt-1">
-                    <FiPhone className="h-5 w-5 text-gray-500" />
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-lg font-medium text-gray-800">Phone</h3>
-                    {editMode ? (
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={profileFormData.phone}
-                        onChange={handleProfileInputChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                      />
-                    ) : (
-                      <p className="mt-1 text-gray-600">{userData.phone || 'Not provided'}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 pt-1">
-                    <FiMapPin className="h-5 w-5 text-gray-500" />
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="text-lg font-medium text-gray-800">Address</h3>
-                    {editMode ? (
-                      <textarea
-                        name="address"
-                        value={profileFormData.address}
-                        onChange={handleProfileInputChange}
-                        rows={3}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                      />
-                    ) : (
-                      <p className="mt-1 text-gray-600">{userData.address || 'Not provided'}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <PersonalInfo
+          userData={userData}
+          editMode={editMode}
+          profileFormData={profileFormData}
+          handleProfileInputChange={handleProfileInputChange}
+          handleSaveProfile={handleSaveProfile}
+          setEditMode={setEditMode}
+          handleLogout={handleLogout}
+        />
       )}
-
       {/* Your Bookings Tab */}
       {activeTab === 'bookings' && (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Bookings</h1>
-          
-          {userData.bookings && userData.bookings.length > 0 ? (
-            <div className="space-y-4">
-              {userData.bookings.map((booking, index) => (
-                <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium text-lg">{booking.hotelName || 'Hotel Booking'}</h3>
-                      <p className="text-gray-600">
-                        {new Date(booking.checkInDate).toLocaleDateString()} - {new Date(booking.checkOutDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">₹{booking.totalAmount}</p>
-                      <p className={`text-sm ${booking.status === 'confirmed' ? 'text-green-600' : 'text-yellow-600'}`}>
-                        {booking.status || 'pending'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-center text-gray-500">
-                    <FiHome className="mr-2" />
-                    <span>{booking.hotelAddress || 'Address not available'}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-500">You don't have any bookings yet.</p>
-              <button 
-                onClick={() => navigate('/hotels')}
-                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                Browse Hotels
-              </button>
-            </div>
-          )}
-        </div>
+        <UserBookings userData={userData} navigate={navigate} />
       )}
-
       {/* My Hotels Tab */}
       {activeTab === 'myHotels' && userData?.has_hotel && (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">My Hotels</h1>
-            <button 
-              onClick={() => navigate('/add-listing')}
-              className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-            >
-              <FiPlus className="mr-2" /> Add Hotel
-            </button>
-          </div>
-          
-          {userData.hotels_name && userData.hotels_name.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userData.hotels_name.map((hotel) => (
-                <div key={hotel.id} className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="h-48 bg-gray-200 relative">
-                    {hotel.images?.[0]?.url ? (
-                      <img 
-                        src={hotel.images[0].url} 
-                        alt={hotel.name} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-500">
-                        <FiHome size={48} />
-                      </div>
-                    )}
-                    <div className="absolute bottom-2 right-2 bg-white px-2 py-1 rounded-full text-sm">
-                      ₹{hotel.rate}/night
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-semibold text-lg capitalize">{hotel.name}</h3>
-                      <div className="flex items-center">
-                        <FiStar className="text-yellow-400 mr-1" />
-                        <span>5.0</span>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mt-1 line-clamp-2">{hotel.details || 'No description available'}</p>
-                    <div className="mt-3 flex items-center text-gray-500">
-                      <FiMapPin className="mr-2" />
-                      <span className="text-sm truncate">{hotel.address || 'Address not available'}</span>
-                    </div>
-                    <div className="mt-4 flex justify-between items-center">
-                      <button 
-                        onClick={() => navigate(`/hotel/${hotel.id}`)}
-                        className="flex items-center px-3 py-1 text-sm bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200"
-                      >
-                        View <FiChevronRight className="ml-1" />
-                      </button>
-                      <button 
-                        onClick={() => navigate(`/edit-hotel/${hotel.id}`)}
-                        className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">You haven't added any hotels yet.</p>
-              <button 
-                onClick={() => navigate('/add-hotel')}
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                Add Your First Hotel
-              </button>
-            </div>
-          )}
-        </div>
+        <MyHotels userData={userData} navigate={navigate} />
       )}
-
       {/* Hotel Bookings Tab (for owners) */}
       {activeTab === 'hotelBookings' && userData?.has_hotel && (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Hotel Bookings</h1>
-          
-          {userData.hotels_name && userData.hotels_name.some(hotel => hotel.bookings && hotel.bookings.length > 0) ? (
-            <div className="space-y-6">
-              {userData.hotels_name.map((hotel) => (
-                hotel.bookings && hotel.bookings.length > 0 && (
-                  <div key={hotel.id} className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">{hotel.name}</h2>
-                    <div className="space-y-4">
-                      {hotel.bookings.map((booking, index) => (
-                        <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="font-medium">Booking #{index + 1}</h3>
-                              <p className="text-gray-600">
-                                {new Date(booking.checkInDate).toLocaleDateString()} - {new Date(booking.checkOutDate).toLocaleDateString()}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-semibold">₹{booking.totalAmount}</p>
-                              <p className={`text-sm ${booking.status === 'confirmed' ? 'text-green-600' : 'text-yellow-600'}`}>
-                                {booking.status || 'pending'}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="mt-2">
-                            <p className="text-gray-600">Guest: {booking.userName}</p>
-                            <p className="text-gray-600">Contact: {booking.userEmail}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-500">No bookings for your hotels yet.</p>
-            </div>
-          )}
-        </div>
+        <HotelBookings userData={userData} />
       )}
-
       {/* Listing Access Tab */}
       {activeTab === 'listingAccess' && (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">Listing Access</h1>
-          
-          {userData.is_admin ? (
-            <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">You have admin privileges and can manage all listings.</p>
-              <button 
-                onClick={() => navigate('/admin')}
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                Go to Admin Dashboard
-              </button>
-            </div>
-          ) : userData.has_hotel ? (
-            <div className="text-center py-8">
-              <div className="mb-6 p-4 bg-green-50 rounded-lg">
-                <p className="text-green-600 font-medium mb-2">Your listing access has been approved!</p>
-                <p className="text-gray-600">You can now add and manage your hotel listings.</p>
-              </div>
-              <button 
-                onClick={() => navigate('/add-listing')}
-                className="flex items-center justify-center mx-auto px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                <FiPlus className="mr-2" /> Add New Hotel
-              </button>
-            </div>
-          ) : requestSent ? (
-            <div className="text-center py-8">
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                <p className="text-blue-600 font-medium mb-2">Your request has been submitted!</p>
-                <p className="text-gray-600">Thank you for your interest. We'll review your message and get back to you soon.</p>
-              </div>
-            </div>
-          ) : (
-            <div className="max-w-2xl mx-auto">
-              <div className="mb-8 p-6 bg-gray-50 rounded-lg">
-                <h2 className="text-xl font-semibold mb-4">Become a Hotel Partner</h2>
-                <p className="text-gray-600 mb-6">
-                  List your property on our platform to reach thousands of travelers. 
-                  Get bookings, manage availability, and grow your business.
-                </p>
-                
-                <div className="mb-6">
-                  <h3 className="font-medium mb-3">Tell us about your property:</h3>
-                  <textarea
-                    className="w-full border border-gray-300 rounded-md p-3 focus:ring-indigo-500 focus:border-indigo-500"
-                    rows={4}
-                    placeholder="Please describe your property (type, location, amenities, etc.)"
-                    name="message"
-                    value={listingRequestData.message}
-                    onChange={handleListingRequestInputChange}
-                  />
-                </div>
-                
-                <div className="mb-6">
-                  <h3 className="font-medium mb-3">Benefits:</h3>
-                  <ul className="space-y-2 text-gray-600">
-                    <li className="flex items-start">
-                      <FiChevronRight className="flex-shrink-0 h-5 w-5 text-indigo-500 mt-0.5 mr-2" />
-                      <span>Increase your property's visibility</span>
-                    </li>
-                    <li className="flex items-start">
-                      <FiChevronRight className="flex-shrink-0 h-5 w-5 text-indigo-500 mt-0.5 mr-2" />
-                      <span>Manage bookings and availability easily</span>
-                    </li>
-                    <li className="flex items-start">
-                      <FiChevronRight className="flex-shrink-0 h-5 w-5 text-indigo-500 mt-0.5 mr-2" />
-                      <span>Get paid securely and on time</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="text-center">
-                <button 
-                  onClick={handleRequestListingAccess}
-                  disabled={!listingRequestData.message}
-                  className={`px-6 py-3 text-white rounded-lg font-medium ${
-                    listingRequestData.message 
-                      ? 'bg-indigo-600 hover:bg-indigo-700' 
-                      : 'bg-gray-400 cursor-not-allowed'
-                  }`}
-                >
-                  Submit Request
-                </button>
-                <p className="mt-3 text-sm text-gray-500">
-                  By submitting, you agree to our Partner Terms and Conditions
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
+        <ListingAccess
+          userData={userData}
+          requestSent={requestSent}
+          listingRequestData={listingRequestData}
+          handleListingRequestInputChange={handleListingRequestInputChange}
+          handleRequestListingAccess={handleRequestListingAccess}
+          navigate={navigate}
+        />
       )}
-
       {/* Access Requests Tab (Admin Only) */}
       {activeTab === 'accessRequests' && (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">Access Requests</h1>
-          
-          {requestsLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-            </div>
-          ) : error ? (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {accessRequests.length > 0 ? (
-                accessRequests.map((request) => (
-                  <div key={request.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-medium text-lg">{request.email}</h3>
-                        <p className="text-gray-600">{request.phone}</p>
-                        <p className="text-gray-600 mt-2">{request.message}</p>
-                        <p className="text-sm text-indigo-600 mt-1">
-                          Requested as: {request.type === 'admin' ? 'Admin' : 'Hotel Owner'}
-                        </p>
-                      </div>
-                      <div className="flex space-x-2">
-                        {request.type === 'hotelowner' && (
-                          <button
-                            onClick={() => handlePromoteUser(request.email, 'hotelowner')}
-                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center"
-                          >
-                            <FiPlus className="mr-2" /> Approve Hotel Owner
-                          </button>
-                        )}
-                        {request.type === 'admin' && (
-                          <button
-                            onClick={() => handlePromoteUser(request.email, 'admin')}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
-                          >
-                            <FiUser className="mr-2" /> Promote to Admin
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleDeleteRequest(request.id)}
-                          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center"
-                        >
-                          <FiTrash2 className="mr-2" /> Reject
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No pending access requests.</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <AccessRequests
+          accessRequests={accessRequests}
+          requestsLoading={requestsLoading}
+          error={error}
+          handlePromoteUser={handlePromoteUser}
+          handleDeleteRequest={handleDeleteRequest}
+        />
       )}
     </div>
   );

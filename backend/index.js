@@ -1,27 +1,31 @@
+// MUST BE THE ABSOLUTE FIRST LINE IN YOUR ENTRY FILE
+import 'dotenv/config'; // Modern ES6 way to load .env
+
 import express from 'express';
 import { limiter } from './middleware/auth.js';
 import userRouter from './routes/user.js';
-import hotelRouter from './routes/hotel.js'
-import paymentRouter from './routes/payments.js'
-import cors from 'cors'
+import hotelRouter from './routes/hotel.js';
+import paymentRouter from './routes/payments.js';
+import cors from 'cors';
+
+// Debug: Verify variables are loaded
+// console.log('ImageKit Public Key exists:', !!process.env.IMG_K_PRK);
 
 const app = express();
-
-app.use(cors());
-// app.use(limiter);
+// app.use(cors()); // for local development
+// for production
+app.use(cors({
+    origin: 'https://kashibnb.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
-app.use('/api/v1/user',userRouter);
-app.use('/api/v1/hotel',hotelRouter);
-app.use('/api/v1/payments',paymentRouter);
 
+// Routes
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/hotel', hotelRouter);
+app.use('/api/v1/payments', paymentRouter);
 
-app.get('/',(req,res)=>{
-    return res.send("Apis for Kashi-BnB");
-});
+app.get('/', (req, res) => res.send("APIs for Kashi-BnB"));
 
-// app.use('/api/v1/restr');
-// https://kashi-bnb-production.up.railway.app/
-
-app.listen(4001,()=>{
-    console.log("app running on");
-})
+app.listen(443, () => console.log("Server running on port 443"));
