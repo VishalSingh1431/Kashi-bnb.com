@@ -6,11 +6,10 @@ import axios from 'axios';
 import { FiSave, FiX } from "react-icons/fi";
 
 import DescriptionForm from "../components/listings/DescriptionForm";
-import LocationForm from "../components/listings/LocationForm";
+import LocationForm from "../components/listings/LocationForm.jsx";
 import RoomDetailsForm from "../components/listings/RoomDetailsForm";
 import AmenitiesForm from "../components/listings/AmenitiesForm";
-import BookingWidget from "../components/listings/BookingWidget";
-
+import BookingWidget from "../components/listings/BookingWidget"; 
 // Keep constants and localStorage access in the parent
 import { BACKEND } from "../assets/Vars";
 import ImageUploader from "../Components/Listings/ImageUploader";
@@ -138,7 +137,7 @@ const Listings = () => {
       </div>
 
       <DescriptionForm listing={listing} handleInputChange={handleInputChange} />
-
+   
       <ImageUploader 
         images={images}
         currentImageIndex={currentImageIndex}
@@ -152,6 +151,7 @@ const Listings = () => {
         <div className="lg:col-span-2">
           <RoomDetailsForm listing={listing} handleInputChange={handleInputChange} user={user} />
           <AmenitiesForm listing={listing} handleAmenityChange={handleAmenityChange} />
+          
           <LocationForm listing={listing} handleInputChange={handleInputChange} />
         </div>
 
