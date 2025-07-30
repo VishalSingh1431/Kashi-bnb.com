@@ -5,11 +5,11 @@ import axios from 'axios';
 // Import action icons for the main page
 import { FiSave, FiX } from "react-icons/fi";
 
-import DescriptionForm from "../components/listings/DescriptionForm";
-import LocationForm from "../components/listings/LocationForm.jsx";
-import RoomDetailsForm from "../components/listings/RoomDetailsForm";
-import AmenitiesForm from "../components/listings/AmenitiesForm";
-import BookingWidget from "../components/listings/BookingWidget"; 
+import DescriptionForm from "../Components/Listings/DescriptionForm";
+import LocationForm from "../Components/Listings/LocationForm";
+import RoomDetailsForm from "../Components/Listings/RoomDetailsForm";
+import AmenitiesForm from "../Components/Listings/AmenitiesForm";
+import BookingWidget from "../Components/Listings/BookingWidget";
 // Keep constants and localStorage access in the parent
 import { BACKEND } from "../assets/Vars";
 import ImageUploader from "../Components/Listings/ImageUploader";
@@ -129,7 +129,7 @@ const Listings = () => {
         <div className="flex gap-2">
           <button onClick={() => nav('/')} className="flex items-center gap-2 px-4 py-2 rounded-lg border transition hover:bg-black hover:text-white">
             <FiX /> Cancel
-          </button>
+          </button> 
           <button onClick={handleSubmitListing} disabled={isSubmitting} className="flex items-center gap-2 px-4 py-2 border rounded-lg transition hover:bg-black hover:text-white">
             <FiSave /> {isSubmitting ? 'Saving...' : 'Save Listing'}
           </button>
