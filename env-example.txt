@@ -1,0 +1,25 @@
+# Database Configuration
+DATABASE_URL="postgresql://kashibnb_user:your_secure_password_here@localhost:5432/kashibnb"
+
+# JWT Configuration
+JWT_SECRET="your_jwt_secret_key_here"
+
+# Email Configuration (for nodemailer)
+EMAIL_USER="your_email@gmail.com"
+EMAIL_PASS="your_email_app_password"
+
+# ImageKit Configuration (for image uploads)
+IMG_K_PUBK="your_imagekit_public_key"
+IMG_K_PRIK="your_imagekit_private_key"
+IMG_K_URL="your_imagekit_url_endpoint"
+
+# Razorpay Configuration (for payments)
+RAZORPAY_KEY_ID="your_razorpay_key_id"
+RAZORPAY_KEY_SECRET="your_razorpay_key_secret"
+
+# Server Configuration
+PORT=6000
+NODE_ENV=production
+
+# CORS Configuration
+FRONTEND_URL="https://kashibnb.com" 
