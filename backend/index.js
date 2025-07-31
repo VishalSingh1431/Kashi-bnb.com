@@ -15,11 +15,22 @@ const app = express();
 // app.use(cors()); // for local development
 // for production
 app.use(cors({
-    origin: ['https://kashibnb.com', 'https://www.kashibnb.com'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: ['https://kashibnb.com', 'https://www.kashibnb.com', 'http://localhost:5173', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200
 }));
 app.use(express.json());
+
+// Handle preflight requests
+app.options('*', cors());
+
+// Debug middleware to log CORS-related requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+    next();
+});
 
 // Routes
 app.use('/api/v1/user', userRouter);
