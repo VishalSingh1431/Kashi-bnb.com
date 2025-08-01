@@ -36,7 +36,7 @@ const Checkout = () => {
         },
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -64,7 +64,7 @@ const Checkout = () => {
               },
               {
                 headers: {
-                  Authorization: token,
+                  Authorization: `Bearer ${token}`,
                 },
               }
             );

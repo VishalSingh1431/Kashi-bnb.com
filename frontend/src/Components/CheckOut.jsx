@@ -82,7 +82,7 @@ const CheckOut = () => {
             },
             {
               headers: {
-                'Authorization': token
+                'Authorization': `Bearer ${token}`
               }
             }
           );
@@ -125,7 +125,7 @@ const CheckOut = () => {
         },
         {
           headers: {
-            'Authorization': token
+            'Authorization': `Bearer ${token}`
           }
         }
       );

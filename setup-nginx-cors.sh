@@ -13,6 +13,10 @@ sudo cp nginx-config.conf /etc/nginx/sites-available/kashibnb
 echo "📝 Setting up backend configuration..."
 sudo cp backend-nginx-config.conf /etc/nginx/sites-available/backend-kashibnb
 
+# Remove any existing default site
+echo "🗑️  Removing default nginx site..."
+sudo rm -f /etc/nginx/sites-enabled/default
+
 # Enable the sites
 echo "🔗 Enabling nginx sites..."
 sudo ln -sf /etc/nginx/sites-available/kashibnb /etc/nginx/sites-enabled/

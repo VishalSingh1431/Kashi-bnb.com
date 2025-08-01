@@ -297,7 +297,7 @@ const About = () => {
       >
         <img
           className="w-full h-64 md:h-96 object-cover rounded-xl shadow-lg"
-          src="/images/hotel room.jpg"
+                          src="/images/About Us.png"
           alt="Hotel Room"
         />
       </motion.div>

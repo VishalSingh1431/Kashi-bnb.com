@@ -126,9 +126,9 @@ const Footer = () => {
               Explore More
             </motion.h4>
             <ul className="space-y-4 text-black text-sm font-medium">
-              {["Restaurants & Hotels", "Add Your Business", "Blogs"].map((service) => (
+              {["Restaurants & Hotels", "Add Your Business", "Blogs"].map((service, index) => (
                 <motion.li
-                  
+                  key={index}
                 >
                   <Link to={`/${service.toLowerCase().replace(/ & /g, "-").replace(/\s+/g, "-")}`}>
                     {service}

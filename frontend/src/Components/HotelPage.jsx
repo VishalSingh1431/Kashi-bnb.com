@@ -87,7 +87,7 @@ const HotelPage = () => {
         changedHotel,
         {
           headers: {
-            'Authorization': token,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         }

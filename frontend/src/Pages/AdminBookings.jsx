@@ -25,7 +25,7 @@ const AdminBookings = () => {
       try {
         const response = await axios.get(`${BACKEND}/api/v1/booking/all?page=${currentPage}`, {
           headers: {
-            Authorization: token
+            Authorization: `Bearer ${token}`
           }
         });
         setBookings(response.data.bookings);
@@ -61,7 +61,7 @@ const AdminBookings = () => {
         { status: tempStatus },
         {
           headers: {
-            Authorization: token
+            Authorization: `Bearer ${token}`
           }
         }
       );
