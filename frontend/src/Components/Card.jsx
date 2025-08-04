@@ -1,12 +1,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const Card = ({ name, price, image, rating, options, address, gmap, onClick }) => {
+const Card = ({ name, price, image, images, rating, options, address, gmap, onClick }) => {
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
     hover: { scale: 1.05, transition: { duration: 0.3 } },
   };
+
+  // Use the first image from images array, fallback to single image, or use placeholder
+  const displayImage = images && images.length > 0 
+    ? images[0].url 
+    : image || "https://via.placeholder.com/400x300?text=No+Image";
 
   return (
     <motion.div
@@ -18,7 +23,7 @@ const Card = ({ name, price, image, rating, options, address, gmap, onClick }) =
       onClick={onClick} // Add onClick handler here
     >
       <img
-        src={image}
+        src={displayImage}
         alt={name}
         className="w-full h-48 md:h-56 lg:h-64 object-cover"
       />

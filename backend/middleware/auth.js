@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 
+
+//Checks if the user is logged in (has a valid JWT token).
+
 const authorisation = async (req,res,nex)=>{
     // console.log(req.headers);
     try{
@@ -39,6 +42,8 @@ const authorisation = async (req,res,nex)=>{
     }
 };
 
+//  Checks if the logged-in user is an admin.
+
 const isAdmin = async (req,res,nex)=>{
     try
     {    
@@ -48,7 +53,7 @@ const isAdmin = async (req,res,nex)=>{
             nex();
         }
         else{
-            console.log("you are not a admin");
+            console.log("you are not an admin");
             return res.status(411).json({
                 success : false,
                 message:" not admin"
@@ -66,6 +71,7 @@ const isAdmin = async (req,res,nex)=>{
     }
 };
 
+//  Checks if the user is a hotel owner.
 const hasHotel = async (req,res,nex)=>{
     // console.log(req.body);
     try
@@ -93,6 +99,7 @@ const hasHotel = async (req,res,nex)=>{
     }
 };
 
+//  Checks if the user is a restaurant owner.
 const hasRestr = async (req,res,nex)=>{
     try
     {    
@@ -118,6 +125,8 @@ const hasRestr = async (req,res,nex)=>{
     }
 };
 
+
+// Limits the number of requests a user can make in a short time (rate limiting).
 const limiter = rateLimit({
     windowMs: 60 * 1000,
     max: 10,

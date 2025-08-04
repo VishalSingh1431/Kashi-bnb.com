@@ -16,7 +16,7 @@ dotenv.config();
   export const sendEmail = async (toEmail,token) => {
   
     const mailOptions = {
-      from: "shantanubonerjee@gmail.com <Kashi-BnB>",
+      from: "kashibnb.vns@gmail.com <Kashi-BnB>",
       to: toEmail,
       subject: "KASHI-BnB: verify your mail",
       html: `<p>Click the link below to verify your email:</p>

@@ -87,13 +87,13 @@ export const paymentVerifyControl = async (req,res,nex) => {
             
             res.status(200).json({
                 success: true,
-                message: "Payement Successfully"
+                message: "Payement Successfull"
             });
         }
         else{
             res.status(401).json({
                 success: false,
-                message: "Payement Unsccessfully, unauth"
+                message: "Payement Unsccessfull, unauth"
             });
         }
     } catch (e) {

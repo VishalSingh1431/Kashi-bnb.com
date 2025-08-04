@@ -43,6 +43,7 @@ model hotels {
   totalRoom Int       @default(2)
   maxInRoom Int       @default(2)
   details   String?   @db.Text
+  videoUrl  String?   @db.Text
   rate      Decimal   @default(0.0) // Provide a default value
   s1        String    @default("")
   s2        String    @default("")
@@ -85,6 +86,8 @@ model blogs {
   authorId String
 }
 
+// hotel images
+
 model himages {
   id      String @id @default(uuid())
   url     String
@@ -92,6 +95,8 @@ model himages {
   hotel   hotels @relation(fields: [hotelId], references: [id])
   hotelId String
 }
+
+// restaurant images
 
 model rimages {
   id      String @id @default(uuid())

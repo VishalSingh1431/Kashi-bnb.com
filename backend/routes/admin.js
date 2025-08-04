@@ -5,10 +5,19 @@ import { makeAdmin, makeHoteler, makeRestr ,viewRequest } from "../controllers/a
 
 const router = Router();
 
-router.get('/check',checkControl);
-router.get('/request',authorisation,isAdmin,viewRequest);
-router.post('/makeAdmin',authorisation,isAdmin,makeAdmin);
-router.post('/makeHoteler',authorisation,isAdmin,makeHoteler);
-router.post('/makeRestr',authorisation,isAdmin,makeRestr);
+// Simple check route (not protected)
+router.get('/check', checkControl);
+
+// View all pending requests (admin only)
+router.get('/request', authorisation, isAdmin, viewRequest);
+
+// Promote a user to admin (admin only)
+router.post('/makeAdmin', authorisation, isAdmin, makeAdmin);
+
+// Promote a user to hotel owner (admin only)
+router.post('/makeHoteler', authorisation, isAdmin, makeHoteler);
+
+// Promote a user to restaurant owner (admin only)
+router.post('/makeRestr', authorisation, isAdmin, makeRestr);
 
 export default router;

@@ -10,6 +10,10 @@ import HotelBookingCard from "./HotelPage/HotelBookingCard";
 import HotelDescription from "./HotelPage/HotelDescription";
 import HotelHostInfo from "./HotelPage/HotelHostInfo";
 import HotelHeader from "./HotelPage/HotelHeader";
+import HotelVideoSection from "./HotelPage/HotelVideoSection";
+import HotelMapSection from "./HotelPage/HotelMapSection";
+import { FiMapPin } from "react-icons/fi";
+
 
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
@@ -221,6 +225,20 @@ const HotelPage = () => {
         handleImageUpload={handleImageUpload}
       />
 
+              <HotelVideoSection
+          hotel={hotel}
+          editMode={editMode}
+          tempHotel={tempHotel}
+          handleInputChange={handleInputChange}
+        />
+
+        <HotelMapSection
+          hotel={hotel}
+          editMode={editMode}
+          tempHotel={tempHotel}
+          handleInputChange={handleInputChange}
+        />
+
       <div className="flex items-center mb-4">
         <div className="flex items-center w-full">
           <FiMapPin className="mr-1 flex-shrink-0" />
@@ -238,8 +256,8 @@ const HotelPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="xl:col-span-2">
           <HotelHostInfo 
             hotel={hotel}
             editMode={editMode}
@@ -269,7 +287,7 @@ const HotelPage = () => {
           />
         </div>
 
-        <div className="lg:col-span-1">
+        <div className="xl:col-span-1">
           <HotelBookingCard 
             hotel={hotel}
             editMode={editMode}

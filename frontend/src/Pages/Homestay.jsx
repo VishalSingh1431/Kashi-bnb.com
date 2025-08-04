@@ -344,6 +344,7 @@ const Homestay = () => {
                 name={hotel.name}
                 price={hotel.rate || "N/A"}
                 image={hotel.image || "#"}
+                images={hotel.images}
                 rating={hotel.rating}
                 options={[
                   hotel.s1 || "Free WiFi",

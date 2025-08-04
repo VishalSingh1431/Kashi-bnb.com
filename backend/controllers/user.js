@@ -4,7 +4,7 @@ import { sendEmail } from '../utils/mail.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-
+// Log in a user.
 export const loginControl = async (req, res, nex) => {
     try {
         const user = await prisma.users.findUnique({
@@ -110,6 +110,8 @@ export const verification = async (req,res,nex)=>{
     }
 }
 
+
+//  Register a new user.
 export const signupControl = async (req,res,nex)=>{
     try{
         let user = await prisma.users.findUnique({
@@ -167,12 +169,17 @@ export const signupControl = async (req,res,nex)=>{
     }
 }
 
+// Simple route to check if the API is working.
+
+
 export const checkControl = (req,res,nex)=>{
     return res.status(200).json({
         success : true,
         message:"route working"
     });
 }
+
+//  Request to become a hotel owner.
 
 export const makeRequest = async (req, res, next) => {
     try {
@@ -221,6 +228,9 @@ export const makeRequest = async (req, res, next) => {
     }
 };
 
+
+// Get the logged-in user’s profile.
+
 export const sendProfile = async (req,res,nex)=>{
     try{
         const reqId = req.params.uid;
@@ -263,6 +273,8 @@ export const sendProfile = async (req,res,nex)=>{
     }
     
 }
+
+// Update the logged-in user’s profile.
 
 export const updateProfile = async (req,res,nex)=>{
     try{

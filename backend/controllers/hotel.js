@@ -1,6 +1,7 @@
 import { prisma } from "../utils/client.js";
 import { iUploader } from "../utils/imageUploader.js";
 
+// Fetches all hotels from the database
 export const getHotels = async (req,res,nex)=>{
     try{
         const hotels = await prisma.hotels.findMany({
@@ -30,6 +31,7 @@ export const getHotels = async (req,res,nex)=>{
     }
 };
 
+// Fetches a unique hotel by its ID
 export const getUniqueHotel = async (req,res,nex)=>{
     try{
         const id = req.params.uid;
@@ -70,6 +72,8 @@ export const getUniqueHotel = async (req,res,nex)=>{
     }
 };
 
+// Book a hotel for the logged-in user.
+
 export const bookHotel = async (req,res,nex) => {
     try{
         const id = req.params.uid;
@@ -102,6 +106,9 @@ export const bookHotel = async (req,res,nex) => {
     }
 };
 
+
+// Get all hotels owned by the logged-in user.
+
 export const getMyHotels = async (req,res,nex) =>{
     try{
         const hotels = await prisma.hotels.findMany({
@@ -127,8 +134,77 @@ export const getMyHotels = async (req,res,nex) =>{
     }
 }
 
+
+// Add a new hotel listing.
 export const addNewHotel = async (req,res,nex) =>{
     try{
+        // Validate required fields
+        const { name, address, rate, details, totalRoom, maxAdults, maxChildren, maxInfants, maxPets } = req.body;
+        
+        if (!name || name.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter the property name"
+            });
+        }
+        
+        if (!address || address.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter the property address"
+            });
+        }
+        
+        if (!rate || rate <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid nightly rate"
+            });
+        }
+        
+        if (!details || details.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter the property description"
+            });
+        }
+        
+        if (!totalRoom || totalRoom <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter the number of rooms"
+            });
+        }
+        
+        // Validate guest limits
+        if (!maxAdults || maxAdults < 1) {
+            return res.status(400).json({
+                success: false,
+                message: "Please set maximum adults (minimum 1)"
+            });
+        }
+        
+        if (maxChildren === undefined || maxChildren < 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Please set maximum children"
+            });
+        }
+        
+        if (maxInfants === undefined || maxInfants < 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Please set maximum infants"
+            });
+        }
+        
+        if (maxPets === undefined || maxPets < 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Please set maximum pets"
+            });
+        }
+        
         const newHotel = await prisma.hotels.create({
             data : {
                 ...req.body,
@@ -138,18 +214,22 @@ export const addNewHotel = async (req,res,nex) =>{
 
         return res.status(200).json({
             success : true,
-            message : "created hotel",
+            message : "Hotel created successfully!",
             newHotel
         });
     }
     catch(e){
         console.log(e);
-        return res.status(420).json({
+        return res.status(500).json({
             success : false,
-            message : "error getting your hotels",e
+            message : "Error creating hotel listing",
+            error: e.message
         });
     }
 }
+
+
+// Update an existing hotel’s details.
 
 export const updateHotel = async (req,res,nex) =>{
     // console.log("this is body: " ,req.body)
@@ -190,6 +270,9 @@ export const updateHotel = async (req,res,nex) =>{
     }
 }
 
+//Upload images for a hotel.
+
+
 export const uploadHotImage = async (req,res,nex) => {
     try{
         const id = req.params.uid;
@@ -197,6 +280,13 @@ export const uploadHotImage = async (req,res,nex) => {
             return res.status(420).json({
                 success : false,
                 message : "no id",
+            });
+        }
+        
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No images provided"
             });
         }
         
@@ -215,8 +305,6 @@ export const uploadHotImage = async (req,res,nex) => {
             }))
           });
 
-        //   console.log("urls" , imageUrlsNames);
-        //   console.log("db" , insertedImages);
         return res.status(200).json({
             success : true,
             message: "Images uploaded successfully!", 
@@ -225,10 +313,11 @@ export const uploadHotImage = async (req,res,nex) => {
         });
     }
     catch(e){
-        console.log(e);
-        return res.status(420).json({
+        console.error("Error in uploadHotImage:", e);
+        return res.status(500).json({
             success : false,
-            message : "error getting your hotels",e
+            message : "Error uploading images",
+            error: e.message
         });
     }
 }

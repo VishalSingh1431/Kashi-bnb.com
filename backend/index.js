@@ -32,6 +32,9 @@ app.use((req, res, next) => {
     next();
 });
 
+// Add global rate limiting here
+app.use(limiter);
+
 // Routes
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/hotel', hotelRouter);

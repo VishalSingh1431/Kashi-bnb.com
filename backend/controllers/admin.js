@@ -1,7 +1,10 @@
 import { prisma } from '../utils/client.js';
 
+
+// make admin
 export const makeAdmin = async (req,res,nex)=>{
     try{
+        //  is_admin : true
         await prisma.users.update({
             where : {
                 email : req.body.email
@@ -10,18 +13,22 @@ export const makeAdmin = async (req,res,nex)=>{
                 is_admin : true,
             }
         })
+        // delete the request from requests table
+        // where email and type is admin
         await prisma.requests.delete({
             where : {
                 email : req.body.email,
                 type : "admin"
             }
         });
+        // return success response
         return res.status(200).json({
             success : true,
             message : "promoted to admin"
         })
         
     }
+    // catch any error
     catch(e){
         console.log(e);
         return res.status(420).json({
@@ -32,6 +39,7 @@ export const makeAdmin = async (req,res,nex)=>{
     }
 };
 
+// to make hotel owner
 export const makeHoteler = async (req,res,nex)=>{
     try{
         await prisma.users.update({
@@ -52,7 +60,7 @@ export const makeHoteler = async (req,res,nex)=>{
 
         return res.status(200).json({
             success : true,
-            message : "promoted to hotel wala bhosdi wala"
+            message : "promoted to hotel wala "
         })
     }
     catch(e){
@@ -64,6 +72,8 @@ export const makeHoteler = async (req,res,nex)=>{
         })
     }
 };
+
+// to make restaurant owner
 
 export const makeRestr = async (req,res,nex)=>{
     try{
@@ -97,6 +107,9 @@ export const makeRestr = async (req,res,nex)=>{
         })
     }
 };
+
+
+// View all pending requests for role changes.
 
 export const viewRequest = async (req,res,nex)=>{
     try{

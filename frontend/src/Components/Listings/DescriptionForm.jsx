@@ -9,7 +9,7 @@ const DescriptionForm = ({ listing, handleInputChange }) => {
           name="name"
           value={listing.name}
           onChange={handleInputChange}
-          placeholder="Enter your hotel name"
+          placeholder="Enter your Property name"
           className="text-2xl font-bold mb-2 w-full p-2 border rounded-lg"
         />
         <p className="text-xs text-gray-500 italic">Example: 'Luxury Beachfront Villa'</p>

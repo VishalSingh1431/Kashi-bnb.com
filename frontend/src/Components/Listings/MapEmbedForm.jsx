@@ -1,25 +1,14 @@
 import React, { useState } from 'react';
-import { FiMapPin, FiGlobe, FiX, FiInfo } from 'react-icons/fi';
+import { FiMapPin, FiPlay, FiX, FiInfo, FiGlobe } from 'react-icons/fi';
 
-const LocationForm = ({ listing, handleInputChange }) => {
+const MapEmbedForm = ({ mapUrl, onMapUrlChange }) => {
   const [isValidUrl, setIsValidUrl] = useState(false);
 
-  // Extract embed URL from various Google Maps URL formats
+  // Extract embed URL from various map service formats
   const extractEmbedUrl = (url) => {
     if (!url) return null;
     
-    // Handle Google Maps place URLs
-    if (url.includes('/maps/place/')) {
-      // Extract the place name and coordinates
-      const placeMatch = url.match(/\/maps\/place\/([^\/]+)\/@([^\/]+)/);
-      if (placeMatch) {
-        const placeName = placeMatch[1];
-        const coordinates = placeMatch[2];
-        return `https://maps.google.com/maps?q=${encodeURIComponent(placeName)}&ll=${coordinates}&output=embed`;
-      }
-    }
-    
-    // Handle regular Google Maps URLs
+    // Google Maps patterns
     const googlePatterns = [
       /maps\.google\.com\/maps\?q=([^&\s]+)/,
       /maps\.google\.com\/maps\?ll=([^&\s]+)/,
@@ -54,60 +43,65 @@ const LocationForm = ({ listing, handleInputChange }) => {
 
   const handleUrlChange = (e) => {
     const url = e.target.value;
-    handleInputChange(e);
+    onMapUrlChange(url);
     
     const embedUrl = extractEmbedUrl(url);
     setIsValidUrl(!!embedUrl);
   };
 
-  const embedUrl = extractEmbedUrl(listing.gmap);
+  const embedUrl = extractEmbedUrl(mapUrl);
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold mb-4">Where you'll be</h2>
-      
-      {/* Map Preview */}
-      <div className="h-64 bg-gray-200 rounded-xl mb-4 overflow-hidden border-2 border-dashed border-gray-300 hover:border-green-400 transition-colors">
-        {isValidUrl && embedUrl ? (
-          <iframe
-            src={embedUrl}
-            title="Property Location"
-            frameBorder="0"
-            allowFullScreen
-            className="w-full h-full"
-          />
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center">
-              <FiMapPin size={48} className="mx-auto mb-4 text-green-500" />
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">Add Property Location</h3>
-              <p className="text-sm text-gray-600 mb-4">Paste a Google Maps URL below</p>
-              <div className="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm">
-                <strong>Required:</strong> Helps guests find your property
+      {/* Map Embed Area */}
+      <div className="relative rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-green-400 transition-colors bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="aspect-[4/3] relative">
+          {isValidUrl && embedUrl ? (
+            <>
+              <iframe
+                src={embedUrl}
+                title="Property Location"
+                frameBorder="0"
+                allowFullScreen
+                className="w-full h-full"
+              />
+              <div className="absolute top-4 right-4">
+                <button
+                  onClick={() => onMapUrlChange('')}
+                  className="bg-red-500 text-white rounded-full p-2 shadow-lg hover:bg-red-600 transition-colors"
+                  title="Remove map"
+                >
+                  <FiX size={16} />
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center">
+                <FiMapPin size={48} className="mx-auto mb-4 text-green-500" />
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">Add Property Location</h3>
+                <p className="text-sm text-gray-600 mb-4">Show guests where your property is located</p>
+                <div className="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm">
+                  <strong>Required:</strong> Helps guests find your property
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* URL Input */}
+      {/* Map URL Input */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">Google Maps URL</h3>
+            <h3 className="text-lg font-semibold text-gray-800">Property Location</h3>
             <p className="text-sm text-gray-600">
-              {listing.gmap ? 'Map URL added' : 'No map URL added yet'}
+              {mapUrl ? 'Map URL added' : 'No map added yet'}
             </p>
           </div>
-          {listing.gmap && (
+          {mapUrl && (
             <button
-              onClick={() => {
-                const event = {
-                  target: { name: 'gmap', value: '' }
-                };
-                handleInputChange(event);
-                setIsValidUrl(false);
-              }}
+              onClick={() => onMapUrlChange('')}
               className="flex items-center gap-2 px-3 py-1 text-red-600 hover:text-red-700 text-sm font-medium"
             >
               <FiX size={14} />
@@ -123,13 +117,12 @@ const LocationForm = ({ listing, handleInputChange }) => {
           <div className="flex items-center space-x-2">
             <input
               type="url"
-              name="gmap"
-              value={listing.gmap || ''}
+              value={mapUrl || ''}
               onChange={handleUrlChange}
-              placeholder="https://www.google.com/maps/place/Your+Property+Name/@coordinates..."
+              placeholder="https://maps.google.com/maps?q=..."
               className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
             />
-            {listing.gmap && !isValidUrl && (
+            {mapUrl && !isValidUrl && (
               <div className="text-red-500">
                 <FiX size={20} />
               </div>
@@ -148,7 +141,7 @@ const LocationForm = ({ listing, handleInputChange }) => {
             </div>
           )}
 
-          {listing.gmap && !isValidUrl && (
+          {mapUrl && !isValidUrl && (
             <div className="flex items-center gap-2 text-sm text-yellow-600 bg-yellow-50 px-3 py-2 rounded-lg">
               <FiInfo size={16} />
               Please enter a valid Google Maps URL
@@ -158,13 +151,13 @@ const LocationForm = ({ listing, handleInputChange }) => {
 
         {/* Map Guidelines */}
         <div className="bg-green-50 rounded-xl p-4">
-          <h4 className="font-semibold text-green-800 mb-2">🗺️ Location Guidelines</h4>
+          <h4 className="font-semibold text-green-800 mb-2">🗺️ Map Guidelines</h4>
           <ul className="text-sm text-green-700 space-y-1">
-            <li>• Copy the URL from Google Maps when you search for your property</li>
-            <li>• Paste the URL in the field above</li>
-            <li>• The map will automatically embed in your listing</li>
+            <li>• Use Google Maps URLs only</li>
+            <li>• Copy the URL from Google Maps search</li>
+            <li>• Include the exact property address</li>
             <li>• This helps guests find your location easily</li>
-            <li>• Example: https://www.google.com/maps/place/Your+Property+Name/@coordinates...</li>
+            <li>• Example: https://maps.google.com/maps?q=Your+Address</li>
           </ul>
         </div>
       </div>
@@ -172,4 +165,4 @@ const LocationForm = ({ listing, handleInputChange }) => {
   );
 };
 
-export default LocationForm;
+export default MapEmbedForm; 
