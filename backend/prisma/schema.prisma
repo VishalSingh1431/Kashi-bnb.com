@@ -65,7 +65,9 @@ model hotels {
   pool            Boolean  @default(false)
   fireextinguisher Boolean @default(false)
   firstaid        Boolean  @default(false)
-  kit             Boolean  @default(false)
+  geyser          Boolean  @default(false)
+  microwave       Boolean  @default(false)
+  waterFilter     Boolean  @default(false)
   
   images    himages[]
   owner     users     @relation(fields: [ownerId], references: [id])

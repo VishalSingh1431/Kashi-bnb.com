@@ -63,7 +63,9 @@ const Listings = () => {
     pool: false,
     fireextinguisher: false,
     firstaid: false,
-    kit: false
+    geyser: false,
+    microwave: false,
+    waterFilter: false
   });
 
   // All logic remains in the parent component
@@ -233,26 +235,26 @@ const Listings = () => {
   ];
 
   const renderStepIndicator = () => (
-    <div className="mb-8">
-      <div className="flex items-center justify-center space-x-4 mb-6">
+    <div className="mb-4 sm:mb-6 md:mb-8">
+      <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-1 md:space-x-2 lg:space-x-4 mb-3 sm:mb-4 md:mb-6">
         {steps.map((step, index) => (
           <div key={step.id} className="flex items-center">
-            <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${
+            <div className={`flex items-center justify-center w-6 h-6 sm:w-8 md:w-10 sm:h-8 md:h-10 rounded-full border-2 transition-colors ${
               step.completed 
                 ? 'bg-green-500 border-green-500 text-white' 
                 : activeStep === step.id 
                 ? 'border-blue-500 text-blue-500' 
                 : 'border-gray-300 text-gray-400'
             }`}>
-              {step.completed ? <FiCheckCircle size={20} /> : <step.icon size={20} />}
+              {step.completed ? <FiCheckCircle size={12} className="sm:w-4 md:w-5 sm:h-4 md:h-5" /> : <step.icon size={12} className="sm:w-4 md:w-5 sm:h-4 md:h-5" />}
             </div>
-            <span className={`ml-2 text-sm font-medium ${
+            <span className={`ml-1 sm:ml-2 text-xs sm:text-sm font-medium ${
               step.completed ? 'text-green-600' : activeStep === step.id ? 'text-blue-600' : 'text-gray-500'
             }`}>
               {step.title}
             </span>
             {index < steps.length - 1 && (
-              <div className={`w-8 h-0.5 mx-2 ${
+              <div className={`hidden sm:block w-2 md:w-4 lg:w-8 h-0.5 mx-1 md:mx-2 ${
                 step.completed ? 'bg-green-500' : 'bg-gray-300'
               }`} />
             )}
@@ -263,34 +265,23 @@ const Listings = () => {
   );
 
   return (
-    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#f3eadb' }}>
+    <div className="min-h-screen pt-28 sm:pt-32 md:pt-36 lg:pt-40 xl:pt-44 2xl:pt-48 px-2 sm:px-3 md:px-4 lg:px-6 overflow-x-hidden" style={{ backgroundColor: '#f3eadb' }}>
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Your Property Listing</h1>
-              <p className="text-gray-600">Share your amazing property with travelers and start earning</p>
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 md:mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-3 sm:mb-4 md:mb-6">
+            <div className="mb-3 lg:mb-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">Create Your Property Listing</h1>
+              <p className="text-xs sm:text-sm md:text-base text-gray-600">Share your amazing property with travelers and start earning</p>
             </div>
-            <div className="flex gap-3 mt-4 lg:mt-0">
+            <div className="flex justify-end">
               <button 
-                onClick={() => nav('/')} 
-                className="flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-gray-300 transition hover:bg-gray-50 font-medium"
+                onClick={handleSubmitListing} 
+                disabled={isSubmitting} 
+                className="flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-xl transition hover:bg-blue-700 disabled:opacity-50 font-medium text-xs sm:text-sm md:text-base"
               >
-                <FiX /> Cancel
-              </button> 
-                             <button 
-                 onClick={handleSubmitListing} 
-                 disabled={isSubmitting} 
-                 className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl transition hover:bg-blue-700 disabled:opacity-50 font-medium"
-               >
-                 <FiSave /> {isSubmitting ? 'Creating...' : 'Create Listing'}
-               </button>
-               {(!token || !user) && (
-                 <p className="text-sm text-gray-600 mt-2">
-                   * You need to be logged in to create a listing
-                 </p>
-               )}
+                <FiSave className="text-sm sm:text-base" /> {isSubmitting ? 'Creating...' : 'Create Listing'}
+              </button>
             </div>
           </div>
           
@@ -298,57 +289,57 @@ const Listings = () => {
         </div>
 
         {/* Progress Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl p-4 shadow-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8 w-full">
+          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md">
             <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <FiHome className="text-blue-600" size={20} />
+              <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                <FiHome className="text-blue-600" size={16} />
               </div>
-              <div className="ml-3">
-                <p className="text-sm text-gray-600">Basic Info</p>
-                <p className="font-semibold text-gray-800">
+              <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-600">Basic Info</p>
+                <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
                   {listing.name && listing.address && listing.rate ? 'Complete' : 'Incomplete'}
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-4 shadow-md">
+          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <FiInfo className="text-green-600" size={20} />
+              <div className="p-1.5 sm:p-2 bg-green-100 rounded-lg flex-shrink-0">
+                <FiInfo className="text-green-600" size={16} />
               </div>
-              <div className="ml-3">
-                <p className="text-sm text-gray-600">Description</p>
-                <p className="font-semibold text-gray-800">
+              <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-600">Description</p>
+                <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
                   {listing.details ? 'Complete' : 'Incomplete'}
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-4 shadow-md">
+          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md">
             <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <FiImage className="text-purple-600" size={20} />
+              <div className="p-1.5 sm:p-2 bg-purple-100 rounded-lg flex-shrink-0">
+                <FiImage className="text-purple-600" size={16} />
               </div>
-              <div className="ml-3">
-                <p className="text-sm text-gray-600">Media</p>
-                <p className="font-semibold text-gray-800">
+              <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-600">Media</p>
+                <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
                   {images.length > 0 ? `${images.length} images` : 'No images'}
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-4 shadow-md">
+          <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md">
             <div className="flex items-center">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <FiMapPin className="text-orange-600" size={20} />
+              <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg flex-shrink-0">
+                <FiMapPin className="text-orange-600" size={16} />
               </div>
-              <div className="ml-3">
-                <p className="text-sm text-gray-600">Details</p>
-                <p className="font-semibold text-gray-800">
+              <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-gray-600">Details</p>
+                <p className="font-semibold text-gray-800 text-xs sm:text-sm truncate">
                   {listing.gmap && listing.totalRoom ? 'Complete' : 'Incomplete'}
                 </p>
               </div>
@@ -357,21 +348,21 @@ const Listings = () => {
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 w-full">
           {/* Left Column - Main Forms */}
-          <div className="xl:col-span-3 space-y-8">
+          <div className="xl:col-span-3 space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
             {/* Basic Information Section */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="flex items-center mb-6">
-                <div className="p-3 bg-blue-100 rounded-xl mr-4">
-                  <FiHome className="text-blue-600" size={24} />
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 lg:p-8 w-full overflow-hidden">
+              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6">
+                <div className="p-1.5 sm:p-2 md:p-3 bg-blue-100 rounded-xl mr-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+                  <FiHome className="text-blue-600" size={18} />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">Basic Information</h2>
-                  <p className="text-gray-600">Tell us about your property</p>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Basic Information</h2>
+                  <p className="text-xs sm:text-sm md:text-base text-gray-600">Tell us about your property</p>
                 </div>
               </div>
-              <div className="space-y-8">
+              <div className="space-y-4 sm:space-y-6 md:space-y-8">
                 <DescriptionForm listing={listing} handleInputChange={handleInputChange} />
                 <PropertyTypeSelector 
                   selectedType={listing.propertyType} 
@@ -387,18 +378,18 @@ const Listings = () => {
             </div>
 
             {/* Media Section */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="flex items-center mb-6">
-                <div className="p-3 bg-purple-100 rounded-xl mr-4">
-                  <FiImage className="text-purple-600" size={24} />
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 lg:p-8 w-full overflow-hidden">
+              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6">
+                <div className="p-1.5 sm:p-2 md:p-3 bg-purple-100 rounded-xl mr-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+                  <FiImage className="text-purple-600" size={18} />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">Media & Visuals</h2>
-                  <p className="text-gray-600">Showcase your property with photos and videos</p>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Media & Visuals</h2>
+                  <p className="text-xs sm:text-sm md:text-base text-gray-600">Showcase your property with photos and videos</p>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8 w-full">
                 <ImageUploader 
                   images={images}
                   currentImageIndex={currentImageIndex}
@@ -416,18 +407,18 @@ const Listings = () => {
             </div>
 
             {/* Details Section */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="flex items-center mb-6">
-                <div className="p-3 bg-orange-100 rounded-xl mr-4">
-                  <FiMapPin className="text-orange-600" size={24} />
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 lg:p-8 w-full overflow-hidden">
+              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6">
+                <div className="p-1.5 sm:p-2 md:p-3 bg-orange-100 rounded-xl mr-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+                  <FiMapPin className="text-orange-600" size={18} />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">Property Details</h2>
-                  <p className="text-gray-600">Configure rooms, amenities, and location</p>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Property Details</h2>
+                  <p className="text-xs sm:text-sm md:text-base text-gray-600">Configure rooms, amenities, and location</p>
                 </div>
               </div>
               
-              <div className="space-y-8">
+              <div className="space-y-4 sm:space-y-6 md:space-y-8">
                 <RoomDetailsForm listing={listing} handleInputChange={handleInputChange} user={user} />
                 <AmenitiesForm listing={listing} handleAmenityChange={handleAmenityChange} />
                 <LocationForm listing={listing} handleInputChange={handleInputChange} />
@@ -436,33 +427,33 @@ const Listings = () => {
           </div>
 
           {/* Right Column - Preview & Actions */}
-          <div className="xl:col-span-1">
-            <div className="sticky top-4 space-y-6">
+          <div className="xl:col-span-1 min-w-0">
+            <div className="sticky top-4 space-y-3 sm:space-y-4 md:space-y-6">
               {/* Quick Preview */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Preview</h3>
-                <div className="space-y-3">
+              <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6">
+                <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 mb-2 sm:mb-3 md:mb-4">Quick Preview</h3>
+                <div className="space-y-2 sm:space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Property Name:</span>
-                    <span className="font-medium text-gray-800 truncate max-w-32">
+                    <span className="text-xs sm:text-sm text-gray-600">Property Name:</span>
+                    <span className="font-medium text-gray-800 truncate max-w-24 sm:max-w-32 ml-2 text-xs sm:text-sm">
                       {listing.name || 'Not set'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Price:</span>
-                    <span className="font-medium text-gray-800">
+                    <span className="text-xs sm:text-sm text-gray-600">Price:</span>
+                    <span className="font-medium text-gray-800 text-xs sm:text-sm">
                       {listing.rate ? `₹${listing.rate}/night` : 'Not set'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Images:</span>
-                    <span className="font-medium text-gray-800">
+                    <span className="text-xs sm:text-sm text-gray-600">Images:</span>
+                    <span className="font-medium text-gray-800 text-xs sm:text-sm">
                       {images.length} uploaded
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Video:</span>
-                    <span className="font-medium text-gray-800">
+                    <span className="text-xs sm:text-sm text-gray-600">Video:</span>
+                    <span className="font-medium text-gray-800 text-xs sm:text-sm">
                       {videoUrl ? 'Added' : 'Not added'}
                     </span>
                   </div>
@@ -483,28 +474,28 @@ const Listings = () => {
               />
 
               {/* Call Us Section */}
-              <div className="bg-green-50 rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-green-800 mb-3">📞 Need Help?</h3>
-                <p className="text-sm text-green-700 mb-4">
+              <div className="bg-green-50 rounded-2xl p-3 sm:p-4 md:p-6">
+                <h3 className="text-base sm:text-lg font-semibold text-green-800 mb-2 sm:mb-3">📞 Need Help?</h3>
+                <p className="text-xs sm:text-sm text-green-700 mb-3 sm:mb-4">
                   Don't want to add your listing yourself? Our team can help you create a professional listing.
                 </p>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-green-700">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-green-700">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full flex-shrink-0"></span>
                     <span>Professional photography</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-green-700">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-green-700">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full flex-shrink-0"></span>
                     <span>Optimized descriptions</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-green-700">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-green-700">
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full flex-shrink-0"></span>
                     <span>Competitive pricing</span>
                   </div>
                 </div>
                 <button
                   onClick={() => nav('/number-form')}
-                  className="w-full mt-4 bg-green-600 text-white py-3 rounded-xl font-medium hover:bg-green-700 transition-colors"
+                  className="w-full mt-3 sm:mt-4 bg-green-600 text-white py-2 sm:py-3 rounded-xl font-medium hover:bg-green-700 transition-colors text-xs sm:text-sm"
                 >
                   Call Us Now
                 </button>
@@ -514,9 +505,9 @@ const Listings = () => {
               </div>
 
               {/* Tips Section */}
-              <div className="bg-blue-50 rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-blue-800 mb-3">💡 Tips for Success</h3>
-                <ul className="space-y-2 text-sm text-blue-700">
+              <div className="bg-blue-50 rounded-2xl p-3 sm:p-4 md:p-6">
+                <h3 className="text-base sm:text-lg font-semibold text-blue-800 mb-2 sm:mb-3">💡 Tips for Success</h3>
+                <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-blue-700">
                   <li>• Upload high-quality, well-lit photos</li>
                   <li>• Write detailed, honest descriptions</li>
                   <li>• Set competitive pricing</li>

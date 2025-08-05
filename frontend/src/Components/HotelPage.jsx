@@ -222,7 +222,7 @@ const HotelPage = () => {
   if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
 
   return (
-    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen pt-16 sm:pt-20 md:pt-24 lg:pt-32 px-2 sm:px-3 md:px-4 lg:px-6 max-w-7xl mx-auto">
       <HotelHeader 
         isOwnerOrAdmin={isOwnerOrAdmin}
         editMode={editMode}
@@ -230,17 +230,17 @@ const HotelPage = () => {
         handleCancelEdit={handleCancelEdit}
       />
       
-      <div className="relative mb-6">
+      <div className="relative mb-3 sm:mb-4 md:mb-6">
         {editMode ? (
           <input
             type="text"
             name="name"
             value={tempHotel.name}
             onChange={handleInputChange}
-            className="text-3xl font-bold mb-4 w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 w-full p-2 sm:p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         ) : (
-          <h1 className="text-3xl font-bold mb-4 capitalize text-gray-800">{hotel.name}</h1>
+          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 capitalize text-gray-800 break-words">{hotel.name}</h1>
         )}
       </div>
 
@@ -259,8 +259,8 @@ const HotelPage = () => {
         handleInputChange={handleInputChange}
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mt-8">
-        <div className="xl:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mt-4 sm:mt-6 md:mt-8">
+        <div className="xl:col-span-2 space-y-3 sm:space-y-4 md:space-y-6">
           <HotelHostInfo 
             hotel={hotel}
             editMode={editMode}
@@ -303,7 +303,7 @@ const HotelPage = () => {
         </div>
 
         <div className="xl:col-span-1">
-          <div className="sticky top-24">
+          <div className="sticky top-16 sm:top-20 md:top-24">
             <HotelBookingCard 
               hotel={hotel}
               editMode={editMode}

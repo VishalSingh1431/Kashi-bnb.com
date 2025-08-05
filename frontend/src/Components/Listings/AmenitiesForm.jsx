@@ -1,6 +1,6 @@
 import React from "react";
 import { FiWifi } from "react-icons/fi";
-import { FaTv, FaCar, FaSwimmingPool, FaFireExtinguisher, FaFirstAid, FaTemperatureLow } from "react-icons/fa";
+import { FaTv, FaCar, FaSwimmingPool, FaFireExtinguisher, FaFirstAid, FaTemperatureLow, FaShower, FaFilter, FaBox } from "react-icons/fa";
 import { GiWashingMachine } from "react-icons/gi";
 import { MdKitchen } from "react-icons/md";
 
@@ -14,14 +14,16 @@ const amenitiesList = [
   { id: 'pool', name: 'Pool', icon: <FaSwimmingPool className="mr-2" /> },
   { id: 'fireextinguisher', name: 'Fire Extinguisher', icon: <FaFireExtinguisher className="mr-2" /> },
   { id: 'firstaid', name: 'First Aid Kit', icon: <FaFirstAid className="mr-2" /> },
-  { id: 'kit', name: 'Basic Kit', icon: <FaFirstAid className="mr-2" /> }
+  { id: 'geyser', name: 'Geyser', icon: <FaShower className="mr-2" /> },
+  { id: 'microwave', name: 'Microwave', icon: <FaBox className="mr-2" /> },
+  { id: 'waterFilter', name: 'Water Filter', icon: <FaFilter className="mr-2" /> }
 ];
 
 const AmenitiesForm = ({ listing, handleAmenityChange }) => {
   return (
-    <div className="border-b pb-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4">What this place offers</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="border-b pb-4 sm:pb-6 mb-4 sm:mb-6">
+      <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">What this place offers</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {amenitiesList.map(amenity => (
           <div key={amenity.id} className="flex items-center">
             <input
@@ -30,10 +32,10 @@ const AmenitiesForm = ({ listing, handleAmenityChange }) => {
               name={amenity.id}
               checked={listing[amenity.id]}
               onChange={handleAmenityChange}
-              className="mr-2 h-4 w-4"
+              className="mr-2 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"
             />
-            <label htmlFor={amenity.id} className="flex items-center">
-              {amenity.icon} {amenity.name}
+            <label htmlFor={amenity.id} className="flex items-center text-xs sm:text-sm">
+              {amenity.icon} <span className="ml-1">{amenity.name}</span>
             </label>
           </div>
         ))}

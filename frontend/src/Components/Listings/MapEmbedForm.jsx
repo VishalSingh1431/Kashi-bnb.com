@@ -156,8 +156,7 @@ const MapEmbedForm = ({ mapUrl, onMapUrlChange }) => {
             <li>• Use Google Maps URLs only</li>
             <li>• Copy the URL from Google Maps search</li>
             <li>• Include the exact property address</li>
-            <li>• This helps guests find your location easily</li>
-            <li>• Example: https://maps.google.com/maps?q=Your+Address</li>
+            <li>• This helps guests find your location easily</li> 
           </ul>
         </div>
       </div>
