@@ -236,10 +236,10 @@ const Listings = () => {
 
   const renderStepIndicator = () => (
     <div className="mb-4 sm:mb-6 md:mb-8">
-      <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-1 md:space-x-2 lg:space-x-4 mb-3 sm:mb-4 md:mb-6">
+      <div className="grid grid-cols-2 sm:flex sm:flex-row sm:items-center sm:justify-center gap-3 sm:gap-1 md:gap-2 lg:gap-4 mb-3 sm:mb-4 md:mb-6">
         {steps.map((step, index) => (
-          <div key={step.id} className="flex items-center">
-            <div className={`flex items-center justify-center w-6 h-6 sm:w-8 md:w-10 sm:h-8 md:h-10 rounded-full border-2 transition-colors ${
+          <div key={step.id} className="flex items-center justify-start sm:justify-center">
+            <div className={`flex items-center justify-center w-6 h-6 sm:w-8 md:w-10 sm:h-8 md:h-10 rounded-full border-2 transition-colors flex-shrink-0 ${
               step.completed 
                 ? 'bg-green-500 border-green-500 text-white' 
                 : activeStep === step.id 
@@ -248,13 +248,13 @@ const Listings = () => {
             }`}>
               {step.completed ? <FiCheckCircle size={12} className="sm:w-4 md:w-5 sm:h-4 md:h-5" /> : <step.icon size={12} className="sm:w-4 md:w-5 sm:h-4 md:h-5" />}
             </div>
-            <span className={`ml-1 sm:ml-2 text-xs sm:text-sm font-medium ${
+            <span className={`ml-2 text-xs sm:text-sm font-medium truncate ${
               step.completed ? 'text-green-600' : activeStep === step.id ? 'text-blue-600' : 'text-gray-500'
             }`}>
               {step.title}
             </span>
             {index < steps.length - 1 && (
-              <div className={`hidden sm:block w-2 md:w-4 lg:w-8 h-0.5 mx-1 md:mx-2 ${
+              <div className={`hidden sm:block w-2 md:w-4 lg:w-8 h-0.5 mx-1 md:mx-2 flex-shrink-0 ${
                 step.completed ? 'bg-green-500' : 'bg-gray-300'
               }`} />
             )}
