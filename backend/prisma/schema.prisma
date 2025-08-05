@@ -42,6 +42,12 @@ model hotels {
   gmap      String    @db.Text
   totalRoom Int       @default(2)
   maxInRoom Int       @default(2)
+  maxAdults Int       @default(16)
+  maxChildren Int     @default(5)
+  maxInfants Int      @default(5)
+  maxPets   Int       @default(2)
+  propertyType String @default("House") // Villa, Guesthouse, Cottage, Bungalow, Farmstay, Resort, At Ghat, House, Flat/apartment, Farm, Hotel, Others
+  guestAccess String  @default("Entire place") // Entire place, Room, Shared room
   details   String?   @db.Text
   videoUrl  String?   @db.Text
   rate      Decimal   @default(0.0) // Provide a default value

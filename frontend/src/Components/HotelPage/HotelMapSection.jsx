@@ -58,10 +58,10 @@ const HotelMapSection = ({ hotel, editMode, tempHotel, handleInputChange }) => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+    <div className="bg-white rounded-xl shadow-lg p-6">
       <div className="flex items-center mb-4">
         <FiMapPin className="text-green-600 mr-2" size={24} />
-        <h3 className="text-lg font-semibold text-gray-800">Location</h3>
+        <h3 className="text-xl font-semibold text-gray-800">Where you'll be</h3>
       </div>
       
       {editMode ? (

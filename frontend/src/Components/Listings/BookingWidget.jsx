@@ -57,7 +57,7 @@ const BookingWidget = ({
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <p className="text-xl font-semibold">
+            <div className="text-xl font-semibold">
               ₹
               {editingField === 'rate' ? (
                 <div className="flex items-center gap-1">
@@ -83,7 +83,7 @@ const BookingWidget = ({
                   {listing.rate || '0'}
                 </span>
               )}
-            </p>
+            </div>
             <span className="text-base font-normal"> night</span>
             <FiEdit3 className="text-gray-400" size={16} />
           </div>

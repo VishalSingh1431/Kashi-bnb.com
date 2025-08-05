@@ -21,9 +21,9 @@ router.post('/hotel/:uid/book',authorisation,bookHotel);
 
 // hoteler-authorised
 router.get('/my-hotels',authorisation,hasHotel,getMyHotels);
-router.post('/create-hotel',authorisation,hasHotel,addNewHotel);
-router.post('/hotel/:uid/update-hotel',authorisation,hasHotel,updateHotel);
-router.post('/hotel/:uid/upload-images',authorisation,hasHotel,upload.array("images",5),uploadHotImage);
+router.post('/create-hotel',authorisation,addNewHotel);
+router.post('/hotel/:uid/update-hotel',authorisation,updateHotel);
+router.post('/hotel/:uid/upload-images',authorisation,upload.array("images",5),uploadHotImage);
 // router.post('/hotel/:uid/upload-images',upload.array("images",5),uploadHotImage);
 
 // admin-authorised

@@ -28,17 +28,17 @@ const NumberForm = () => {
     setError("");
 
     try {
-      // Send data to your backend
+      // First send data to your contact request endpoint
       await axios.post(`${BACKEND}/api/contact-request`, formData);
+      
+      // Then send email notification
+      await axios.post(`${BACKEND}/api/send-contact-email`, formData);
       
       // Show success message
       setSubmitted(true);
       
-      // You can also trigger a phone call here if needed
-      // window.location.href = `tel:${YOUR_CUSTOMER_CARE_NUMBER}`;
-      
     } catch (err) {
-      setError("Failed to submit. Please try again later.");
+      setError(err.response?.data?.message || "Failed to submit. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -50,6 +50,7 @@ const NumberForm = () => {
         <div className="w-full max-w-md p-8 space-y-6 shadow-lg rounded-lg text-center">
           <h2 className="text-2xl font-bold">Thank You!</h2>
           <p>Our team will call you shortly at {formData.phone}.</p>
+          <p>We've also sent your details to our support team.</p>
           <button 
             onClick={() => navigate("/")}
             className="w-full py-2 rounded-2xl border transition"

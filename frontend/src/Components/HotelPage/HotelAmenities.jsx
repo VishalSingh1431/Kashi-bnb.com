@@ -43,8 +43,8 @@ const HotelAmenities = ({ hotel, editMode, tempHotel, handleAmenityChange }) => 
   };
 
   return (
-    <div className="border-b pb-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4">What this place offers</h2>
+    <div className="bg-white rounded-xl shadow-lg p-6">
+      <h2 className="text-xl font-semibold mb-6 text-gray-800">What this place offers</h2>
       {editMode ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-center">
@@ -181,13 +181,18 @@ const HotelAmenities = ({ hotel, editMode, tempHotel, handleAmenityChange }) => 
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {getAmenities().map((amenity, index) => (
-            <div key={index} className="flex items-center">
-              <span className="text-xl mr-3 flex-shrink-0">
+            <div key={index} className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+              <span className="text-xl mr-3 flex-shrink-0 text-blue-600">
                 {amenity.icon}
               </span>
-              <span className="capitalize">{amenity.name}</span>
+              <span className="capitalize text-gray-700 font-medium">{amenity.name}</span>
             </div>
           ))}
+          {getAmenities().length === 0 && (
+            <div className="col-span-2 text-center py-8 text-gray-500">
+              <p>No amenities listed yet</p>
+            </div>
+          )}
         </div>
       )}
     </div>

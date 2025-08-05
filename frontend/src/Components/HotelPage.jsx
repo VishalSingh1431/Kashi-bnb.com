@@ -12,6 +12,8 @@ import HotelHostInfo from "./HotelPage/HotelHostInfo";
 import HotelHeader from "./HotelPage/HotelHeader";
 import HotelVideoSection from "./HotelPage/HotelVideoSection";
 import HotelMapSection from "./HotelPage/HotelMapSection";
+import PropertyTypeSelector from "./Listings/PropertyTypeSelector";
+import GuestAccessSelector from "./Listings/GuestAccessSelector";
 import { FiMapPin } from "react-icons/fi";
 
 
@@ -91,7 +93,7 @@ const HotelPage = () => {
         changedHotel,
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': token,
             'Content-Type': 'application/json'
           }
         }
@@ -101,14 +103,24 @@ const HotelPage = () => {
       setEditMode(false);
     } catch (error) {
       console.error("Error updating hotel:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+      }
+      // Show user-friendly error message
+      alert("Failed to update hotel. Please try again.");
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Convert numeric fields to integers
+    const numericFields = ['totalRoom', 'maxInRoom', 'maxAdults', 'maxChildren', 'maxInfants', 'maxPets', 'rate'];
+    
     setTempHotel(prev => ({
       ...prev,
-      [name]: value
+      [name]: numericFields.includes(name) ? Math.max(0, parseInt(value) || 0) : value
     }));
   };
 
@@ -117,6 +129,20 @@ const HotelPage = () => {
     setTempHotel(prev => ({
       ...prev,
       [name]: checked
+    }));
+  };
+
+  const handlePropertyTypeSelect = (type) => {
+    setTempHotel(prev => ({
+      ...prev,
+      propertyType: type
+    }));
+  };
+
+  const handleGuestAccessSelect = (access) => {
+    setTempHotel(prev => ({
+      ...prev,
+      guestAccess: access
     }));
   };
 
@@ -131,6 +157,7 @@ const HotelPage = () => {
     try {
       const response = await axios.post(`${BACKEND}/api/v1/hotel/hotel/${id}/upload-images`, formData, {
         headers: {
+          "Authorization": token,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -195,7 +222,7 @@ const HotelPage = () => {
   if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
 
   return (
-    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto p-4">
+    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <HotelHeader 
         isOwnerOrAdmin={isOwnerOrAdmin}
         editMode={editMode}
@@ -203,17 +230,17 @@ const HotelPage = () => {
         handleCancelEdit={handleCancelEdit}
       />
       
-      <div className="relative">
+      <div className="relative mb-6">
         {editMode ? (
           <input
             type="text"
             name="name"
             value={tempHotel.name}
             onChange={handleInputChange}
-            className="text-2xl font-bold mb-2 w-full p-2 border rounded-lg"
+            className="text-3xl font-bold mb-4 w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         ) : (
-          <h1 className="text-2xl font-bold mb-2 capitalize">{hotel.name}</h1>
+          <h1 className="text-3xl font-bold mb-4 capitalize text-gray-800">{hotel.name}</h1>
         )}
       </div>
 
@@ -225,39 +252,15 @@ const HotelPage = () => {
         handleImageUpload={handleImageUpload}
       />
 
-              <HotelVideoSection
-          hotel={hotel}
-          editMode={editMode}
-          tempHotel={tempHotel}
-          handleInputChange={handleInputChange}
-        />
+      <HotelVideoSection
+        hotel={hotel}
+        editMode={editMode}
+        tempHotel={tempHotel}
+        handleInputChange={handleInputChange}
+      />
 
-        <HotelMapSection
-          hotel={hotel}
-          editMode={editMode}
-          tempHotel={tempHotel}
-          handleInputChange={handleInputChange}
-        />
-
-      <div className="flex items-center mb-4">
-        <div className="flex items-center w-full">
-          <FiMapPin className="mr-1 flex-shrink-0" />
-          {editMode ? (
-            <input
-              type="text"
-              name="address"
-              value={tempHotel.address}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          ) : (
-            <span className="truncate">{hotel.address}</span>
-          )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mt-8">
+        <div className="xl:col-span-2 space-y-6">
           <HotelHostInfo 
             hotel={hotel}
             editMode={editMode}
@@ -272,6 +275,18 @@ const HotelPage = () => {
             handleInputChange={handleInputChange}
           />
           
+          <PropertyTypeSelector 
+            selectedType={editMode ? tempHotel.propertyType : hotel.propertyType}
+            onTypeSelect={handlePropertyTypeSelect}
+            editMode={editMode}
+          />
+          
+          <GuestAccessSelector 
+            selectedAccess={editMode ? tempHotel.guestAccess : hotel.guestAccess}
+            onAccessSelect={handleGuestAccessSelect}
+            editMode={editMode}
+          />
+          
           <HotelAmenities 
             hotel={hotel}
             editMode={editMode}
@@ -279,7 +294,7 @@ const HotelPage = () => {
             handleAmenityChange={handleAmenityChange}
           />
           
-          <HotelLocation 
+          <HotelMapSection
             hotel={hotel}
             editMode={editMode}
             tempHotel={tempHotel}
@@ -288,20 +303,22 @@ const HotelPage = () => {
         </div>
 
         <div className="xl:col-span-1">
-          <HotelBookingCard 
-            hotel={hotel}
-            editMode={editMode}
-            tempHotel={tempHotel}
-            handleInputChange={handleInputChange}
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-            guestCount={guestCount}
-            handleGuestChange={handleGuestChange}
-            handleReserve={handleReserve}
-            calculateTotal={calculateTotal}
-          />
+          <div className="sticky top-24">
+            <HotelBookingCard 
+              hotel={hotel}
+              editMode={editMode}
+              tempHotel={tempHotel}
+              handleInputChange={handleInputChange}
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+              guestCount={guestCount}
+              handleGuestChange={handleGuestChange}
+              handleReserve={handleReserve}
+              calculateTotal={calculateTotal}
+            />
+          </div>
         </div>
       </div>
     </div>

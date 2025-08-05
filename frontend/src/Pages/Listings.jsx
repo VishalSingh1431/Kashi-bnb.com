@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
@@ -12,6 +12,8 @@ import AmenitiesForm from "../Components/Listings/AmenitiesForm";
 import BookingWidget from "../Components/Listings/BookingWidget";
 import YouTubeVideoForm from "../Components/Listings/YouTubeVideoForm";
 import NumberForm from "../Components/NumberForm";
+import PropertyTypeSelector from "../Components/Listings/PropertyTypeSelector";
+import GuestAccessSelector from "../Components/Listings/GuestAccessSelector";
 // Keep constants and localStorage access in the parent
 import { BACKEND } from "../assets/Vars";
 import ImageUploader from "../Components/Listings/ImageUploader";
@@ -21,6 +23,15 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 const Listings = () => {
   const nav = useNavigate();
+  
+  // Check if user is authenticated
+  React.useEffect(() => {
+    if (!token || !user) {
+      alert('Please log in to create a listing');
+      nav('/login');
+      return;
+    }
+  }, [token, user, nav]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -45,6 +56,8 @@ const Listings = () => {
     maxChildren: 5,
     maxInfants: 5,
     maxPets: 2,
+    propertyType: 'House',
+    guestAccess: 'Entire place',
     details: '',
     gmap: '',
     videoUrl: '',
@@ -95,6 +108,20 @@ const Listings = () => {
     }));
   };
 
+  const handlePropertyTypeSelect = (type) => {
+    setListing(prev => ({
+      ...prev,
+      propertyType: type
+    }));
+  };
+
+  const handleGuestAccessSelect = (access) => {
+    setListing(prev => ({
+      ...prev,
+      guestAccess: access
+    }));
+  };
+
   const handleImageUpload = (event) => {
     const newFiles = Array.from(event.target.files);
     setImages(prevImages => {
@@ -126,10 +153,42 @@ const Listings = () => {
 
   
   const handleSubmitListing = async () => {
+    // Validate required fields
+    if (!listing.name || listing.name.trim() === '') {
+      alert('Please enter the property name');
+      return;
+    }
+    
+    if (!listing.address || listing.address.trim() === '') {
+      alert('Please enter the property address');
+      return;
+    }
+    
+    if (!listing.rate || listing.rate <= 0) {
+      alert('Please enter a valid nightly rate');
+      return;
+    }
+    
+    if (!listing.details || listing.details.trim() === '') {
+      alert('Please enter the property description');
+      return;
+    }
+    
+    if (!listing.propertyType) {
+      alert('Please select a property type');
+      return;
+    }
+    
+    if (!listing.guestAccess) {
+      alert('Please select guest access type');
+      return;
+    }
+    
     if (images.length === 0) {
       alert('Please upload at least one image');
       return;
     }
+    
     setIsSubmitting(true);
     try {
       const response = await axios.post(
@@ -156,6 +215,8 @@ const Listings = () => {
       if (error.response && error.response.data) {
         const { message } = error.response.data;
         alert(message || 'Failed to create listing. Please try again.');
+      } else if (error.code === 'ERR_NETWORK') {
+        alert('Network error. Please check your connection and try again.');
       } else {
         alert('Failed to create listing. Please try again.');
       }
@@ -305,7 +366,19 @@ const Listings = () => {
                   <p className="text-gray-600">Tell us about your property</p>
                 </div>
               </div>
-              <DescriptionForm listing={listing} handleInputChange={handleInputChange} />
+              <div className="space-y-8">
+                <DescriptionForm listing={listing} handleInputChange={handleInputChange} />
+                <PropertyTypeSelector 
+                  selectedType={listing.propertyType} 
+                  onTypeSelect={handlePropertyTypeSelect}
+                  editMode={true}
+                />
+                <GuestAccessSelector 
+                  selectedAccess={listing.guestAccess} 
+                  onAccessSelect={handleGuestAccessSelect}
+                  editMode={true}
+                />
+              </div>
             </div>
 
             {/* Media Section */}

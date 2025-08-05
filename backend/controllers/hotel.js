@@ -139,7 +139,7 @@ export const getMyHotels = async (req,res,nex) =>{
 export const addNewHotel = async (req,res,nex) =>{
     try{
         // Validate required fields
-        const { name, address, rate, details, totalRoom, maxAdults, maxChildren, maxInfants, maxPets } = req.body;
+        const { name, address, rate, details, totalRoom, maxAdults, maxChildren, maxInfants, maxPets, propertyType, guestAccess } = req.body;
         
         if (!name || name.trim() === '') {
             return res.status(400).json({
@@ -177,40 +177,39 @@ export const addNewHotel = async (req,res,nex) =>{
         }
         
         // Validate guest limits
-        if (!maxAdults || maxAdults < 1) {
+        // Set default values if not provided
+        const maxAdultsValue = maxAdults || 1;
+        const maxChildrenValue = maxChildren || 0;
+        const maxInfantsValue = maxInfants || 0;
+        const maxPetsValue = maxPets || 0;
+        
+        if (maxAdultsValue < 1) {
             return res.status(400).json({
                 success: false,
                 message: "Please set maximum adults (minimum 1)"
             });
         }
         
-        if (maxChildren === undefined || maxChildren < 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Please set maximum children"
-            });
-        }
-        
-        if (maxInfants === undefined || maxInfants < 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Please set maximum infants"
-            });
-        }
-        
-        if (maxPets === undefined || maxPets < 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Please set maximum pets"
-            });
-        }
-        
         const newHotel = await prisma.hotels.create({
             data : {
                 ...req.body,
+                maxAdults: maxAdultsValue,
+                maxChildren: maxChildrenValue,
+                maxInfants: maxInfantsValue,
+                maxPets: maxPetsValue,
                 ownerId : req.user.id,
             }
         })
+
+        // Update user's has_hotel status to true
+        await prisma.users.update({
+            where: {
+                id: req.user.id
+            },
+            data: {
+                has_hotel: true
+            }
+        });
 
         return res.status(200).json({
             success : true,
@@ -232,20 +231,47 @@ export const addNewHotel = async (req,res,nex) =>{
 // Update an existing hotel’s details.
 
 export const updateHotel = async (req,res,nex) =>{
-    // console.log("this is body: " ,req.body)
     try{
         const id = req.params.uid;
+        
+        // First check if the hotel exists and user owns it
+        const existingHotel = await prisma.hotels.findUnique({
+            where: { id: id },
+            include: { owner: true }
+        });
+        
+        if (!existingHotel) {
+            return res.status(404).json({
+                success: false,
+                message: "Hotel not found"
+            });
+        }
+        
+        // Check if user is the owner or admin
+        if (existingHotel.ownerId !== req.user.id && !req.user.isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: "You can only update your own hotels"
+            });
+        }
+        
+        // Convert string values to integers for numeric fields
+        const updateData = { ...req.body };
+        const numericFields = ['totalRoom', 'maxInRoom', 'maxAdults', 'maxChildren', 'maxInfants', 'maxPets', 'rate'];
+        
+        numericFields.forEach(field => {
+            if (updateData[field] !== undefined) {
+                updateData[field] = parseInt(updateData[field]) || 0;
+            }
+        });
+        
         const newHotel = await prisma.hotels.update({
             where : {
                 id : id,
             },
-            data : {
-                ...req.body,
-            },
+            data : updateData,
             include : {
-                owner : 
-                // true,
-                {
+                owner : {
                     select : {
                         name : true,
                         email : true
@@ -257,15 +283,16 @@ export const updateHotel = async (req,res,nex) =>{
         })
         return res.status(200).json({
             success : true,
-            message : "updated hotel",
+            message : "Hotel updated successfully",
             newHotel
         });
     }
     catch(e){
         console.log(e);
-        return res.status(420).json({
+        return res.status(500).json({
             success : false,
-            message : "error getting your hotels",e
+            message : "Error updating hotel",
+            error: e.message
         });
     }
 }
@@ -277,9 +304,30 @@ export const uploadHotImage = async (req,res,nex) => {
     try{
         const id = req.params.uid;
         if(!id){
-            return res.status(420).json({
+            return res.status(400).json({
                 success : false,
-                message : "no id",
+                message : "Hotel ID is required",
+            });
+        }
+        
+        // First check if the hotel exists and user owns it
+        const existingHotel = await prisma.hotels.findUnique({
+            where: { id: id },
+            include: { owner: true }
+        });
+        
+        if (!existingHotel) {
+            return res.status(404).json({
+                success: false,
+                message: "Hotel not found"
+            });
+        }
+        
+        // Check if user is the owner or admin
+        if (existingHotel.ownerId !== req.user.id && !req.user.isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: "You can only upload images to your own hotels"
             });
         }
         
