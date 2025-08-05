@@ -90,10 +90,10 @@ const ImageUploader = ({ images, currentImageIndex, handleImageUpload, nextImage
               </div>
             </>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 p-4">
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center max-w-sm">
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 p-3 sm:p-4">
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center max-w-xs sm:max-w-sm">
                 <FiUpload size={32} className="sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-blue-500" />
-                <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2">Upload Property Images</h3>
+                <h3 className="text-sm sm:text-lg font-semibold text-gray-700 mb-2">Upload Property Images</h3>
                 <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">Click to select images or drag and drop</p>
                 <div className="bg-blue-50 text-blue-700 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm">
                   <strong>Tip:</strong> Upload at least 5 high-quality photos
@@ -177,8 +177,8 @@ const ImageUploader = ({ images, currentImageIndex, handleImageUpload, nextImage
 
         {/* Upload Guidelines */}
         <div className="bg-blue-50 rounded-xl p-3 sm:p-4">
-          <h4 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">📸 Image Guidelines</h4>
-          <ul className="text-xs sm:text-sm text-blue-700 space-y-1">
+          <h4 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base text-center">📸 Image Guidelines</h4>
+          <ul className="text-xs sm:text-sm text-blue-700 space-y-1 text-left">
             <li>• Upload at least 5 high-quality photos</li>
             <li>• Include exterior, interior, and room shots</li>
             <li>• Use good lighting and clear angles</li>

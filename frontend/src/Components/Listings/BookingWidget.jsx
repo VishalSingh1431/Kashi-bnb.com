@@ -129,9 +129,9 @@ const BookingWidget = ({
         <label className="text-xs font-semibold block mb-2 text-gray-700">GUESTS</label>
         <div className="space-y-2 sm:space-y-3">
           <div className="flex justify-between items-center py-1">
-            <div className="flex-1">
-              <span className="font-medium text-sm sm:text-base">Adults</span>
-              <p className="text-xs text-gray-500">Ages 13 or above</p>
+            <div className="flex-1 min-w-0">
+              <span className="font-medium text-xs sm:text-sm md:text-base leading-tight">Adults</span>
+              <p className="text-xs text-gray-500 leading-tight truncate">Ages 13 or above</p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button 
@@ -152,9 +152,9 @@ const BookingWidget = ({
           </div>
             
           <div className="flex justify-between items-center py-1">
-            <div className="flex-1">
-              <span className="font-medium text-sm sm:text-base">Children</span>
-              <p className="text-xs text-gray-500">Ages 2-12</p>
+            <div className="flex-1 min-w-0">
+              <span className="font-medium text-xs sm:text-sm md:text-base leading-tight">Children</span>
+              <p className="text-xs text-gray-500 leading-tight truncate">Ages 2-12</p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button 
@@ -175,9 +175,9 @@ const BookingWidget = ({
           </div>
             
           <div className="flex justify-between items-center py-1">
-            <div className="flex-1">
-              <span className="font-medium text-sm sm:text-base">Infants</span>
-              <p className="text-xs text-gray-500">Under 2</p>
+            <div className="flex-1 min-w-0">
+              <span className="font-medium text-xs sm:text-sm md:text-base leading-tight">Infants</span>
+              <p className="text-xs text-gray-500 leading-tight truncate">Under 2</p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button 
@@ -200,7 +200,6 @@ const BookingWidget = ({
           <div className="flex justify-between items-center py-1">
             <div className="flex-1">
               <span className="font-medium text-sm sm:text-base">Pets</span>
-              <p className="text-xs text-gray-500">Bringing a service animal?</p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button 

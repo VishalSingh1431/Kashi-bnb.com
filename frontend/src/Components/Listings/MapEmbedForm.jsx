@@ -76,12 +76,12 @@ const MapEmbedForm = ({ mapUrl, onMapUrlChange }) => {
               </div>
             </>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center">
-                <FiMapPin size={48} className="mx-auto mb-4 text-green-500" />
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Add Property Location</h3>
-                <p className="text-sm text-gray-600 mb-4">Show guests where your property is located</p>
-                <div className="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm">
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 p-3 sm:p-4">
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center max-w-xs sm:max-w-sm">
+                <FiMapPin size={32} className="sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-green-500" />
+                <h3 className="text-sm sm:text-lg font-semibold text-gray-700 mb-2 leading-tight">Add Property Location</h3>
+                <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 leading-tight break-words">Show guests where your property is located</p>
+                <div className="bg-green-50 text-green-700 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm leading-tight">
                   <strong>Required:</strong> Helps guests find your property
                 </div>
               </div>
@@ -111,7 +111,7 @@ const MapEmbedForm = ({ mapUrl, onMapUrlChange }) => {
         </div>
 
         <div className="space-y-3">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 leading-tight">
             Google Maps URL
           </label>
           <div className="flex items-center space-x-2">
@@ -120,7 +120,7 @@ const MapEmbedForm = ({ mapUrl, onMapUrlChange }) => {
               value={mapUrl || ''}
               onChange={handleUrlChange}
               placeholder="https://maps.google.com/maps?q=..."
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+              className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors leading-tight"
             />
             {mapUrl && !isValidUrl && (
               <div className="text-red-500">

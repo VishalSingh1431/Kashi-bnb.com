@@ -22,20 +22,21 @@ const amenitiesList = [
 const AmenitiesForm = ({ listing, handleAmenityChange }) => {
   return (
     <div className="border-b pb-4 sm:pb-6 mb-4 sm:mb-6">
-      <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">What this place offers</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+      <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center sm:text-left">What this place offers</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 max-w-md sm:max-w-none mx-auto sm:mx-0">
         {amenitiesList.map(amenity => (
-          <div key={amenity.id} className="flex items-center">
+          <div key={amenity.id} className="flex items-center justify-start bg-gray-50 sm:bg-transparent rounded-lg sm:rounded-none p-3 sm:p-0 border sm:border-0 border-gray-200">
             <input
               type="checkbox"
               id={amenity.id}
               name={amenity.id}
               checked={listing[amenity.id]}
               onChange={handleAmenityChange}
-              className="mr-2 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"
+              className="mr-3 h-4 w-4 sm:h-4 sm:w-4 flex-shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
-            <label htmlFor={amenity.id} className="flex items-center text-xs sm:text-sm">
-              {amenity.icon} <span className="ml-1">{amenity.name}</span>
+            <label htmlFor={amenity.id} className="flex items-center text-xs sm:text-sm font-medium text-gray-700 cursor-pointer flex-1 min-w-0">
+              <span className="mr-2 text-blue-600 flex-shrink-0">{amenity.icon}</span>
+              <span className="truncate leading-tight">{amenity.name}</span>
             </label>
           </div>
         ))}

@@ -64,7 +64,7 @@ const LocationForm = ({ listing, handleInputChange }) => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold mb-4">Where you'll be</h2>
+      <h2 className="text-xl font-semibold mb-4 text-center sm:text-left">Where you'll be</h2>
       
       {/* Map Preview */}
       <div className="h-64 bg-gray-200 rounded-xl mb-4 overflow-hidden border-2 border-dashed border-gray-300 hover:border-green-400 transition-colors">
@@ -77,12 +77,12 @@ const LocationForm = ({ listing, handleInputChange }) => {
             className="w-full h-full"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center">
-              <FiMapPin size={48} className="mx-auto mb-4 text-green-500" />
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">Add Property Location</h3>
-              <p className="text-sm text-gray-600 mb-4">Paste a Google Maps URL below</p>
-              <div className="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm">
+          <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 p-3 sm:p-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-6 text-center max-w-xs sm:max-w-sm">
+              <FiMapPin size={32} className="sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-green-500" />
+              <h3 className="text-sm sm:text-lg font-semibold text-gray-700 mb-2 leading-tight">Add Property Location</h3>
+              <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 leading-tight break-words">Paste a Google Maps URL below</p>
+              <div className="bg-green-50 text-green-700 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm leading-tight">
                 <strong>Required:</strong> Helps guests find your property
               </div>
             </div>
@@ -92,8 +92,8 @@ const LocationForm = ({ listing, handleInputChange }) => {
 
       {/* URL Input */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col sm:flex-row items-center sm:justify-between text-center sm:text-left">
+          <div className="mb-2 sm:mb-0">
             <h3 className="text-lg font-semibold text-gray-800">Google Maps URL</h3>
             <p className="text-sm text-gray-600">
               {listing.gmap ? 'Map URL added' : 'No map URL added yet'}
@@ -116,7 +116,7 @@ const LocationForm = ({ listing, handleInputChange }) => {
           )}
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 text-center sm:text-left">
           <label className="block text-sm font-medium text-gray-700">
             Google Maps URL
           </label>
@@ -127,7 +127,7 @@ const LocationForm = ({ listing, handleInputChange }) => {
               value={listing.gmap || ''}
               onChange={handleUrlChange}
               placeholder="https://www.google.com/maps/place/Your+Property+Name/@coordinates..."
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-center sm:text-left"
             />
             {listing.gmap && !isValidUrl && (
               <div className="text-red-500">
@@ -157,14 +157,14 @@ const LocationForm = ({ listing, handleInputChange }) => {
         </div>
 
         {/* Map Guidelines */}
-        <div className="bg-green-50 rounded-xl p-4">
-          <h4 className="font-semibold text-green-800 mb-2">🗺️ Location Guidelines</h4>
-          <ul className="text-sm text-green-700 space-y-1">
-            <li>• Copy the URL from Google Maps when you search for your property</li>
-            <li>• Paste the URL in the field above</li>
-            <li>• The map will automatically embed in your listing</li>
-            <li>• This helps guests find your location easily</li>
-            <li>• Example: https://www.google.com/maps/place/Your+Property+Name/@coordinates...</li>
+        <div className="bg-green-50 rounded-xl p-3 sm:p-4">
+          <h4 className="text-sm sm:text-base font-semibold text-green-800 mb-2 sm:mb-3 text-center leading-tight">🗺️ Location Guidelines</h4>
+          <ul className="text-xs sm:text-sm text-green-700 space-y-1 sm:space-y-2 text-left leading-tight">
+            <li className="break-words">• Copy the URL from Google Maps when you search for your property</li>
+            <li className="break-words">• Paste the URL in the field above</li>
+            <li className="break-words">• The map will automatically embed in your listing</li>
+            <li className="break-words">• This helps guests find your location easily</li>
+            <li className="break-all text-xs">• Example: https://www.google.com/maps/place/Your+Property+Name/@coordinates...</li>
           </ul>
         </div>
       </div>

@@ -45,37 +45,37 @@ const GuestAccessSelector = ({ selectedAccess, onAccessSelect, editMode = false 
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
-      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4">What type of place will guests have?</h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 text-center sm:text-left">What type of place will guests have?</h3>
       <div className="space-y-3 sm:space-y-4">
         {accessTypes.map((type) => {
           const IconComponent = type.icon;
           const isSelected = selectedAccess === type.id;
           
           return (
-                         <div
-               key={type.id}
-               onClick={() => onAccessSelect(type.id)}
-               className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                 isSelected
-                   ? "border-green-500 bg-green-50"
-                   : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-               }`}
-             >
-               <div className="flex items-start">
-                 <IconComponent 
-                   className={`mr-2 sm:mr-3 mt-1 ${isSelected ? 'text-green-600' : 'text-gray-600'}`} 
-                   size={20} 
-                 />
-                 <div>
-                   <p className={`text-sm sm:text-base font-medium ${isSelected ? 'text-green-800' : 'text-gray-800'}`}>
-                     {type.name}
-                   </p>
-                   <p className={`text-xs sm:text-sm ${isSelected ? 'text-green-600' : 'text-gray-600'}`}>
-                     {type.description}
-                   </p>
-                 </div>
-               </div>
-             </div>
+            <div
+              key={type.id}
+              onClick={() => onAccessSelect(type.id)}
+              className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                isSelected
+                  ? "border-green-500 bg-green-50"
+                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
+                <IconComponent 
+                  className={`mb-2 sm:mb-0 sm:mr-2 sm:mt-1 ${isSelected ? 'text-green-600' : 'text-gray-600'}`} 
+                  size={20} 
+                />
+                <div className="flex-1 min-w-0">
+                  <p className={`text-xs sm:text-sm md:text-base font-medium leading-tight break-words ${isSelected ? 'text-green-800' : 'text-gray-800'}`}>
+                    {type.name}
+                  </p>
+                  <p className={`text-xs sm:text-xs md:text-sm mt-1 leading-tight break-words ${isSelected ? 'text-green-600' : 'text-gray-600'}`}>
+                    {type.description}
+                  </p>
+                </div>
+              </div>
+            </div>
           );
         })}
       </div>
@@ -83,4 +83,4 @@ const GuestAccessSelector = ({ selectedAccess, onAccessSelect, editMode = false 
   );
 };
 
-export default GuestAccessSelector; 
+export default GuestAccessSelector;

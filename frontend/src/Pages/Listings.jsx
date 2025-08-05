@@ -248,7 +248,7 @@ const Listings = () => {
             }`}>
               {step.completed ? <FiCheckCircle size={12} className="sm:w-4 md:w-5 sm:h-4 md:h-5" /> : <step.icon size={12} className="sm:w-4 md:w-5 sm:h-4 md:h-5" />}
             </div>
-            <span className={`ml-2 text-xs sm:text-sm font-medium truncate ${
+            <span className={`ml-2 text-xs sm:text-sm font-medium truncate leading-tight min-w-0 ${
               step.completed ? 'text-green-600' : activeStep === step.id ? 'text-blue-600' : 'text-gray-500'
             }`}>
               {step.title}
@@ -270,11 +270,11 @@ const Listings = () => {
       <div className="max-w-7xl mx-auto w-full">
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 md:mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-3 sm:mb-4 md:mb-6">
-            <div className="mb-3 lg:mb-0">
+            <div className="mb-3 lg:mb-0 text-center lg:text-left">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">Create Your Property Listing</h1>
               <p className="text-xs sm:text-sm md:text-base text-gray-600">Share your amazing property with travelers and start earning</p>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-center lg:justify-end">
               <button 
                 onClick={handleSubmitListing} 
                 disabled={isSubmitting} 
@@ -353,8 +353,8 @@ const Listings = () => {
           <div className="xl:col-span-3 space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
             {/* Basic Information Section */}
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 lg:p-8 w-full overflow-hidden">
-              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6">
-                <div className="p-1.5 sm:p-2 md:p-3 bg-blue-100 rounded-xl mr-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6 text-center sm:text-left">
+                <div className="p-1.5 sm:p-2 md:p-3 bg-blue-100 rounded-xl mx-auto sm:mx-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
                   <FiHome className="text-blue-600" size={18} />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -379,8 +379,8 @@ const Listings = () => {
 
             {/* Media Section */}
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 lg:p-8 w-full overflow-hidden">
-              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6">
-                <div className="p-1.5 sm:p-2 md:p-3 bg-purple-100 rounded-xl mr-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6 text-center sm:text-left">
+                <div className="p-1.5 sm:p-2 md:p-3 bg-purple-100 rounded-xl mx-auto sm:mx-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
                   <FiImage className="text-purple-600" size={18} />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -408,8 +408,8 @@ const Listings = () => {
 
             {/* Details Section */}
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 lg:p-8 w-full overflow-hidden">
-              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6">
-                <div className="p-1.5 sm:p-2 md:p-3 bg-orange-100 rounded-xl mr-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center mb-3 sm:mb-4 md:mb-6 text-center sm:text-left">
+                <div className="p-1.5 sm:p-2 md:p-3 bg-orange-100 rounded-xl mx-auto sm:mx-0 sm:mr-3 md:mr-4 mb-2 sm:mb-0 flex-shrink-0">
                   <FiMapPin className="text-orange-600" size={18} />
                 </div>
                 <div className="min-w-0 flex-1">
