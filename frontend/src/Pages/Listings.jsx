@@ -24,14 +24,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 const Listings = () => {
   const nav = useNavigate();
   
-  // Check if user is authenticated
-  React.useEffect(() => {
-    if (!token || !user) {
-      alert('Please log in to create a listing');
-      nav('/login');
-      return;
-    }
-  }, [token, user, nav]);
+  // No authentication check on mount - users can view the page without logging in
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -153,6 +146,13 @@ const Listings = () => {
 
   
   const handleSubmitListing = async () => {
+    // Check if user is authenticated
+    if (!token || !user) {
+      alert('Please log in to create a listing. You will be redirected to the login page.');
+      nav('/login');
+      return;
+    }
+    
     // Validate required fields
     if (!listing.name || listing.name.trim() === '') {
       alert('Please enter the property name');
@@ -279,13 +279,18 @@ const Listings = () => {
               >
                 <FiX /> Cancel
               </button> 
-              <button 
-                onClick={handleSubmitListing} 
-                disabled={isSubmitting} 
-                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl transition hover:bg-blue-700 disabled:opacity-50 font-medium"
-              >
-                <FiSave /> {isSubmitting ? 'Creating...' : 'Create Listing'}
-              </button>
+                             <button 
+                 onClick={handleSubmitListing} 
+                 disabled={isSubmitting} 
+                 className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl transition hover:bg-blue-700 disabled:opacity-50 font-medium"
+               >
+                 <FiSave /> {isSubmitting ? 'Creating...' : 'Create Listing'}
+               </button>
+               {(!token || !user) && (
+                 <p className="text-sm text-gray-600 mt-2">
+                   * You need to be logged in to create a listing
+                 </p>
+               )}
             </div>
           </div>
           
