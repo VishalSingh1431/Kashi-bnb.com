@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,136 +8,121 @@ datasource db {
 }
 
 model users {
-  id          String    @id @default(uuid())
-  email       String    @unique
+  id          String     @id @default(uuid())
+  email       String     @unique
   name        String
   password    String
-  phone       String?   
+  phone       String?
   token       String?
+  time        DateTime   @updatedAt
+  has_hotel   Boolean    @default(false)
+  has_restr   Boolean    @default(false)
+  is_admin    Boolean    @default(false)
+  verified    Boolean    @default(false)
+  p_verified  Boolean    @default(false)
   address     String?
-  time        DateTime  @updatedAt
-  has_hotel   Boolean   @default(false)
-  has_restr   Boolean   @default(false)
-  is_admin    Boolean   @default(false)
-  verified    Boolean   @default(false)
-  p_verified  Boolean   @default(false)
-  
-  hotels_name hotels[]  
-  restr_name  restr[]
   blogs_name  blogs[]
   bookings    bookings[]
+  hotels_name hotels[]
   requests    requests[]
+  restr_name  restr[]
 }
 
 model hotels {
-  id        String    @id @default(uuid())
-  name      String
-  address   String
-  gmap      String    @db.Text
-  totalRoom Int       @default(2)
-  maxInRoom Int       @default(2)
-  maxAdults Int       @default(16)
-  maxChildren Int     @default(5)
-  maxInfants Int      @default(5)
-  maxPets   Int       @default(2)
-  propertyType String @default("House") // Villa, Guesthouse, Cottage, Bungalow, Farmstay, Resort, At Ghat, House, Flat/apartment, Farm, Hotel, Others
-  guestAccess String  @default("Entire place") // Entire place, Room, Shared room
-  details   String?   @db.Text
-  videoUrl  String?   @db.Text
-  rate      Decimal   @default(0.0) // Provide a default value
-  s1        String    @default("")
-  s2        String    @default("")
-  s3        String    @default("")
-  s4        String    @default("")
-
-  wifi            Boolean  @default(false)
-  tv              Boolean  @default(false)
-  kitchen         Boolean  @default(false)
-  washingmachine  Boolean  @default(false)
-  parking         Boolean  @default(false)
-  ac              Boolean  @default(false)
-  pool            Boolean  @default(false)
-  fireextinguisher Boolean @default(false)
-  firstaid        Boolean  @default(false)
-  geyser          Boolean  @default(false)
-  microwave       Boolean  @default(false)
-  waterFilter     Boolean  @default(false)
-  
-  images    himages[]
-  owner     users     @relation(fields: [ownerId], references: [id])
-  ownerId   String
-  bookings  bookings[]
+  id               String     @id @default(uuid())
+  name             String
+  address          String
+  gmap             String
+  totalRoom        Int        @default(2)
+  maxInRoom        Int        @default(2)
+  details          String?
+  rate             Decimal    @default(0.0)
+  s1               String     @default("")
+  s2               String     @default("")
+  s3               String     @default("")
+  s4               String     @default("")
+  wifi             Boolean    @default(false)
+  tv               Boolean    @default(false)
+  kitchen          Boolean    @default(false)
+  washingmachine   Boolean    @default(false)
+  parking          Boolean    @default(false)
+  ac               Boolean    @default(false)
+  pool             Boolean    @default(false)
+  fireextinguisher Boolean    @default(false)
+  firstaid         Boolean    @default(false)
+  ownerId          String
+  videoUrl         String?
+  maxAdults        Int        @default(16)
+  maxChildren      Int        @default(5)
+  maxInfants       Int        @default(5)
+  maxPets          Int        @default(2)
+  guestAccess      String     @default("Entire place")
+  propertyType     String     @default("House")
+  geyser           Boolean    @default(false)
+  microwave        Boolean    @default(false)
+  waterFilter      Boolean    @default(false)
+  bookings         bookings[]
+  images           himages[]
+  owner            users      @relation(fields: [ownerId], references: [id])
 }
-
 
 model restr {
   id      String    @id @default(uuid())
   name    String
   address String
   gmap    String
-  images  rimages[]
-  owner   users     @relation(fields: [ownerId], references: [id])
   ownerId String
+  owner   users     @relation(fields: [ownerId], references: [id])
+  images  rimages[]
 }
 
 model blogs {
   id       String @id @default(uuid())
   title    String
   content  String
-  author   users  @relation(fields: [authorId], references: [id])
   authorId String
+  author   users  @relation(fields: [authorId], references: [id])
 }
-
-// hotel images
 
 model himages {
-  id      String @id @default(uuid())
+  id      String  @id @default(uuid())
   url     String
   name    String?
-  hotel   hotels @relation(fields: [hotelId], references: [id])
   hotelId String
+  hotel   hotels  @relation(fields: [hotelId], references: [id])
 }
-
-// restaurant images
 
 model rimages {
   id      String @id @default(uuid())
   url     String
   name    String
-  rest    restr  @relation(fields: [restrId], references: [id])
   restrId String
-}
-
-enum UserType {
-  admin
-  hotelowner
-  restaurantowner
+  rest    restr  @relation(fields: [restrId], references: [id])
 }
 
 model requests {
-  id        String @id @default(uuid())
-  email     String
-  message   String
-  phone     String
-  type      UserType
-  
-  user      users      @relation(fields: [userId], references: [id])
-  userId    String
+  id      String   @id @default(uuid())
+  email   String
+  message String
+  phone   String
+  type    UserType
+  userId  String
+  user    users    @relation(fields: [userId], references: [id])
 }
 
 model bookings {
-  id        String    @id @default(uuid())
-  email     String
-  message   String?
-  phone     String?
-  time      DateTime  @updatedAt
-  from      DateTime
-  to        DateTime
-  hotel     hotels    @relation(fields: [hotelId], references: [id])
-  hotelId   String
-  user      users     @relation(fields: [userId], references: [id])
-  userId    String
-  payment   payment?
+  id      String   @id @default(uuid())
+  email   String
+  message String?
+  phone   String?
+  time    DateTime @updatedAt
+  from    DateTime
+  to      DateTime
+  hotelId String
+  userId  String
+  hotel   hotels   @relation(fields: [hotelId], references: [id])
+  user    users    @relation(fields: [userId], references: [id])
+  payment payment?
 }
 
 model payment {
@@ -152,7 +131,12 @@ model payment {
   razorpay_payment_id String
   razorpay_signature  String
   date                DateTime @default(now())
-  booking             bookings @relation(fields: [bookingId], references: [id])
   bookingId           String   @unique
+  booking             bookings @relation(fields: [bookingId], references: [id])
 }
 
+enum UserType {
+  admin
+  hotelowner
+  restaurantowner
+}
