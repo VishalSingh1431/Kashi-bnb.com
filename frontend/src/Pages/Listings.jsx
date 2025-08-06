@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
@@ -21,10 +21,7 @@ import ImageUploader from "../Components/Listings/ImageUploader";
 const Listings = () => {
   const nav = useNavigate();
   
-  // Check if user is logged in
-  const isLoggedIn = localStorage.getItem("token") && localStorage.getItem("user");
-  const [showLoginMessage, setShowLoginMessage] = useState(!isLoggedIn);
-
+  // State definitions moved to the top
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -38,7 +35,8 @@ const Listings = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoginMessage, setShowLoginMessage] = useState(false);
   const [listing, setListing] = useState({
     name: '',
     address: '',
@@ -68,6 +66,63 @@ const Listings = () => {
     waterFilter: false
   });
 
+  // Check authentication status on mount and when navigation occurs
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
+      const loggedIn = !!(token && user);
+      setIsLoggedIn(loggedIn);
+      setShowLoginMessage(!loggedIn);
+    };
+    
+    checkAuth();
+    
+    // Cleanup function to reset state when component unmounts
+    return () => {
+      // Reset all state when component unmounts
+      setCurrentImageIndex(0);
+      setStartDate(null);
+      setEndDate(null);
+      setGuestCount({
+        adults: 1,
+        children: 0,
+        infants: 0,
+        pets: 0
+      });
+      setImages([]);
+      setVideoUrl('');
+      setListing({
+        name: '',
+        address: '',
+        rate: '',
+        maxInRoom: 2,
+        totalRoom: 1,
+        maxAdults: 16,
+        maxChildren: 5,
+        maxInfants: 5,
+        maxPets: 2,
+        propertyType: 'House',
+        guestAccess: 'Entire place',
+        details: '',
+        gmap: '',
+        videoUrl: '',
+        wifi: false,
+        tv: false,
+        kitchen: false,
+        washingmachine: false,
+        parking: false,
+        ac: false,
+        pool: false,
+        fireextinguisher: false,
+        firstaid: false,
+        geyser: false,
+        microwave: false,
+        waterFilter: false
+      });
+    };
+  }, [nav]);
+  
   // All logic remains in the parent component
   const calculateTotal = () => {
     if (!startDate || !endDate || !listing.rate) return 0;
