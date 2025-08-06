@@ -14,67 +14,68 @@ const allowedOrigins = [
   'https://www.kashibnb.com'
 ];
 
+// Enhanced CORS options
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Authorization'], // Expose custom headers if needed
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 204 // Proper status for OPTIONS requests
 };
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
 
-// Manual OPTIONS handler for preflight requests
-app.options('*', cors(corsOptions));
+// No need for separate app.options('*') handler when using cors(corsOptions)
 
-// Debug middleware
+// Enhanced debug middleware
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  console.log(`${new Date().toISOString()} | ${req.method} ${req.path} | Origin: ${req.headers.origin || 'none'}`);
   next();
 });
 
 // Body parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Rate limiting
 app.use(limiter);
 
-// Routes
+// API routes
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/hotel', hotelRouter);
 app.use('/api/v1/payments', paymentRouter);
 
 // Health check endpoint
-app.get('/', (req, res) => {
-  res.json({ 
-    status: 'running',
-    cors: {
-      allowedOrigins: allowedOrigins,
-      credentials: true
-    },
-    timestamp: new Date().toISOString()
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
   });
 });
 
-// Error handler
+// Error handling
 app.use((err, req, res, next) => {
+  console.error(`[ERROR] ${err.stack}`);
+
   if (err.message === 'Not allowed by CORS') {
-    return res.status(403).json({ error: 'CORS policy violation' });
+    return res.status(403).json({ 
+      error: 'Forbidden',
+      message: 'Cross-origin request blocked'
+    });
   }
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
+
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log('Allowed CORS origins:', allowedOrigins);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log('🛡️  Allowed CORS origins:', allowedOrigins);
+  console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
