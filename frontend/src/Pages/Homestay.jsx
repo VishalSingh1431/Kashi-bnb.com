@@ -29,122 +29,15 @@ const Homestay = () => {
         setLoading(true);
         setError(null);
         const response = await axios.get(`${BACKEND}/api/v1/hotel/hotels`);
-        // Combine API hotels with additional static hotels
-        const allHotels = [
-          ...(response.data.hotels || []),
-          {
-            id: "premium-suite",
-            name: "Premium Suite",
-            rate: 1999,
-            image: "#",
-            city: "Varanasi",
-            description: "Luxurious suite with premium amenities",
-            s1: "Free WiFi",
-            s2: "Breakfast Included",
-            s3: "Pool Access",
-            s4: "24/7 Support",
-            rating: 4.8
-          },
-          {
-            id: "luxury-villa",
-            name: "Luxury Villa",
-            rate: 2999,
-            image: "#",
-            city: "Varanasi",
-            description: "Spacious villa with modern facilities",
-            s1: "AC",
-            s2: "Parking",
-            s3: "Kitchen",
-            s4: "Laundry",
-            rating: 4.9
-          },
-          {
-            id: "budget-room",
-            name: "Budget Room",
-            rate: 999,
-            image: "#",
-            city: "Varanasi",
-            description: "Affordable accommodation with basic amenities",
-            s1: "WiFi",
-            s2: "24/7 Support",
-            s3: "TV",
-            s4: "Attached Bath",
-            rating: 4.2
-          },
-          {
-            id: "river-view-suite",
-            name: "River View Suite",
-            rate: 2499,
-            image: "#",
-            city: "Varanasi",
-            description: "Beautiful view of the Ganges river",
-            s1: "Ganga View",
-            s2: "AC",
-            s3: "Breakfast",
-            s4: "Free WiFi",
-            rating: 4.7
-          },
-          {
-            id: "family-apartment",
-            name: "Family Apartment",
-            rate: 3499,
-            image: "#",
-            city: "Varanasi",
-            description: "Perfect for family stays with multiple rooms",
-            s1: "3 Bedrooms",
-            s2: "Kitchen",
-            s3: "Living Area",
-            s4: "Parking",
-            rating: 4.5
-          }
-        ];
+        const allHotels = response.data.hotels || [];
         setHotels(allHotels);
         setFilteredHotels(allHotels);
       } catch (err) {
         // console.error("Error fetching hotels:", err);
         setError("Failed to load hotels. Showing demo properties instead.");
-        // Fallback to static hotels if API fails
-        const fallbackHotels = [
-          {
-            id: "premium-suite",
-            name: "Premium Suite",
-            rate: 1999,
-            image: "#",
-            city: "Varanasi",
-            description: "Luxurious suite with premium amenities",
-            s1: "Free WiFi",
-            s2: "Breakfast Included",
-            s3: "Pool Access",
-            s4: "24/7 Support",
-            rating: 4.8
-          },
-          {
-            id: "luxury-villa",
-            name: "Luxury Villa",
-            rate: 2999,
-            image: "#",
-            city: "Varanasi",
-            description: "Spacious villa with modern facilities",
-            s1: "AC",
-            s2: "Parking",
-            s3: "Kitchen",
-            s4: "Laundry",
-            rating: 4.9
-          },
-          {
-            id: "budget-room",
-            name: "Budget Room",
-            rate: 999,
-            image: "#",
-            s1: "WiFi",
-            s2: "24/7 Support",
-            s3: "TV",
-            s4: "Attached Bath",
-            rating: 4.2
-          }
-        ];
-        setHotels(fallbackHotels);
-        setFilteredHotels(fallbackHotels);
+        // No fallback hotels, just set empty arrays
+        setHotels([]);
+        setFilteredHotels([]);
       } finally {
         setLoading(false);
       }
