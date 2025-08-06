@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, User, ChevronDown, Phone } from "lucide-react";
 import Profile from "./Profile";
@@ -10,22 +10,47 @@ const Navbar = () => {
   const [whyKashiOpen, setWhyKashiOpen] = useState(false);
   const [mobileWhyKashiOpen, setMobileWhyKashiOpen] = useState(false);
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem("token") !== null;
-  
-  const getUserData = () => {
-    try {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
       const userData = localStorage.getItem("user");
-      return userData ? JSON.parse(userData) : {};
-    } catch (error) {
-      console.error("Error parsing user data:", error);
-      return {};
-    }
-  };
-  const user = getUserData();
+      
+      if (token && userData) {
+        try {
+          setUser(JSON.parse(userData));
+          setIsLoggedIn(true);
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          setUser(null);
+          setIsLoggedIn(false);
+        }
+      } else {
+        setUser(null);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkAuth();
+    
+    // Listen for storage changes to update auth state
+    const handleStorageChange = () => checkAuth();
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    setUser(null);
+    setIsLoggedIn(false);
     navigate("/", { replace: true });
     window.location.reload();
   };
