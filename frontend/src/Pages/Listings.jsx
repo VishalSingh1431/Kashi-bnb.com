@@ -37,6 +37,7 @@ const Listings = () => {
   const [activeStep, setActiveStep] = useState(1);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginMessage, setShowLoginMessage] = useState(false);
+  const [user, setUser] = useState(null);
   const [listing, setListing] = useState({
     name: '',
     address: '',
@@ -70,15 +71,47 @@ const Listings = () => {
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
-      const user = localStorage.getItem("user");
-      const loggedIn = !!(token && user);
-      setIsLoggedIn(loggedIn);
-      setShowLoginMessage(!loggedIn);
+      const userData = localStorage.getItem("user");
+      
+      if (token && userData) {
+        try {
+          const parsedUser = JSON.parse(userData);
+          setUser(parsedUser);
+          setIsLoggedIn(true);
+          setShowLoginMessage(false);
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          setUser(null);
+          setIsLoggedIn(false);
+          setShowLoginMessage(true);
+        }
+      } else {
+        setUser(null);
+        setIsLoggedIn(false);
+        setShowLoginMessage(true);
+      }
     };
-    
+
     checkAuth();
     
-    // Cleanup function to reset state when component unmounts
+    // Listen for storage changes to update auth state
+    const handleStorageChange = (e) => {
+      if (e.key === 'user' || e.key === 'token') {
+        checkAuth();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  // Cleanup function to reset state when component unmounts
+  useEffect(() => {
     return () => {
       // Reset all state when component unmounts
       setCurrentImageIndex(0);
@@ -507,7 +540,7 @@ const Listings = () => {
               </div>
               
               <div className="space-y-4 sm:space-y-6 md:space-y-8">
-                <RoomDetailsForm listing={listing} handleInputChange={handleInputChange} user={user} />
+                <RoomDetailsForm listing={listing} handleInputChange={handleInputChange} user={user || {}} />
                 <AmenitiesForm listing={listing} handleAmenityChange={handleAmenityChange} />
                 <LocationForm listing={listing} handleInputChange={handleInputChange} />
               </div>
