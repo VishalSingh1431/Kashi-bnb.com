@@ -15,7 +15,8 @@ const app = express();
 // app.use(cors()); // for local development
 // for production
 app.use(cors({
-    origin: ['https://kashibnb.com', 'https://www.kashibnb.com', 'http://localhost:5173', 'http://localhost:3000'],
+    // origin: ['https://kashibnb.com', 'https://www.kashibnb.com', 'http://localhost:5173', 'http://localhost:3000'],
+    origin: ['https://kashibnb.com', 'https://www.kashibnb.com'],// production
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
