@@ -12,8 +12,7 @@ const Footer = () => {
               We provide the best homestay experiences in Kashi. Book your dream stay with us today!
             </p>
           </div>
-
-          {/* Quick Links Section */}
+                    {/* Quick Links Section */}
           <div className="mb-8 md:mb-0">
             <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
