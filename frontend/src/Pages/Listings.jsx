@@ -217,7 +217,7 @@ const Listings = () => {
       await axios.post(
         `${BACKEND}/api/v1/hotel/hotel/${hotelId}/upload-images`,
         formData,
-        { headers: { 'Authorization': token, 'Content-Type': 'multipart/form-data' } }
+        { headers: { 'Authorization': `Bearer ${currentToken}`, 'Content-Type': 'multipart/form-data' } }
       );
       alert('Listing created successfully!');
       nav('/');
