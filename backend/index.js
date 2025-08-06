@@ -25,7 +25,10 @@ app.use(cors({
 app.use(express.json());
 
 // Handle preflight requests
-app.options('*', cors());
+app.options('*', cors({
+    origin: 'https://kashibnb.com',
+    credentials: true
+  }));
 
 // Debug middleware to log CORS-related requests
 app.use((req, res, next) => {
