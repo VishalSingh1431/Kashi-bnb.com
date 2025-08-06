@@ -39,8 +39,16 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         
-        // Always navigate to home page after login
-        navigate("/", { replace: true });
+        // Check if there's a redirect URL in localStorage
+        const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
+        
+        // Navigate to the redirect URL or home page
+        navigate(redirectAfterLogin || "/", { replace: true });
+        
+        // Clear the redirect URL from localStorage
+        if (redirectAfterLogin) {
+          localStorage.removeItem('redirectAfterLogin');
+        }
       }
     } catch (err) {
       console.log(err);
