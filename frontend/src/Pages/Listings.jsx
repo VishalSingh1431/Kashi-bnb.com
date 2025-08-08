@@ -17,9 +17,11 @@ import GuestAccessSelector from "../Components/Listings/GuestAccessSelector";
 // Keep constants and localStorage access in the parent
 import { BACKEND } from "../assets/Vars";
 import ImageUploader from "../Components/Listings/ImageUploader";
+import { useAuth } from "../App";
 
 const Listings = () => {
   const nav = useNavigate();
+  const { isLoggedIn, user, isLoading } = useAuth();
   
   // State definitions moved to the top
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -35,9 +37,7 @@ const Listings = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginMessage, setShowLoginMessage] = useState(false);
-  const [user, setUser] = useState(null);
   const [listing, setListing] = useState({
     name: '',
     address: '',
@@ -69,46 +69,16 @@ const Listings = () => {
 
   // Check authentication status on mount and when navigation occurs
   useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      const userData = localStorage.getItem("user");
-      
-      if (token && userData) {
-        try {
-          const parsedUser = JSON.parse(userData);
-          setUser(parsedUser);
-          setIsLoggedIn(true);
-          setShowLoginMessage(false);
-        } catch (error) {
-          console.error("Error parsing user data:", error);
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          setUser(null);
-          setIsLoggedIn(false);
-          setShowLoginMessage(true);
-        }
-      } else {
-        setUser(null);
-        setIsLoggedIn(false);
+    if (!isLoading) {
+      if (!isLoggedIn) {
         setShowLoginMessage(true);
+        // Store the current path to redirect back after login
+        localStorage.setItem('redirectAfterLogin', '/add-listing');
+      } else {
+        setShowLoginMessage(false);
       }
-    };
-
-    checkAuth();
-    
-    // Listen for storage changes to update auth state
-    const handleStorageChange = (e) => {
-      if (e.key === 'user' || e.key === 'token') {
-        checkAuth();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
+    }
+  }, [isLoggedIn, isLoading]);
 
   // Cleanup function to reset state when component unmounts
   useEffect(() => {
@@ -236,91 +206,205 @@ const Listings = () => {
 
   
   const handleSubmitListing = async () => {
-    // Get fresh token and user data in case it was updated
+    // Get fresh token and user data from localStorage
     const currentToken = localStorage.getItem("token");
-    const currentUser = localStorage.getItem("user");
     
     // Check if user is authenticated
-    if (!currentToken || !currentUser) {
+    if (!isLoggedIn || !user) {
       setShowLoginMessage(true);
       return;
     }
     
-    // Validate required fields
+    // Enhanced validation with better user feedback
+    const validationErrors = [];
+    
     if (!listing.name || listing.name.trim() === '') {
-      alert('Please enter the property name');
-      return;
+      validationErrors.push('Property name is required');
     }
     
     if (!listing.address || listing.address.trim() === '') {
-      alert('Please enter the property address');
-      return;
+      validationErrors.push('Property address is required');
     }
     
     if (!listing.rate || listing.rate <= 0) {
-      alert('Please enter a valid nightly rate');
-      return;
+      validationErrors.push('Please enter a valid nightly rate (greater than 0)');
     }
     
     if (!listing.details || listing.details.trim() === '') {
-      alert('Please enter the property description');
-      return;
+      validationErrors.push('Property description is required');
     }
     
     if (!listing.propertyType) {
-      alert('Please select a property type');
-      return;
+      validationErrors.push('Please select a property type');
     }
     
     if (!listing.guestAccess) {
-      alert('Please select guest access type');
-      return;
+      validationErrors.push('Please select guest access type');
     }
     
     if (images.length === 0) {
-      alert('Please upload at least one image');
+      validationErrors.push('Please upload at least one image');
+    }
+    
+    // Check image sizes
+    // Removed size validation - no limits
+    
+    if (validationErrors.length > 0) {
+      alert('Please fix the following errors:\n\n' + validationErrors.join('\n'));
       return;
     }
     
     setIsSubmitting(true);
+    
     try {
-      const response = await axios.post(
-        `${BACKEND}/api/v1/hotel/create-hotel`,
-        {
-          ...listing,
-          owner: JSON.parse(currentUser)._id // Ensure owner ID is included
-        },
-        { 
-          headers: { 
-            'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 
-            'Content-Type': 'application/json' 
-          } 
+      // Prepare listing data with proper validation
+      const listingData = {
+        ...listing,
+        rate: parseFloat(listing.rate),
+        ownerId: user.id,
+        // Ensure all required fields are properly formatted
+        name: listing.name.trim(),
+        address: listing.address.trim(),
+        details: listing.details.trim(),
+        totalRoom: parseInt(listing.totalRoom) || 1,
+        maxAdults: parseInt(listing.maxAdults) || 1,
+        maxChildren: parseInt(listing.maxChildren) || 0,
+        maxInfants: parseInt(listing.maxInfants) || 0,
+        maxPets: parseInt(listing.maxPets) || 0,
+        maxInRoom: parseInt(listing.maxInRoom) || 2
+      };
+      
+      console.log("Sending listing data:", listingData);
+      
+      // Retry logic for hotel creation
+      let response;
+      let retryCount = 0;
+      const maxRetries = 3;
+      
+      while (retryCount < maxRetries) {
+        try {
+          response = await axios.post(
+            `${BACKEND}/api/v1/hotel/create-hotel`,
+            listingData,
+            { 
+              headers: { 
+                'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 
+                'Content-Type': 'application/json' 
+              },
+              timeout: 30000 // 30 second timeout
+            }
+          );
+          break; // Success, exit retry loop
+        } catch (error) {
+          retryCount++;
+          console.error(`Attempt ${retryCount} failed:`, error);
+          
+          if (retryCount >= maxRetries) {
+            throw error; // Re-throw if all retries failed
+          }
+          
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
         }
-      );
+      }
+      
       const hotelId = response.data.newHotel.id;
-      const formData = new FormData();
-      images.forEach(image => {
-        formData.append('images', image);
-      });
-      await axios.post(
-        `${BACKEND}/api/v1/hotel/hotel/${hotelId}/upload-images`,
-        formData,
-        { headers: { 'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 'Content-Type': 'multipart/form-data' } }
-      );
-      alert('Listing created successfully!');
+      
+      // Upload images with progress tracking and retry logic
+      const uploadResults = [];
+      for (let i = 0; i < images.length; i++) {
+        const image = images[i];
+        let uploadSuccess = false;
+        let uploadRetryCount = 0;
+        const maxUploadRetries = 2;
+        
+        while (!uploadSuccess && uploadRetryCount < maxUploadRetries) {
+          try {
+            const formData = new FormData();
+            formData.append('images', image);
+            
+            const uploadResponse = await axios.post(
+              `${BACKEND}/api/v1/hotel/hotel/${hotelId}/upload-images`,
+              formData,
+              { 
+                headers: { 
+                  'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 
+                  'Content-Type': 'multipart/form-data' 
+                },
+                timeout: 60000 // 60 second timeout for image uploads
+              }
+            );
+            
+            uploadResults.push({ success: true, imageIndex: i });
+            uploadSuccess = true;
+            
+          } catch (imgErr) {
+            uploadRetryCount++;
+            console.error(`Image ${i + 1} upload attempt ${uploadRetryCount} failed:`, imgErr);
+            
+            if (uploadRetryCount >= maxUploadRetries) {
+              uploadResults.push({ 
+                success: false, 
+                imageIndex: i, 
+                error: imgErr.response?.data?.message || 'Upload failed' 
+              });
+              throw new Error(`Failed to upload image ${i + 1} after ${maxUploadRetries} attempts.`);
+            }
+            
+            // Wait before retrying
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+        }
+      }
+      
+      // Check if all uploads were successful
+      const failedUploads = uploadResults.filter(result => !result.success);
+      if (failedUploads.length > 0) {
+        const failedImageNumbers = failedUploads.map(f => f.imageIndex + 1).join(', ');
+        alert(`Listing created successfully, but failed to upload images: ${failedImageNumbers}. You can edit the listing later to add images.`);
+      } else {
+        alert('Listing created successfully!');
+      }
+      
       nav('/');
+      
     } catch (error) {
       console.error("Error creating listing:", error);
       
-      // Handle specific backend validation errors
-      if (error.response && error.response.data) {
-        const { message } = error.response.data;
-        alert(message || 'Failed to create listing. Please try again.');
+      let errorMessage = 'Failed to create listing. Please try again.';
+      
+      if (error.response) {
+        const { status, data } = error.response;
+        
+        switch (status) {
+          case 400:
+            errorMessage = data?.message || 'Invalid data provided. Please check your inputs.';
+            break;
+          case 401:
+            errorMessage = 'Your session has expired. Please log in again.';
+            // Redirect to login
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            nav('/login');
+            return;
+          case 403:
+            errorMessage = 'You do not have permission to create listings.';
+            break;
+          case 500:
+            errorMessage = 'Server error. Please try again in a few minutes.';
+            break;
+          default:
+            errorMessage = data?.message || `Server error (${status}). Please try again.`;
+        }
       } else if (error.code === 'ERR_NETWORK') {
-        alert('Network error. Please check your connection and try again.');
-      } else {
-        alert('Failed to create listing. Please try again.');
+        errorMessage = 'Network error. Please check your internet connection and try again.';
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Request timed out. Please try again.';
+      } else if (error.message) {
+        errorMessage = error.message;
       }
+      
+      alert(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { BACKEND } from "../assets/Vars";
+import { useAuth } from "../App";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,9 +37,8 @@ const Login = () => {
       console.log(response);
 
       if (response.status === 200) {
-        // Store token and user data
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        // Use the centralized login function
+        login(response.data.token, response.data.user);
         
         // Check if there's a redirect URL in localStorage
         const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');

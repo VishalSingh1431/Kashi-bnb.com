@@ -2,100 +2,104 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-12">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {/* About Section */}
-          <div className="mb-8 md:mb-0">
-            <h3 className="text-xl font-semibold mb-4">About Us</h3>
-            <p className="text-gray-400">
-              We provide the best homestay experiences in Kashi. Book your dream stay with us today!
-            </p>
-          </div>
-                    {/* Quick Links Section */}
-          <div className="mb-8 md:mb-0">
-            <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="/" className="text-gray-400 hover:text-white transition">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="/about" className="text-gray-400 hover:text-white transition">
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="/homestays" className="text-gray-400 hover:text-white transition">
-                  Homestays
-                </a>
-              </li>
-              <li>
-                <a href="/contact" className="text-gray-400 hover:text-white transition">
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Section */}
-          <div className="mb-8 md:mb-0">
-            <h3 className="text-xl font-semibold mb-4">Contact Us</h3>
-            <ul className="text-gray-400 space-y-2">
-              <li>Email: info@kashibnb.com</li>
-              <li>Phone: +91 123 456 7890</li>
-              <li>Address: Kashi, Uttar Pradesh, India</li>
-            </ul>
-          </div>
-
-          {/* Social Media Section */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
-            <div className="flex space-x-4">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition"
-              >
-                <i className="fab fa-facebook text-2xl"></i>
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition"
-              >
-                <i className="fab fa-twitter text-2xl"></i>
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition"
-              >
-                <i className="fab fa-instagram text-2xl"></i>
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition"
-              >
-                <i className="fab fa-linkedin text-2xl"></i>
-              </a>
-            </div>
+    <footer className="bg-[#fcf5ee] py-10 font-sans text-sm text-[#333]">
+      <div className="mx-auto flex max-w-6xl flex-wrap gap-10 px-4">
+        {/* Column 1: Logo & Tagline */}
+        <div className="min-w-[200px] flex-1">
+          <h2 className="mb-2 text-2xl font-bold text-[#e74c3c]">KashiBnB</h2>
+          <p>Discover authentic homestays and unforgettable experiences in the spiritual heart of Varanasi.</p>
+          <div className="mt-2">
+            <a href="#" className="mr-3 text-xl">
+              📘
+            </a>
+            <a href="#" className="mr-3 text-xl">
+              🐦
+            </a>
+            <a href="#" className="text-xl">
+              📸
+            </a>
           </div>
         </div>
 
+        {/* Column 2: Quick Links */}
+        <div className="min-w-[150px] flex-1">
+          <h4 className="mb-2 font-semibold">Quick Links</h4>
+          <ul className="space-y-1">
+            <li>
+              <a href="#">Home</a>
+            </li>
+            <li>
+              <a href="#about">About</a>
+            </li>
+            <li>
+              <a href="#group-yatra">Group Yatra</a>
+            </li>
+            <li>
+              <a href="#villas">Villas</a>
+            </li>
+            <li>
+              <a href="#contact">Contact</a>
+            </li>
+          </ul>
+        </div>
 
-        {/* Copyright Section */}
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-400">
-            &copy; {new Date().getFullYear()} KashiBnB. All rights reserved.
+        {/* Column 3: Explore More */}
+        <div className="min-w-[150px] flex-1">
+          <h4 className="mb-2 font-semibold">Explore More</h4>
+          <ul className="space-y-1">
+            <li>
+              <a href="#tours">Special Tours</a>
+            </li>
+            <li>
+              <a href="#blog">Blog</a>
+            </li>
+            <li>
+              <a href="#faqs">FAQs</a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Column 4: Contact & Subscribe */}
+        <div className="min-w-[200px] flex-1">
+          <h4 className="mb-2 font-semibold">Contact Us</h4>
+          <p className="my-1">
+            <strong>Address:</strong>
+            <br />
+            Bhelupur, Varanasi, UP 221010
           </p>
+          <p className="my-1">
+            <strong>Phone:</strong>
+            <br />
+            +91 80117 08595
+            <br />
+            +91 70543 47998
+          </p>
+          <p className="my-1">
+            <strong>Email:</strong>
+            <br />
+            <a href="mailto:kashibnb@gmail.com">kashibnb@gmail.com</a>
+          </p>
+
+          <h4 className="my-4 font-semibold">Stay Updated</h4>
+          <form className="flex">
+            <input
+              type="email"
+              placeholder="Your email"
+              required
+              className="flex-1 rounded-l border border-gray-300 px-2 py-2"
+            />
+            <button
+              type="submit"
+              className="rounded-r bg-[#e74c3c] px-4 py-2 text-white"
+            >
+              ➤
+            </button>
+          </form>
         </div>
+      </div>
+
+      <div className="mx-auto mt-8 max-w-6xl border-t border-[#e0e0e0] pt-5 text-center text-[#777]">
+        © 2025 KashiBnB. All rights reserved.
       </div>
     </footer>
   );
