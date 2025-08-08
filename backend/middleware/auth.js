@@ -10,7 +10,7 @@ const authorisation = async (req,res,nex)=>{
         let token = req.get('Authorization');
 
         if(!token){
-            // console.log("no token");
+            console.log("No token provided");
             return res.status(411).json({
                 success : false,
                 message : "no token",
@@ -18,8 +18,11 @@ const authorisation = async (req,res,nex)=>{
         }
 
         token = token.split(" ")[1];
+        
         // console.log(token," tot ")
-        const user=await jwt.verify(token,process.env.JWT_SEX);
+        const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
+        const user=await jwt.verify(token,jwtSecret);
+        
         if(user){
             req.user=user;
             nex();
@@ -33,7 +36,7 @@ const authorisation = async (req,res,nex)=>{
         }
     }
     catch(e){
-        console.log(e);
+        console.log("JWT verification error:", e);
         return res.status(411).json({
             success : false,
             message : "auth error",

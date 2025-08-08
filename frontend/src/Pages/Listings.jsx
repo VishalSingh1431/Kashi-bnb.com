@@ -292,7 +292,7 @@ const Listings = () => {
         },
         { 
           headers: { 
-            'Authorization': `Bearer ${currentToken}`, 
+            'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 
             'Content-Type': 'application/json' 
           } 
         }
@@ -305,7 +305,7 @@ const Listings = () => {
       await axios.post(
         `${BACKEND}/api/v1/hotel/hotel/${hotelId}/upload-images`,
         formData,
-        { headers: { 'Authorization': `Bearer ${currentToken}`, 'Content-Type': 'multipart/form-data' } }
+        { headers: { 'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 'Content-Type': 'multipart/form-data' } }
       );
       alert('Listing created successfully!');
       nav('/');

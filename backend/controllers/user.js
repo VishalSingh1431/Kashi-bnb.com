@@ -35,7 +35,8 @@ export const loginControl = async (req, res, nex) => {
             });
         }
 
-        const token = await jwt.sign(user, process.env.JWT_SEX);
+        const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
+        const token = await jwt.sign(user, jwtSecret);
         user.password = null;
         user.token = null;
         return res.status(200).json({
