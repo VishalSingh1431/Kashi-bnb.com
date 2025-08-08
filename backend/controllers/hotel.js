@@ -364,8 +364,14 @@ export const updateHotel = async (req,res,nex) =>{
 
 export const uploadHotImage = async (req,res,nex) => {
     try{
+        console.log("=== UPLOAD IMAGE DEBUG ===");
+        console.log("Request params:", req.params);
+        console.log("Request files:", req.files ? req.files.length : 'No files');
+        console.log("Request user:", req.user);
+        
         const id = req.params.uid;
         if(!id){
+            console.log("ERROR: No hotel ID provided");
             return res.status(400).json({
                 success : false,
                 message : "Hotel ID is required",
@@ -379,41 +385,43 @@ export const uploadHotImage = async (req,res,nex) => {
         });
         
         if (!existingHotel) {
+            console.log("ERROR: Hotel not found with ID:", id);
             return res.status(404).json({
                 success: false,
                 message: "Hotel not found"
             });
         }
         
+        console.log("Hotel found:", existingHotel.name);
+        console.log("Hotel owner ID:", existingHotel.ownerId);
+        console.log("User ID:", req.user.id);
+        
         // Check if user is the owner or admin
         if (existingHotel.ownerId !== req.user.id && !req.user.isAdmin) {
+            console.log("ERROR: User not authorized to upload to this hotel");
             return res.status(403).json({
                 success: false,
                 message: "You can only upload images to your own hotels"
             });
         }
         
+        // Validate files (only presence; allow any mimetype)
         if (!req.files || req.files.length === 0) {
+            console.log("ERROR: No files provided");
             return res.status(400).json({
                 success: false,
                 message: "No images provided"
             });
         }
         
-        // Validate file types and sizes
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-        
+        // Log basic file info for debugging, but do not reject by type
         for (let i = 0; i < req.files.length; i++) {
             const file = req.files[i];
-            
-            if (!allowedTypes.includes(file.mimetype)) {
-                return res.status(400).json({
-                    success: false,
-                    message: `File ${i + 1} has an unsupported format. Please use JPEG, PNG, or WebP images.`
-                });
-            }
-            
-            // Removed file size validation - no limits
+            console.log(`File ${i + 1}:`, {
+                originalname: file.originalname,
+                mimetype: file.mimetype,
+                size: file.size
+            });
         }
         
         // Check if hotel already has too many images
@@ -421,8 +429,12 @@ export const uploadHotImage = async (req,res,nex) => {
             where: { hotelId: id }
         });
         
+        console.log("Existing images:", existingImageCount);
+        console.log("New images to add:", req.files.length);
+        
         const maxImages = 100; 
         if (existingImageCount + req.files.length > maxImages) {
+            console.log(`ERROR: Too many images. Current: ${existingImageCount}, Adding: ${req.files.length}, Max: ${maxImages}`);
             return res.status(400).json({
                 success: false,
                 message: `Hotel can have maximum ${maxImages} images. You currently have ${existingImageCount} images.`
