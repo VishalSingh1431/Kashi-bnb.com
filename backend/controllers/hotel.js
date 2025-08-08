@@ -421,7 +421,7 @@ export const uploadHotImage = async (req,res,nex) => {
             where: { hotelId: id }
         });
         
-        const maxImages = 10;
+        const maxImages = 100; 
         if (existingImageCount + req.files.length > maxImages) {
             return res.status(400).json({
                 success: false,
