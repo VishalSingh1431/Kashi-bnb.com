@@ -74,23 +74,11 @@ function App() {
     };
     window.addEventListener('authStateChanged', handleAuthStateChange);
     
-    // Validate token every 5 minutes if user is logged in
-    let tokenValidationInterval;
-    if (isLoggedIn) {
-      tokenValidationInterval = setInterval(async () => {
-        const isValid = await validateToken();
-        if (!isValid) {
-          console.log('Token expired, logged out automatically');
-        }
-      }, 5 * 60 * 1000); // 5 minutes
-    }
+    // Removed automatic token validation to prevent unwanted logouts
     
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('authStateChanged', handleAuthStateChange);
-      if (tokenValidationInterval) {
-        clearInterval(tokenValidationInterval);
-      }
     };
   }, [isLoggedIn]);
 
