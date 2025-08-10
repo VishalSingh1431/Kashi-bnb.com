@@ -69,15 +69,8 @@ const Listings = () => {
 
   // Check authentication status on mount and when navigation occurs
   useEffect(() => {
-    if (!isLoading) {
-      if (!isLoggedIn) {
-        setShowLoginMessage(true);
-        // Store the current path to redirect back after login
-        localStorage.setItem('redirectAfterLogin', '/add-listing');
-      } else {
-        setShowLoginMessage(false);
-      }
-    }
+    // Remove the login check - anyone can view the page
+    setShowLoginMessage(false);
   }, [isLoggedIn, isLoading]);
 
   // Cleanup function to reset state when component unmounts
@@ -177,6 +170,20 @@ const Listings = () => {
 
   const handleImageUpload = (event) => {
     const newFiles = Array.from(event.target.files);
+    
+    // Check total image count limit (100 total images per hotel)
+    const totalImages = images.length + newFiles.length;
+    if (totalImages > 100) {
+      alert(`You can upload maximum 100 images. You currently have ${images.length} images and trying to add ${newFiles.length} more.`);
+      return;
+    }
+    
+    // Check images per upload limit (100 images per upload)
+    if (newFiles.length > 100) {
+      alert(`You can select maximum 100 images at once. Please select fewer images.`);
+      return;
+    }
+    
     setImages(prevImages => {
       const updatedImages = [...prevImages, ...newFiles];
       return updatedImages;
@@ -211,7 +218,13 @@ const Listings = () => {
     
     // Check if user is authenticated
     if (!isLoggedIn || !user) {
-      setShowLoginMessage(true);
+      alert('Please log in to create a listing. Only verified hotel owners can create property listings.');
+      return;
+    }
+    
+    // Check if user is a hoteler (has hotel access)
+    if (!user.has_hotel) {
+      alert('Only verified hotel owners can create property listings. Please contact us to request hotel owner access.');
       return;
     }
     
@@ -291,7 +304,7 @@ const Listings = () => {
                 'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 
                 'Content-Type': 'application/json' 
               },
-              timeout: 30000 // 30 second timeout
+              timeout: 18000000 // Increased to 5 hours for hotel creation
             }
           );
           break; // Success, exit retry loop
@@ -304,7 +317,7 @@ const Listings = () => {
           }
           
           // Wait before retrying (exponential backoff)
-          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+          await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
         }
       }
       
@@ -316,7 +329,7 @@ const Listings = () => {
         const image = images[i];
         let uploadSuccess = false;
         let uploadRetryCount = 0;
-        const maxUploadRetries = 2;
+        const maxUploadRetries = 3; // Increased retries
         
         while (!uploadSuccess && uploadRetryCount < maxUploadRetries) {
           try {
@@ -331,7 +344,7 @@ const Listings = () => {
                   'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 
                   'Content-Type': 'multipart/form-data' 
                 },
-                timeout: 60000 // 60 second timeout for image uploads
+                timeout: 18000000 // Increased to 5 hours for large image uploads
               }
             );
             
@@ -348,11 +361,12 @@ const Listings = () => {
                 imageIndex: i, 
                 error: imgErr.response?.data?.message || 'Upload failed' 
               });
-              throw new Error(`Failed to upload image ${i + 1} after ${maxUploadRetries} attempts.`);
+              // Don't throw error, continue with other images
+              break;
             }
             
-            // Wait before retrying
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Wait before retrying (longer wait for network issues)
+            await new Promise(resolve => setTimeout(resolve, 5000 * uploadRetryCount));
           }
         }
       }
@@ -397,9 +411,9 @@ const Listings = () => {
             errorMessage = data?.message || `Server error (${status}). Please try again.`;
         }
       } else if (error.code === 'ERR_NETWORK') {
-        errorMessage = 'Network error. Please check your internet connection and try again.';
+        errorMessage = 'Network error. Please check your internet connection and try again. If the problem persists, try uploading smaller images or fewer images at once.';
       } else if (error.code === 'ECONNABORTED') {
-        errorMessage = 'Request timed out. Please try again.';
+        errorMessage = 'Request timed out. This can happen with large images. Please try uploading smaller images or check your internet connection.';
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -449,28 +463,6 @@ const Listings = () => {
 
   return (
     <div className="min-h-screen pt-28 sm:pt-32 md:pt-36 lg:pt-40 xl:pt-44 2xl:pt-48 px-2 sm:px-3 md:px-4 lg:px-6 overflow-x-hidden relative" style={{ backgroundColor: '#f3eadb' }}>
-      {showLoginMessage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-            <h2 className="text-xl font-bold mb-4">Login Required</h2>
-            <p className="mb-4">Please log in to create a listing.</p>
-            <div className="flex justify-end space-x-3">
-              <button 
-                onClick={() => setShowLoginMessage(false)}
-                className="px-4 py-2 border rounded hover:bg-gray-100"
-              >
-                Close
-              </button>
-              <button 
-                onClick={() => nav('/login')}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Go to Login
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       {/* Header Section */}
       <div className="max-w-7xl mx-auto w-full">
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 md:mb-8">
@@ -591,6 +583,32 @@ const Listings = () => {
                 <div className="min-w-0 flex-1">
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Media & Visuals</h2>
                   <p className="text-xs sm:text-sm md:text-base text-gray-600">Showcase your property with photos and videos</p>
+                </div>
+              </div>
+              
+              {/* Upload Limits Info */}
+              <div className="bg-blue-50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+                <h3 className="text-sm sm:text-base font-semibold text-blue-800 mb-2 sm:mb-3">📋 Upload Limits</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 text-xs sm:text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></span>
+                    <span className="text-blue-700">Max 100 images per hotel</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></span>
+                    <span className="text-blue-700">Max 100 images per upload</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></span>
+                    <span className="text-blue-700">Max 1GB per image</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></span>
+                    <span className="text-blue-700">5-hour upload timeout</span>
+                  </div>
+                </div>
+                <div className="mt-2 sm:mt-3 text-xs text-blue-600">
+                  <strong>Current:</strong> {images.length}/100 images uploaded
                 </div>
               </div>
               
