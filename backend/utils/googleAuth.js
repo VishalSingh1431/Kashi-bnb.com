@@ -13,11 +13,15 @@ export const generateGoogleAuthURL = (action = 'login') => {
     'https://www.googleapis.com/auth/userinfo.email'
   ];
 
+  // Get the callback URL from environment or construct it
+  const callbackURL = process.env.GOOGLE_CALLBACK_URL || `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/v1/auth/google/callback`;
+
   return googleClient.generateAuthUrl({
     access_type: 'offline',
     scope: scopes,
     prompt: 'consent',
-    state: action // Pass action through state parameter
+    state: action, // Pass action through state parameter
+    redirect_uri: callbackURL // Add the missing redirect_uri parameter
   });
 };
 
