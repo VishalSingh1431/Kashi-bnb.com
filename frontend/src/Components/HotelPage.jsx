@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { BACKEND } from "../assets/Vars";
+import { BACKEND, getAuthHeader } from "../assets/Vars";
 // import HotelHeader from "./HotelHeader";
 import HotelImageGallery from "./HotelPage/HotelImageGallery";
 import HotelLocation from "./HotelPage/HotelLocation";
@@ -14,6 +14,7 @@ import HotelVideoSection from "./HotelPage/HotelVideoSection";
 import HotelMapSection from "./HotelPage/HotelMapSection";
 import PropertyTypeSelector from "./Listings/PropertyTypeSelector";
 import GuestAccessSelector from "./Listings/GuestAccessSelector";
+import HotelReviews from "./HotelPage/HotelReviews";
 import { FiMapPin } from "react-icons/fi";
 
 
@@ -93,7 +94,7 @@ const HotelPage = () => {
         changedHotel,
         {
           headers: {
-            'Authorization': token,
+            'Authorization': getAuthHeader(token),
             'Content-Type': 'application/json'
           }
         }
@@ -157,7 +158,7 @@ const HotelPage = () => {
     try {
       const response = await axios.post(`${BACKEND}/api/v1/hotel/hotel/${id}/upload-images`, formData, {
         headers: {
-          "Authorization": token,
+          "Authorization": getAuthHeader(token),
           "Content-Type": "multipart/form-data",
         },
       });
@@ -222,7 +223,7 @@ const HotelPage = () => {
   if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
 
   return (
-    <div className="min-h-screen pt-16 sm:pt-20 md:pt-24 lg:pt-32 px-2 sm:px-3 md:px-4 lg:px-6 max-w-7xl mx-auto">
+    <div className="min-h-screen px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 max-w-7xl mx-auto">
       <HotelHeader 
         isOwnerOrAdmin={isOwnerOrAdmin}
         editMode={editMode}
@@ -237,10 +238,10 @@ const HotelPage = () => {
             name="name"
             value={tempHotel.name}
             onChange={handleInputChange}
-            className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 w-full p-2 sm:p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 sm:mb-4 w-full p-2 sm:p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         ) : (
-          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 capitalize text-gray-800 break-words">{hotel.name}</h1>
+          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 sm:mb-4 capitalize text-gray-800 break-words">{hotel.name}</h1>
         )}
       </div>
 
@@ -259,8 +260,8 @@ const HotelPage = () => {
         handleInputChange={handleInputChange}
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mt-4 sm:mt-6 md:mt-8">
-        <div className="xl:col-span-2 space-y-3 sm:space-y-4 md:space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mt-4 sm:mt-6 md:mt-8">
+        <div className="lg:col-span-2 space-y-3 sm:space-y-4 md:space-y-6">
           <HotelHostInfo 
             hotel={hotel}
             editMode={editMode}
@@ -300,10 +301,15 @@ const HotelPage = () => {
             tempHotel={tempHotel}
             handleInputChange={handleInputChange}
           />
+          
+          <HotelReviews
+            hotelId={hotel.id}
+            isOwnerOrAdmin={isOwnerOrAdmin}
+          />
         </div>
 
-        <div className="xl:col-span-1">
-          <div className="sticky top-16 sm:top-20 md:top-24">
+        <div className="lg:col-span-1">
+          <div className="sticky top-8 sm:top-10 md:top-12 lg:top-14 xl:top-16">
             <HotelBookingCard 
               hotel={hotel}
               editMode={editMode}

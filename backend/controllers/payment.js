@@ -54,8 +54,8 @@ export const paymentVerifyControl = async (req,res,nex) => {
         // Create Sign
         const sign = razorpay_order_id + "|" + razorpay_payment_id;
         
-        // Create ExpectedSign
-        const expectedSign = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET)
+        // Create ExpectedSign using the same secret used to initialize Razorpay
+        const expectedSign = crypto.createHmac("sha256", process.env.RZPKS)
         .update(sign.toString())
         .digest("hex");
         

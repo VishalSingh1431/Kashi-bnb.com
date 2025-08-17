@@ -9,10 +9,13 @@ datasource db {
 
 model users {
   id          String     @id @default(uuid())
-  email       String     @unique
+  email       String?    @unique
   name        String
-  password    String
-  phone       String?
+  first_name  String?
+  last_name   String?
+  password    String?
+  phone       String?    @unique
+  mobile      String?    @unique
   token       String?
   time        DateTime   @updatedAt
   has_hotel   Boolean    @default(false)
@@ -21,11 +24,37 @@ model users {
   verified    Boolean    @default(false)
   p_verified  Boolean    @default(false)
   address     String?
-  blogs_name  blogs[]
-  bookings    bookings[]
-  hotels_name hotels[]
-  requests    requests[]
-  restr_name  restr[]
+  googleId              String?    @unique
+  resetPasswordToken    String?
+  resetPasswordExpires  DateTime?
+  blogs_name            blogs[]
+  bookings              bookings[]
+  hotels_name           hotels[]
+  requests              requests[]
+  restr_name            restr[]
+  otps                  OTP[]
+  ratings               rating[]
+  reviews               review[]
+}
+
+model OTP {
+  id        String   @id @default(uuid())
+  mobile    String   // Changed from 'phone' to 'mobile' for consistency with users table
+  otp       String
+  type      OTPType
+  expiresAt DateTime
+  time      DateTime @default(now()) // Changed from 'createdAt' to 'time' for consistency
+  user      users?   @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+enum OTPType {
+  LOGIN
+  SIGNUP
+  RESET
+  EMAIL_RECOVERY
+  PHONE_RECOVERY
+  EMAIL_ADD
 }
 
 model hotels {
@@ -61,8 +90,12 @@ model hotels {
   geyser           Boolean    @default(false)
   microwave        Boolean    @default(false)
   waterFilter      Boolean    @default(false)
+  averageRating    Float      @default(0.0)
+  totalRatings     Int        @default(0)
   bookings         bookings[]
   images           himages[]
+  ratings          rating[]
+  reviews          review[]
   owner            users      @relation(fields: [ownerId], references: [id])
 }
 
@@ -101,13 +134,21 @@ model rimages {
 }
 
 model requests {
-  id      String   @id @default(uuid())
-  email   String
-  message String
-  phone   String
-  type    UserType
-  userId  String
-  user    users    @relation(fields: [userId], references: [id])
+  id             String    @id @default(uuid())
+  email         String
+  message       String
+  phone         String
+  type          UserType
+  userId        String
+  user          users     @relation(fields: [userId], references: [id])
+  status        String?   @default("pending") // pending, approved, rejected, declined
+  approvedAt    DateTime?
+  approvedBy    String?
+  rejectedAt    DateTime?
+  rejectedBy    String?
+  rejectionReason String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model bookings {
@@ -120,9 +161,12 @@ model bookings {
   to      DateTime
   hotelId String
   userId  String
+  status  String   @default("pending") // pending, confirmed, completed, cancelled
   hotel   hotels   @relation(fields: [hotelId], references: [id])
   user    users    @relation(fields: [userId], references: [id])
   payment payment?
+  rating  rating?
+  review  review?
 }
 
 model payment {
@@ -133,6 +177,34 @@ model payment {
   date                DateTime @default(now())
   bookingId           String   @unique
   booking             bookings @relation(fields: [bookingId], references: [id])
+}
+
+model rating {
+  id        String   @id @default(uuid())
+  rating    Int      // 1-5 stars
+  bookingId String   @unique
+  hotelId   String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  booking   bookings @relation(fields: [bookingId], references: [id])
+  hotel     hotels   @relation(fields: [hotelId], references: [id])
+  user      users    @relation(fields: [userId], references: [id])
+}
+
+model review {
+  id        String   @id @default(uuid())
+  content   String   // Review text content
+  rating    Int      // Associated rating (1-5 stars)
+  bookingId String   @unique
+  hotelId   String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isVisible Boolean  @default(true) // Admin can hide inappropriate reviews
+  booking   bookings @relation(fields: [bookingId], references: [id])
+  hotel     hotels   @relation(fields: [hotelId], references: [id])
+  user      users    @relation(fields: [userId], references: [id])
 }
 
 enum UserType {

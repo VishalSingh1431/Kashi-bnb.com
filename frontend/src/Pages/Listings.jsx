@@ -15,7 +15,7 @@ import NumberForm from "../Components/NumberForm";
 import PropertyTypeSelector from "../Components/Listings/PropertyTypeSelector";
 import GuestAccessSelector from "../Components/Listings/GuestAccessSelector";
 // Keep constants and localStorage access in the parent
-import { BACKEND } from "../assets/Vars";
+import { BACKEND, getAuthHeader } from "../assets/Vars";
 import ImageUploader from "../Components/Listings/ImageUploader";
 import { useAuth } from "../App";
 
@@ -38,6 +38,9 @@ const Listings = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [showLoginMessage, setShowLoginMessage] = useState(false);
+  const [listingAccessForm, setListingAccessForm] = useState({ phone: '' });
+  const [listingAccessRequestSent, setListingAccessRequestSent] = useState(false);
+  const [isSubmittingAccess, setIsSubmittingAccess] = useState(false);
   const [listing, setListing] = useState({
     name: '',
     address: '',
@@ -71,7 +74,46 @@ const Listings = () => {
   useEffect(() => {
     // Remove the login check - anyone can view the page
     setShowLoginMessage(false);
-  }, [isLoggedIn, isLoading]);
+    
+    // Reset listing access form when user changes
+    if (user) {
+      setListingAccessForm({ phone: '' });
+      setListingAccessRequestSent(false);
+    }
+  }, [isLoggedIn, isLoading, user]);
+
+  // Auto-refresh user data when component mounts to ensure latest permissions
+  useEffect(() => {
+    if (isLoggedIn && user) {
+      // Refresh user data to get latest permissions
+      const refreshUser = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await fetch(`${BACKEND}/api/v1/user/me`, {
+            headers: {
+              'Authorization': token.startsWith('Bearer ') ? token : `Bearer ${token}`
+            }
+          });
+          
+          if (response.ok) {
+            const userData = await response.json();
+            if (userData.success && userData.user) {
+              // Update local storage with fresh user data
+              localStorage.setItem("user", JSON.stringify(userData.user));
+              // Dispatch event to update auth context
+              window.dispatchEvent(new CustomEvent('authStateChanged', { 
+                detail: { isLoggedIn: true, user: userData.user } 
+              }));
+            }
+          }
+        } catch (error) {
+          console.error('Error refreshing user data:', error);
+        }
+      };
+      
+      refreshUser();
+    }
+  }, [isLoggedIn, user]);
 
   // Cleanup function to reset state when component unmounts
   useEffect(() => {
@@ -88,6 +130,8 @@ const Listings = () => {
       });
       setImages([]);
       setVideoUrl('');
+      setListingAccessForm({ phone: '' });
+      setListingAccessRequestSent(false);
       setListing({
         name: '',
         address: '',
@@ -208,6 +252,74 @@ const Listings = () => {
       ...prev,
       videoUrl: url
     }));
+  };
+
+  // Listing Access Form Functions
+  const handleListingAccessInputChange = (e) => {
+    const { name, value } = e.target;
+    setListingAccessForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleListingAccessSubmit = async () => {
+    if (!listingAccessForm.phone) {
+      alert('Please enter your phone number');
+      return;
+    }
+
+    setIsSubmittingAccess(true);
+    
+    try {
+      const token = localStorage.getItem("token");
+      
+      // Send request to backend
+      const response = await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, {
+        phone: listingAccessForm.phone,
+        email: user.email,
+        message: `User ${user.email} (${user.first_name || user.name || 'User'}) is requesting listing access. Phone: ${listingAccessForm.phone}`
+      }, {
+        headers: {
+          'Authorization': getAuthHeader(token),
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.success) {
+        setListingAccessRequestSent(true);
+        setListingAccessForm({ phone: '' });
+        
+        // Send email notification to admin
+        try {
+          await axios.post(`${BACKEND}/api/v1/user/send-notification-email`, {
+            to: 'vishalsingh05072003@gmail.com',
+            subject: 'New Listing Access Request',
+            message: `A new user has requested listing access:
+
+User: ${user.email}
+Name: ${user.first_name || user.name || 'User'}
+Phone: ${listingAccessForm.phone}
+Request Time: ${new Date().toLocaleString()}
+
+Please verify and contact the user.`
+          }, {
+            headers: {
+              'Authorization': getAuthHeader(token),
+              'Content-Type': 'application/json'
+            }
+          });
+        } catch (emailError) {
+          console.error('Email notification failed:', emailError);
+          // Don't fail the main request if email fails
+        }
+      }
+    } catch (error) {
+      console.error('Error submitting listing access request:', error);
+      alert('Failed to submit request. Please try again.');
+    } finally {
+      setIsSubmittingAccess(false);
+    }
   };
 
 
@@ -462,7 +574,88 @@ const Listings = () => {
   );
 
   return (
-    <div className="min-h-screen pt-28 sm:pt-32 md:pt-36 lg:pt-40 xl:pt-44 2xl:pt-48 px-2 sm:px-3 md:px-4 lg:px-6 overflow-x-hidden relative" style={{ backgroundColor: '#f3eadb' }}>
+    <div className="min-h-screen px-2 sm:px-3 md:px-4 lg:px-6 overflow-x-hidden relative" style={{ backgroundColor: '#f3eadb' }}>
+              {/* Listing Access Option - Only for non-hotelers and non-admins */}
+        {isLoggedIn && user && !user.has_hotel && !user.is_admin && (
+          <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 md:mb-8">
+            <div className="text-center mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-orange-800 mb-2">Want to List Your Property?</h2>
+              <p className="text-sm text-orange-700 mb-4">
+                You need listing access to create property listings. Request access and start earning from your property!
+              </p>
+              <div className="flex flex-wrap justify-center gap-2 text-xs text-orange-600 mb-4">
+                <span className="flex items-center gap-1">
+                  <FiCheckCircle className="text-orange-500" size={14} />
+                  Verified hotel owners only
+                </span>
+                <span className="flex items-center gap-1">
+                  <FiCheckCircle className="text-orange-500" size={14} />
+                  Earn from bookings
+                </span>
+                <span className="flex items-center gap-1">
+                  <FiCheckCircle className="text-orange-500" size={14} />
+                  Full listing management
+                </span>
+              </div>
+            </div>
+
+            {/* Listing Access Form */}
+            {!listingAccessRequestSent ? (
+              <div className="max-w-md mx-auto">
+                <div className="mb-6 p-4 bg-white rounded-lg border border-orange-200">
+                  <h3 className="font-medium mb-3 text-center text-gray-800">Contact Information</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        className="w-full border border-gray-300 rounded-md p-3 focus:ring-orange-500 focus:border-orange-500 text-center"
+                        placeholder="Enter your phone number"
+                        name="phone"
+                        value={listingAccessForm.phone || ''}
+                        onChange={handleListingAccessInputChange}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <h4 className="font-medium mb-1 text-blue-800 text-sm">What happens next?</h4>
+                    <p className="text-xs text-blue-700">
+                      Our team will contact you within 24 hours to guide you through the process.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <button 
+                    onClick={handleListingAccessSubmit}
+                    disabled={!listingAccessForm.phone || isSubmittingAccess}
+                    className={`px-6 py-3 text-white rounded-lg font-medium ${
+                      listingAccessForm.phone && !isSubmittingAccess
+                        ? 'bg-orange-600 hover:bg-orange-700' 
+                        : 'bg-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    {isSubmittingAccess ? 'Submitting...' : 'Submit Request'}
+                  </button>
+                  <p className="mt-3 text-xs text-orange-600">
+                    By submitting, you agree to our Partner Terms and Conditions
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                  <p className="text-green-600 font-medium mb-2">Request Submitted Successfully!</p>
+                  <p className="text-green-700 text-sm">Our team will contact you within 24 hours to guide you through the listing process.</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
       {/* Header Section */}
       <div className="max-w-7xl mx-auto w-full">
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 md:mb-8">

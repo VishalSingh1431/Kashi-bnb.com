@@ -1,52 +1,127 @@
-body{
-  background-color: #d7c2f4; 
-  text-align: center;
-  /* font-family:'Poppins', Arial, sans-serif; */
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+/* Global navbar positioning and layout */
+nav {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 10 !important;
 }
 
-.sec{
-  background-color: #f3eadb;
+/* Ensure logo stays on the left */
+nav .flex-shrink-0 {
+  flex-shrink: 0 !important;
+  margin-right: auto !important;
 }
 
-.tex{
-  color: #001219;
-  /* font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; */
-  
+/* Ensure navigation stays on the right */
+nav .flex.items-center.gap-4 {
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
 }
 
-.sec:hover{
- background: #f3eadb;
+/* Override any potential flexbox conflicts */
+nav .w-full.max-w-7xl {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 80rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-/* 606c38 */
+/* Remove any default margins/padding that might interfere */
+nav * {
+  box-sizing: border-box !important;
+}
 
- 
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-  }
-  .animate-fadeInUp {
-    animation: fadeInUp 0.8s ease-out forwards;
-  }
-  .animate-fadeIn {
-    animation: fadeIn 0.6s ease-out forwards;
-    opacity: 0;
-  }
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  .animate-float-delay {
-    animation: float 6s ease-in-out 2s infinite;
-  }
-  .clip-corner {
-    clip-path: polygon(100% 0, 0% 100%, 100% 100%);
-  }
-  .shadow-inner {
-    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1);
-  }
+/* Ensure proper spacing between logo and navigation */
+nav .flex-shrink-0 + .flex.items-center.gap-4 {
+  margin-left: 2rem !important;
+}
+
+/* COMPLETELY REMOVE ALL BORDERS, OUTLINES, AND FOCUS RINGS FROM NAVBAR */
+nav,
+nav *,
+nav a,
+nav button,
+nav div,
+nav li,
+nav ul {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+/* Remove focus states completely */
+nav a:focus,
+nav button:focus,
+nav div:focus,
+nav li:focus,
+nav ul:focus,
+nav *:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+/* Remove hover borders */
+nav a:hover,
+nav button:hover,
+nav div:hover,
+nav li:hover,
+nav ul:hover {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove active states */
+nav a:active,
+nav button:active,
+nav div:active,
+nav li:active,
+nav ul:active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove visited states */
+nav a:visited {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove any default button styling */
+nav button {
+  background: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Remove any default link styling */
+nav a {
+  background: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+/* Remove any default list styling */
+nav ul,
+nav li {
+  list-style: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

@@ -56,7 +56,7 @@ const Tourist = () => {
   };
 
   return (
-    <div className='pt-40 min-h-screen px-4 sm:px-6 lg:px-8 pb-12' style={{ backgroundColor: '#f3eadb' }}>
+    <div className='min-h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8 pb-12' style={{ backgroundColor: '#f3eadb' }}>
       {/* Hero Section */}
       <div className='mb-16 py-12 px-6 text-center border border-black rounded-lg' style={{ backgroundColor: '#f3eadb' }}>
         <h1 className='text-4xl font-bold mb-4 text-black'>Discover Verified Homestays & Authentic Experiences</h1>

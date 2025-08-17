@@ -8,4 +8,9 @@ export const BACKEND = "https://backend.kashibnb.com";
 
 export const RZPKID = "rzp_live_6WQjkxLwEAm4Wg";
 
+// Utility function to format Authorization header
+export const getAuthHeader = (token) => {
+  return token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+};
+
 export {bg_main,bg_sec,text_main};

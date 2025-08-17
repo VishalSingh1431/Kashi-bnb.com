@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { BACKEND } from '../assets/Vars';
 import { FiEdit, FiSave, FiX } from 'react-icons/fi';
@@ -85,8 +85,16 @@ const AdminBookings = () => {
   if (!user?.isAdmin) return null;
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Manage Bookings</h1>
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Manage Bookings</h1>
+        <Link
+          to="/admin/users"
+          className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center gap-2"
+        >
+          👥 Manage Users
+        </Link>
+      </div>
 
       {loading ? (
         <div className="text-center py-10">Loading bookings...</div>

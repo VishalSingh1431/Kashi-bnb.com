@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "OTPType" ADD VALUE 'EMAIL_ADD';

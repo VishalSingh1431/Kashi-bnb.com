@@ -7,6 +7,7 @@ import { FiSearch, FiFilter } from "react-icons/fi";
 import { BACKEND } from "../assets/Vars";
 import { FiChevronDown } from 'react-icons/fi';
 import { FiX } from 'react-icons/fi';  
+
 const Homestay = () => {
   const headingVariants = {
     hidden: { opacity: 0, y: -50 },
@@ -33,9 +34,7 @@ const Homestay = () => {
         setHotels(allHotels);
         setFilteredHotels(allHotels);
       } catch (err) {
-        // console.error("Error fetching hotels:", err);
         setError("Failed to load hotels. Showing demo properties instead.");
-        // No fallback hotels, just set empty arrays
         setHotels([]);
         setFilteredHotels([]);
       } finally {
@@ -46,10 +45,8 @@ const Homestay = () => {
   }, []);
 
   useEffect(() => {
-    // Apply filters whenever search criteria change
     let results = hotels;
     
-    // Apply search query filter across all fields (case insensitive)
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       results = results.filter(hotel =>
@@ -63,12 +60,10 @@ const Homestay = () => {
       );
     }
     
-    // Apply price range filter
     results = results.filter(hotel => 
       hotel.rate >= priceRange[0] && hotel.rate <= priceRange[1]
     );
     
-    // Apply sorting
     switch (sortOption) {
       case "price-low":
         results.sort((a, b) => a.rate - b.rate);
@@ -77,11 +72,10 @@ const Homestay = () => {
         results.sort((a, b) => b.rate - a.rate);
         break;
       case "rating":
-        results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        results.sort((a, b) => (b.averageRating || b.rating || 0) - (a.averageRating || a.rating || 0));
         break;
       case "recommended":
       default:
-        // Default sorting (could be based on some recommendation algorithm)
         break;
     }
     
@@ -90,126 +84,140 @@ const Homestay = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // The filtering is already handled in the useEffect
   };
 
   return (
-    <div className="p-4 flex flex-col items-center min-h-screen -mt-60 relative z-10" >
-   
-   <div 
-  className="shadow-lg shadow-white w-2/3 rounded-2xl h-fit items-center mx-auto m-5" 
-  style={{ backgroundColor: '#f3eadb', maxWidth: '90vw' }}
->
-  <motion.h1
-    className="text-3xl font-bold text-center mb-6 p-4 rounded-2xl transition-colors text-gray-800 mx-auto" 
-    style={{ backgroundColor: '#f3eadb', maxWidth: 'fit-content' }}
-    variants={headingVariants}
-    initial="hidden"
-    animate="visible"
-  >
-    Book Your Kashi Stay Today
-  </motion.h1>
+    <div className="p-4 flex flex-col items-center min-h-screen -mt-60 relative z-20">
+      <div 
+        className="shadow-lg w-full max-w-6xl rounded-2xl h-fit items-center mx-auto m-5 overflow-hidden relative z-30" 
+        style={{ backgroundColor: '#f3eadb' }}
+      >
+        <motion.h1
+          className="text-3xl font-bold text-center mb-6 p-4 rounded-2xl transition-colors text-gray-800 mx-auto" 
+          style={{ backgroundColor: '#f3eadb', maxWidth: 'fit-content' }}
+          variants={headingVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          Book Your Kashi Stay Today
+        </motion.h1>
 
-  {/* Search Bar - Normal Size */}
-  <div className="w-full flex justify-center mb-6">
-    <div className="w-full max-w-4xl rounded-lg mx-4" style={{ backgroundColor: '#f3eadb' }}>
-      <form onSubmit={handleSearch} className="relative">
-        <div className="flex items-center border border-gray-300 rounded-full p-2 shadow-md mx-auto" 
-             style={{ backgroundColor: '#f3eadb', maxWidth: '700px' }}>
-          <div className="flex-1 px-3 flex items-center">
-            <FiSearch className="mr-2 text-lg" />
-            <input 
-              type="text"
-              placeholder="Search by hotel name, amenities, or keywords..."
-              className="w-full text-base text-black font-bold bg-transparent placeholder-gray-600"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+        {/* Search Bar */}
+        <div className="w-full flex justify-center mb-6">
+          <div className="w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl lg:max-w-4xl rounded-lg mx-4" style={{ backgroundColor: '#f3eadb' }}>
+            <form onSubmit={handleSearch} className="relative">
+              <div className="flex items-center rounded-full p-1.5 sm:p-2 shadow-md mx-auto focus-within:outline-none focus-within:ring-0" 
+                   style={{ backgroundColor: '#f3eadb' }}>
+                <div className="flex-1 px-2 sm:px-3 flex items-center">
+                  <FiSearch className="mr-2 text-base sm:text-lg" />
+                  <input 
+                    type="text"
+                    placeholder="Search by hotel name, amenities, or keywords..."
+                    className="w-full text-sm sm:text-base text-black font-bold bg-transparent placeholder-gray-600 border-0 outline-none focus:outline-none focus:ring-0 focus:border-transparent focus:border-0"
+                    style={{ 
+                      border: 'none', 
+                      boxShadow: 'none',
+                      outline: 'none'
+                    }}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  className="p-1.5 sm:p-2 rounded-full transition-colors ml-2 hover:bg-gray-200 focus:outline-none focus:ring-0"
+                >
+                  <FiSearch className="text-base sm:text-lg" />
+                </button>
+              </div>
+            </form>
           </div>
-          
-          <button
-            type="submit"
-            className="p-2 rounded-full transition-colors ml-2 hover:bg-gray-200"
-          >
-            <FiSearch size={18} />
-          </button>
         </div>
-      </form>
-    </div>
-  </div>
 
-  {/* Filters and Sorting - Normal Size */}
-  <div className="w-full flex justify-center mb-6">
-    <div className="w-full max-w-5xl mx-4" style={{ backgroundColor: '#f3eadb' }}>
-      <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-        <div className="flex space-x-4">
-          <button 
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-2 border border-gray-300 rounded-full px-4 py-2 hover:shadow-md text-base"
-            style={{ backgroundColor: '#f3eadb' }}
-          >
-            <FiFilter size={16} />
-            <span>Filters</span>
-          </button>
-          
-          <div className="relative border border-gray-300 rounded-3xl">
-            <select
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-              className="border border-gray-300 rounded-full px-4 py-2 appearance-none hover:shadow-md transition-shadow pr-8 text-base" 
-              style={{ backgroundColor: '#f3eadb' }}
-            >
-              <option value="recommended">Recommended</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="rating">Rating</option>
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <FiChevronDown size={16} />
-            </div>
-          </div>
-        </div>
-        
-        <div className="text-base text-gray-600 font-medium">
-          {filteredHotels.length} {filteredHotels.length === 1 ? 'property' : 'properties'} found
-        </div>
-      </div>
-      
-      {/* Expanded Filters - Normal Size */}
-      {showFilters && (
-        <div className="mt-4 p-4 border border-gray-300 rounded-lg shadow-sm mx-auto" style={{ maxWidth: '700px' }}>
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold text-lg text-black">Filters</h3>
-            <button 
-              onClick={() => setShowFilters(false)}
-              className="text-base text-black hover:text-gray-700"
-            >
-              <FiX size={18} />
-            </button>
-          </div>
-          
-          <div className="mb-4">
-            <h4 className="text-base font-medium text-gray-700 mb-2">Price Range (₹)</h4>
-            <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-4 md:items-center">
-              <input
-                type="range"
-                min="0"
-                max="10000"
-                step="100"
-                value={priceRange[1]}
-                onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer border-0"
-              />
-              <div className="text-base text-gray-600 whitespace-nowrap font-medium">
-                ₹{priceRange[0]} - ₹{priceRange[1]}
+        {/* Filters and Sorting */}
+        <div className="w-full flex justify-center mb-6 relative z-40">
+          <div className="w-full max-w-6xl mx-4" style={{ backgroundColor: '#f3eadb' }}>
+            <div className="flex flex-col sm:flex-row sm:flex-nowrap justify-between items-center gap-3">
+              <div className="flex flex-row flex-nowrap gap-3 w-full sm:w-auto justify-start overflow-x-auto">
+                <button 
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="flex items-center whitespace-nowrap space-x-2 rounded-full px-4 py-3 hover:shadow-lg text-sm bg-orange-500 backdrop-blur-sm relative z-50 focus:outline-none focus:ring-0 active:outline-none active:ring-0 m-2 select-none text-white"
+                  style={{ 
+                    backgroundColor: '#f97316',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none'
+                  }}
+                >
+                  <FiFilter size={14} />
+                  <span>Filters</span>
+                </button>
+                
+                <div className="relative rounded-3xl w-auto bg-orange-500 backdrop-blur-sm z-50 m-2 select-none text-white" style={{ border: 'none', outline: 'none' }}>
+                  <select
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
+                    className="w-auto rounded-full px-4 py-3 appearance-none hover:shadow-lg transition-all duration-200 pr-8 text-sm focus:outline-none focus:ring-0 bg-transparent text-white"
+                    style={{ 
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      outline: 'none',
+                      boxShadow: 'none',
+                      color: 'white'
+                    }}
+                  >
+                    <option value="recommended" className="text-black">Recommended</option>
+                    <option value="price-low" className="text-black">Price: Low to High</option>
+                    <option value="price-high" className="text-black">Price: High to Low</option>
+                    <option value="rating" className="text-black">Rating</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                    <FiChevronDown size={14} className="text-white" />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-sm text-gray-600 font-medium">
+                {filteredHotels.length} {filteredHotels.length === 1 ? 'property' : 'properties'} found
               </div>
             </div>
+            
+            {/* Expanded Filters */}
+            {showFilters && (
+              <div className="mt-4 p-4 rounded-lg shadow-sm mx-auto max-w-[95vw] sm:max-w-[90vw] md:max-w-3xl relative z-50 bg-white/80">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-semibold text-lg text-black">Filters</h3>
+                  <button 
+                    onClick={() => setShowFilters(false)}
+                    className="text-base text-black hover:text-gray-700 focus:outline-none focus:ring-0"
+                  >
+                    <FiX size={18} />
+                  </button>
+                </div>
+                
+                <div className="mb-4">
+                  <h4 className="text-base font-medium text-gray-700 mb-2">Price Range (₹)</h4>
+                  <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-4 md:items-center">
+                    <input
+                      type="range"
+                      min="0"
+                      max="10000"
+                      step="100"
+                      value={priceRange[1]}
+                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                      className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer border-0 focus:outline-none focus:ring-0"
+                    />
+                    <div className="text-base text-gray-600 whitespace-nowrap font-medium">
+                      ₹{priceRange[0]} - ₹{priceRange[1]}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      )}
-    </div>
-  </div>
-</div>
+      </div>
 
       {/* Error Message */}
       {error && (
@@ -219,14 +227,14 @@ const Homestay = () => {
       )}
 
       {/* Results */}
-      <div className="w-full max-w-fit ">
+      <div className="w-full max-w-fit">
         {loading ? (
-          <div className="flex justify-center items-center  ">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black-500 "></div>
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black-500"></div>
           </div>
         ) : filteredHotels.length === 0 ? (
-          <div className="text-center py-12 ">
-            <h3 className="text-xl font-semibold text-gray-700 ">No properties found</h3>
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold text-gray-700">No properties found</h3>
             <p className="text-gray-500">Try adjusting your search or filters</p>
           </div>
         ) : (
@@ -238,7 +246,7 @@ const Homestay = () => {
                 price={hotel.rate || "N/A"}
                 image={hotel.image || "#"}
                 images={hotel.images}
-                rating={hotel.rating}
+                rating={hotel.averageRating || hotel.rating}
                 options={[
                   hotel.s1 || "Free WiFi",
                   hotel.s2 || "Breakfast Included",

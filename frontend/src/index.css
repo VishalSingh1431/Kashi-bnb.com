@@ -1,1 +1,82 @@
 @import "tailwindcss";
+
+/* Remove all borders from search input */
+.search-input-no-border,
+.search-input-no-border:focus,
+.search-input-no-border:active,
+.search-input-no-border:hover {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-opacity: 0 !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-width: 0px !important;
+  --tw-ring-offset-color: transparent !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+}
+
+/* Ultra aggressive border removal for search input */
+input[type="text"].search-input-no-border,
+input[type="text"].search-input-no-border:focus,
+input[type="text"].search-input-no-border:active,
+input[type="text"].search-input-no-border:hover {
+  border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  outline: 0 !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+  --tw-ring-opacity: 0 !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-width: 0px !important;
+  --tw-ring-offset-color: transparent !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+}
+
+/* Target the specific input in Homestay page */
+.search-input-no-border input,
+.search-input-no-border input:focus,
+.search-input-no-border input:active,
+.search-input-no-border input:hover {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-opacity: 0 !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-width: 0px !important;
+  --tw-ring-offset-color: transparent !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+}
+
+/* Target the specific search input in Homestay page */
+input[placeholder="Search by hotel name, amenities, or keywords..."] {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-opacity: 0 !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-width: 0px !important;
+}
+
+input[placeholder="Search by hotel name, amenities, or keywords..."]:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-opacity: 0 !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-width: 0px !important;
+}

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
+import { prisma } from '../utils/client.js';
 
 
 //Checks if the user is logged in (has a valid JWT token).
@@ -20,11 +21,28 @@ const authorisation = async (req,res,nex)=>{
         token = token.split(" ")[1];
         
         // console.log(token," tot ")
-        const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
-        const user=await jwt.verify(token,jwtSecret);
-        
-        if(user){
-            req.user=user;
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+            console.error('JWT_SECRET is not set');
+            return res.status(500).json({ success: false, message: 'Server configuration error' });
+        }
+        const decoded = await jwt.verify(token,jwtSecret);
+
+        if(decoded){
+            // Always fetch the latest user from DB to avoid stale token claims
+            const dbUser = await prisma.users.findUnique({ where: { id: decoded.id } });
+
+            if(!dbUser){
+                console.log("User not found for token id");
+                return res.status(401).json({
+                    success: false,
+                    message: "invalid token user"
+                });
+            }
+
+            // Sanitize and attach fresh user to request
+            const { password, token: userToken, ...safeUser } = dbUser;
+            req.user = safeUser;
             nex();
         }
         else{
@@ -132,7 +150,7 @@ const hasRestr = async (req,res,nex)=>{
 // Limits the number of requests a user can make in a short time (rate limiting).
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    max: 10,
+    max: 30,
     message: "Too many requests, please try again later."
 });
 

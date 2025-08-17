@@ -1,5 +1,7 @@
 import { prisma } from "../utils/client.js";
 import { iUploader } from "../utils/imageUploader.js";
+import jwt from 'jsonwebtoken';
+import { publishUserUpdate } from '../utils/events.js';
 
 // Fetches all hotels from the database
 export const getHotels = async (req,res,nex)=>{
@@ -138,8 +140,7 @@ export const getMyHotels = async (req,res,nex) =>{
 // Add a new hotel listing.
 export const addNewHotel = async (req,res,nex) =>{
     try{
-        console.log("Received request body:", req.body);
-        console.log("User from request:", req.user);
+        // Minimal logging in production
         
         // Basic validation - only check for required fields
         const validationErrors = [];
@@ -227,10 +228,13 @@ export const addNewHotel = async (req,res,nex) =>{
             geyser: Boolean(req.body.geyser),
             microwave: Boolean(req.body.microwave),
             waterFilter: Boolean(req.body.waterFilter),
-            maxInRoom: req.body.maxInRoom ? parseInt(req.body.maxInRoom) : 2
+            maxInRoom: req.body.maxInRoom ? parseInt(req.body.maxInRoom) : 2,
+            // Set initial rating to 5 stars for new hotels
+            averageRating: 5.0,
+            totalRatings: 1
         };
         
-        console.log("Hotel data to be created:", hotelData);
+        // Avoid logging full hotel data in production
         
         // Create hotel with transaction for data consistency
         const newHotel = await prisma.$transaction(async (tx) => {
@@ -251,20 +255,45 @@ export const addNewHotel = async (req,res,nex) =>{
             return hotel;
         });
 
+        // Issue a fresh token with updated claims (has_hotel now true)
+        const updatedUser = await prisma.users.findUnique({ where: { id: req.user.id } });
+        const token = jwt.sign(
+            {
+                id: updatedUser.id,
+                email: updatedUser.email,
+                name: updatedUser.name,
+                first_name: updatedUser.first_name,
+                last_name: updatedUser.last_name,
+                verified: updatedUser.verified,
+                is_admin: updatedUser.is_admin,
+                has_hotel: updatedUser.has_hotel
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        await prisma.users.update({ where: { id: updatedUser.id }, data: { token } });
+        publishUserUpdate(updatedUser);
+
         return res.status(200).json({
             success : true,
             message : "Hotel created successfully!",
-            newHotel
+            newHotel,
+            token,
+            user: {
+                id: updatedUser.id,
+                name: updatedUser.name,
+                first_name: updatedUser.first_name,
+                last_name: updatedUser.last_name,
+                email: updatedUser.email,
+                verified: updatedUser.verified,
+                is_admin: updatedUser.is_admin,
+                has_hotel: updatedUser.has_hotel
+            }
         });
     }
     catch(e){
-        console.error("Error creating hotel:", e);
-        console.error("Error details:", {
-            message: e.message,
-            code: e.code,
-            meta: e.meta,
-            stack: e.stack
-        });
+        console.error("Error creating hotel:", e?.message || e);
         
         // Handle specific database errors
         if (e.code === 'P2002') {
@@ -284,7 +313,7 @@ export const addNewHotel = async (req,res,nex) =>{
         return res.status(500).json({
             success : false,
             message : "Error creating hotel listing. Please try again.",
-            error: process.env.NODE_ENV === 'development' ? e.message : 'Internal server error'
+            error: e.message
         });
     }
 }
@@ -364,10 +393,7 @@ export const updateHotel = async (req,res,nex) =>{
 
 export const uploadHotImage = async (req,res,nex) => {
     try{
-        console.log("=== UPLOAD IMAGE DEBUG ===");
-        console.log("Request params:", req.params);
-        console.log("Request files:", req.files ? req.files.length : 'No files');
-        console.log("Request user:", req.user);
+        // Avoid verbose debug logs in production
         
         const id = req.params.uid;
         if(!id){
@@ -407,7 +433,7 @@ export const uploadHotImage = async (req,res,nex) => {
         
         // Validate files (only presence; allow any mimetype)
         if (!req.files || req.files.length === 0) {
-            console.log("ERROR: No files provided");
+        // Keep concise logs only
             return res.status(400).json({
                 success: false,
                 message: "No images provided"
@@ -429,10 +455,9 @@ export const uploadHotImage = async (req,res,nex) => {
             where: { hotelId: id }
         });
         
-        console.log("Existing images:", existingImageCount);
-        console.log("New images to add:", req.files.length);
+        // Keep concise logs only
         
-        const maxImages = 100; 
+        const maxImages = 50; 
         if (existingImageCount + req.files.length > maxImages) {
             console.log(`ERROR: Too many images. Current: ${existingImageCount}, Adding: ${req.files.length}, Max: ${maxImages}`);
             return res.status(400).json({
@@ -472,7 +497,7 @@ export const uploadHotImage = async (req,res,nex) => {
                     
                 } catch (uploadError) {
                     retryCount++;
-                    console.error(`Image ${i + 1} upload attempt ${retryCount} failed:`, uploadError);
+                    console.error(`Image ${i + 1} upload attempt ${retryCount} failed:`);
                     
                     if (retryCount >= maxRetries) {
                         uploadResults.push({
@@ -511,12 +536,450 @@ export const uploadHotImage = async (req,res,nex) => {
         });
     }
     catch(e){
-        console.error("Error in uploadHotImage:", e);
+        console.error("Error in uploadHotImage:", e?.message || e);
         
         return res.status(500).json({
             success : false,
             message : "Error uploading images. Please try again.",
-            error: process.env.NODE_ENV === 'development' ? e.message : 'Internal server error'
+            error: e.message
         });
     }
 }
+
+// Delete a hotel (hotel owner can delete their own, admin can delete any)
+export const deleteHotel = async (req, res, nex) => {
+    try {
+        console.log('Delete hotel request received');
+        console.log('Request params:', req.params);
+        console.log('Request user:', req.user);
+        
+        const hotelId = req.params.uid;
+        const userId = req.user.id;
+        const isAdmin = req.user.is_admin;
+
+        console.log('Hotel ID:', hotelId);
+        console.log('User ID:', userId);
+        console.log('Is Admin:', isAdmin);
+
+        if (!hotelId) {
+            return res.status(400).json({
+                success: false,
+                message: "Hotel ID is required"
+            });
+        }
+
+        // Find the hotel to check ownership
+        const hotel = await prisma.hotels.findUnique({
+            where: { id: hotelId },
+            include: {
+                bookings: true,
+                images: true
+            }
+        });
+
+        console.log('Hotel found:', hotel);
+
+        if (!hotel) {
+            return res.status(404).json({
+                success: false,
+                message: "Hotel not found"
+            });
+        }
+
+        // Check if user has permission to delete
+        if (!isAdmin && hotel.ownerId !== userId) {
+            console.log('Permission denied - not admin and not owner');
+            return res.status(403).json({
+                success: false,
+                message: "You don't have permission to delete this hotel"
+            });
+        }
+
+        // Check if hotel has active bookings
+        const activeBookings = hotel.bookings.filter(booking => 
+            booking.status === 'confirmed' || booking.status === 'pending'
+        );
+
+        if (activeBookings.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot delete hotel with active bookings"
+            });
+        }
+
+        // Delete related records first (due to foreign key constraints)
+        await prisma.bookings.deleteMany({
+            where: { hotelId: hotelId }
+        });
+
+        await prisma.himages.deleteMany({
+            where: { hotelId: hotelId }
+        });
+
+        // Delete the hotel
+        await prisma.hotels.delete({
+            where: { id: hotelId }
+        });
+
+        console.log('Hotel deleted successfully');
+
+        return res.status(200).json({
+            success: true,
+            message: "Hotel deleted successfully"
+        });
+
+    } catch (e) {
+        console.log('Error in deleteHotel:', e);
+        return res.status(500).json({
+            success: false,
+            message: "Error deleting hotel",
+            e
+        });
+    }
+};
+
+// Submit a rating for a hotel (only users who have booked can rate)
+export const submitRating = async (req, res, next) => {
+    try {
+        const { hotelId, bookingId, rating: ratingValue } = req.body;
+        const userId = req.user.id;
+
+        if (!hotelId || !bookingId || !ratingValue) {
+            return res.status(400).json({
+                success: false,
+                message: "Hotel ID, booking ID, and rating are required"
+            });
+        }
+
+        if (ratingValue < 1 || ratingValue > 5) {
+            return res.status(400).json({
+                success: false,
+                message: "Rating must be between 1 and 5"
+            });
+        }
+
+        // Check if the booking exists and belongs to the user
+        const booking = await prisma.bookings.findUnique({
+            where: { id: bookingId },
+            include: { hotel: true }
+        });
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found"
+            });
+        }
+
+        if (booking.userId !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: "You can only rate hotels you have booked"
+            });
+        }
+
+        if (booking.hotelId !== hotelId) {
+            return res.status(400).json({
+                success: false,
+                message: "Booking does not match the hotel"
+            });
+        }
+
+        // Check if user has already rated this booking
+        const existingRating = await prisma.rating.findUnique({
+            where: { bookingId }
+        });
+
+        if (existingRating) {
+            return res.status(400).json({
+                success: false,
+                message: "You have already rated this booking"
+            });
+        }
+
+        // Create the rating
+        const newRating = await prisma.rating.create({
+            data: {
+                rating: ratingValue,
+                bookingId,
+                hotelId,
+                userId
+            }
+        });
+
+        // Update hotel's average rating
+        await updateHotelRating(hotelId);
+
+        return res.status(200).json({
+            success: true,
+            message: "Rating submitted successfully",
+            rating: newRating
+        });
+    } catch (e) {
+        console.error("Error submitting rating:", e);
+        return res.status(500).json({
+            success: false,
+            message: "Error submitting rating",
+            error: e.message
+        });
+    }
+};
+
+// Submit a review for a hotel (only users who have booked can review)
+export const submitReview = async (req, res, next) => {
+    try {
+        const { hotelId, bookingId, content, rating: ratingValue } = req.body;
+        const userId = req.user.id;
+
+        if (!hotelId || !bookingId || !content || !ratingValue) {
+            return res.status(400).json({
+                success: false,
+                message: "Hotel ID, booking ID, content, and rating are required"
+            });
+        }
+
+        if (ratingValue < 1 || ratingValue > 5) {
+            return res.status(400).json({
+                success: false,
+                message: "Rating must be between 1 and 5"
+            });
+        }
+
+        if (content.trim().length < 10) {
+            return res.status(400).json({
+                success: false,
+                message: "Review content must be at least 10 characters long"
+            });
+        }
+
+        // Check if the booking exists and belongs to the user
+        const booking = await prisma.bookings.findUnique({
+            where: { id: bookingId },
+            include: { hotel: true }
+        });
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found"
+            });
+        }
+
+        if (booking.userId !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: "You can only review hotels you have booked"
+            });
+        }
+
+        if (booking.hotelId !== hotelId) {
+            return res.status(400).json({
+                success: false,
+                message: "Booking does not match the hotel"
+            });
+        }
+
+        // Check if user has already reviewed this booking
+        const existingReview = await prisma.review.findUnique({
+            where: { bookingId }
+        });
+
+        if (existingReview) {
+            return res.status(400).json({
+                success: false,
+                message: "You have already reviewed this booking"
+            });
+        }
+
+        // Create the review
+        const newReview = await prisma.review.create({
+            data: {
+                content: content.trim(),
+                rating: ratingValue,
+                bookingId,
+                hotelId,
+                userId
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        first_name: true,
+                        last_name: true
+                    }
+                }
+            }
+        });
+
+        // Update hotel's average rating
+        await updateHotelRating(hotelId);
+
+        return res.status(200).json({
+            success: true,
+            message: "Review submitted successfully",
+            review: newReview
+        });
+    } catch (e) {
+        console.error("Error submitting review:", e);
+        return res.status(500).json({
+            success: false,
+            message: "Error submitting review",
+            error: e.message
+        });
+    }
+};
+
+// Get reviews for a hotel
+export const getHotelReviews = async (req, res, next) => {
+    try {
+        const { hotelId } = req.params;
+
+        if (!hotelId) {
+            return res.status(400).json({
+                success: false,
+                message: "Hotel ID is required"
+            });
+        }
+
+        const reviews = await prisma.review.findMany({
+            where: {
+                hotelId,
+                isVisible: true
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        first_name: true,
+                        last_name: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            reviews
+        });
+    } catch (e) {
+        console.error("Error getting hotel reviews:", e);
+        return res.status(500).json({
+            success: false,
+            message: "Error getting reviews",
+            error: e.message
+        });
+    }
+};
+
+// Get user's bookings that can be rated/reviewed
+export const getRateableBookings = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+
+        const bookings = await prisma.bookings.findMany({
+            where: {
+                userId,
+                status: "completed" // Only completed bookings can be rated
+            },
+            include: {
+                hotel: {
+                    select: {
+                        id: true,
+                        name: true,
+                        images: {
+                            take: 1
+                        }
+                    }
+                },
+                rating: true,
+                review: true
+            },
+            orderBy: {
+                time: 'desc'
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            bookings
+        });
+    } catch (e) {
+        console.error("Error getting rateable bookings:", e);
+        return res.status(500).json({
+            success: false,
+            message: "Error getting bookings",
+            error: e.message
+        });
+    }
+};
+
+// Admin function to update review visibility
+export const updateReviewVisibility = async (req, res, next) => {
+    try {
+        const { reviewId } = req.params;
+        const { isVisible } = req.body;
+
+        if (!req.user.isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: "Only admins can update review visibility"
+            });
+        }
+
+        const review = await prisma.review.update({
+            where: { id: reviewId },
+            data: { isVisible }
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Review visibility updated successfully",
+            review
+        });
+    } catch (e) {
+        console.error("Error updating review visibility:", e);
+        return res.status(500).json({
+            success: false,
+            message: "Error updating review visibility",
+            error: e.message
+        });
+    }
+};
+
+// Helper function to update hotel's average rating
+async function updateHotelRating(hotelId) {
+    try {
+        const ratings = await prisma.rating.findMany({
+            where: { hotelId }
+        });
+
+        if (ratings.length === 0) {
+            // If no ratings, set to initial 5-star rating
+            await prisma.hotels.update({
+                where: { id: hotelId },
+                data: {
+                    averageRating: 5.0,
+                    totalRatings: 1
+                }
+            });
+            return;
+        }
+
+        const totalRating = ratings.reduce((sum, r) => sum + r.rating, 0);
+        const averageRating = totalRating / ratings.length;
+
+        await prisma.hotels.update({
+            where: { id: hotelId },
+            data: {
+                averageRating: parseFloat(averageRating.toFixed(1)),
+                totalRatings: ratings.length
+            }
+        });
+    } catch (e) {
+        console.error("Error updating hotel rating:", e);
+    }
+}
+

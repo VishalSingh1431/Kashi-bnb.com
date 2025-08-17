@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BACKEND } from "../assets/Vars";
+import { User, Phone, ArrowLeft } from "lucide-react";
+import { useAuth } from "../App";
 
 const NumberForm = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,17 @@ const NumberForm = () => {
   const [submitted, setSubmitted] = useState(false);
   
   const navigate = useNavigate();
+  const { user, isLoggedIn } = useAuth();
+
+  // Pre-fill form with user data if logged in
+  useEffect(() => {
+    if (isLoggedIn && user) {
+      setFormData({
+        name: user.first_name || user.name || "",
+        phone: user.phone || ""
+      });
+    }
+  }, [isLoggedIn, user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,11 +41,8 @@ const NumberForm = () => {
     setError("");
 
     try {
-      // First send data to your contact request endpoint
-      await axios.post(`${BACKEND}/api/contact-request`, formData);
-      
-      // Then send email notification
-      await axios.post(`${BACKEND}/api/send-contact-email`, formData);
+      // Send contact request - this will send email to vishalsingh05072003@gmail.com
+      await axios.post(`${BACKEND}/api/v1/contact/contact-request`, formData);
       
       // Show success message
       setSubmitted(true);
@@ -46,14 +56,23 @@ const NumberForm = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
-        <div className="w-full max-w-md p-8 space-y-6 shadow-lg rounded-lg text-center">
-          <h2 className="text-2xl font-bold">Thank You!</h2>
-          <p>Our team will call you shortly at {formData.phone}.</p>
-          <p>We've also sent your details to our support team.</p>
+      <div className="min-h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8 flex justify-center items-center bg-gradient-to-br from-orange-50 to-yellow-50">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-xl rounded-2xl border border-gray-100 text-center">
+          <div className="flex justify-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-gray-800">Thank You!</h2>
+          <p className="text-gray-600">Our team will call you shortly at <span className="font-semibold">{formData.phone}</span>.</p>
+          <p className="text-gray-600 text-sm">We've also sent your details to our support team.</p>
+          
           <button 
             onClick={() => navigate("/")}
-            className="w-full py-2 rounded-2xl border transition"
+            className="w-full py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-lg font-medium transition-all duration-200 hover:from-orange-600 hover:to-yellow-600 shadow-lg hover:shadow-xl"
           >
             Back to Home
           </button>
@@ -63,56 +82,79 @@ const NumberForm = () => {
   }
 
   return (
-    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
-      <div className="w-full max-w-md p-8 space-y-6 shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold text-center">Request a Call Back</h2>
+    <div className="min-h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8 flex justify-center items-center bg-gradient-to-br from-orange-50 to-yellow-50">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-xl rounded-2xl border border-gray-100">
+        <div className="text-center">
+          <button
+            onClick={() => navigate("/")}
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-4"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </button>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Request a Call Back</h2>
+          <p className="text-gray-600">We'll get back to you as soon as possible</p>
+        </div>
         
         {error && (
-          <div className="p-3 text-black rounded text-center">
+          <div className="p-3 text-red-600 rounded-lg text-center bg-red-50 border border-red-200">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 mb-1">Your Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-2xl focus:outline-none focus:ring-2"
-              required
-            />
+            <label className="block text-gray-700 mb-2 font-medium">Your Name</label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-1">Phone Number</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-2xl focus:outline-none focus:ring-2"
-              required
-            />
+            <label className="block text-gray-700 mb-2 font-medium">Phone Number</label>
+            <div className="relative">
+              <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                placeholder="Enter your phone number"
+                maxLength="10"
+                required
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 rounded-2xl border transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+            className={`w-full py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-lg font-medium transition-all duration-200 hover:from-orange-600 hover:to-yellow-600 shadow-lg hover:shadow-xl ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           >
             {loading ? "Submitting..." : "Call Me Back"}
           </button>
         </form>
 
-        <p className="text-center">
-          Need immediate help?{" "}
-          <a href="tel:8011708595" className="text-blue-500 hover:underline">
-            Call us now
-          </a>
-        </p>
+        <div className="text-center pt-2 border-t border-gray-200">
+          <p className="text-gray-600 text-sm">
+            Need immediate help?{" "}
+            <a href="tel:8011708595" className="text-orange-500 hover:text-orange-600 font-medium hover:underline">
+              Call us now
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

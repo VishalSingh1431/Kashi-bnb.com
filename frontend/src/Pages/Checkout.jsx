@@ -13,7 +13,10 @@ const Checkout = () => {
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [bookingDetails, setBookingDetails] = useState(null);
   const token = localStorage.getItem("token");
-  const userData = localStorage.getItem("user");
+  const authHeader = token
+    ? (token.startsWith("Bearer ") ? token : `Bearer ${token}`)
+    : null;
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
     if (!location.state) {
@@ -26,6 +29,11 @@ const Checkout = () => {
   const initiatePayment = async () => {
     setLoading(true);
     try {
+      if (!authHeader) {
+        setLoading(false);
+        setPaymentStatus("failed");
+        return;
+      }
       const { data } = await axios.post(
         `${BACKEND}/api/v1/payments/order`,
         {
@@ -36,7 +44,7 @@ const Checkout = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: authHeader,
           },
         }
       );
@@ -61,10 +69,13 @@ const Checkout = () => {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
                 bookingId: data.bookingId,
+                hotelId,
+                from: bookingDetails.startDate,
+                to: bookingDetails.endDate,
               },
               {
                 headers: {
-                  Authorization: `Bearer ${token}`,
+                  Authorization: authHeader,
                 },
               }
             );
@@ -96,7 +107,7 @@ const Checkout = () => {
   if (!bookingDetails) return null;
 
   return (
-    <div className="min-h-screen pt-40 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
       <button
         onClick={() => nav(-1)}
         className="mb-8 flex items-center text-indigo-600 hover:text-indigo-800"
@@ -167,7 +178,7 @@ const Checkout = () => {
               </div>
             </div>
 
-            <div className="border-t pt-6">
+            <div className="border-t pt-4">
               <div className="flex justify-between items-center mb-6">
                 <span className="text-xl font-bold">Total:</span>
                 <span className="text-xl font-bold">

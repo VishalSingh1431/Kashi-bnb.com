@@ -10,7 +10,7 @@ const CheckOut = () => {
   const navigate = useNavigate();
   
   const [hotel, setHotel] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!id);
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [guestCount, setGuestCount] = useState({
     adults: 1,
@@ -35,6 +35,7 @@ const CheckOut = () => {
   });
 
   useEffect(() => {
+    if (!id) return; // No id on non-checkout routes (e.g., Home), skip fetching
     const fetchHotelData = async () => {
       try {
         const response = await axios.get(`${BACKEND}/api/v1/hotel/hotel/${id}`);
@@ -46,9 +47,7 @@ const CheckOut = () => {
       }
     };
 
-    if (id) {
-      fetchHotelData();
-    }
+    fetchHotelData();
   }, [id]);
 
   const handleGuestChange = (type, operation) => {
@@ -106,6 +105,10 @@ const CheckOut = () => {
     console.log('Processing payment...');
   };
 
+  if (!id) {
+    return null; // Render nothing when used outside the checkout route
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -126,7 +129,7 @@ const CheckOut = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center mb-8">
@@ -300,7 +303,7 @@ const CheckOut = () => {
                   <span>₹{calculateServiceFee()}</span>
                 </div>
                 
-                <div className="border-t pt-4">
+                <div className="border-t pt-2">
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
                     <span>₹{calculateFinalTotal()}</span>

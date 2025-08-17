@@ -30,7 +30,7 @@ const About = () => {
   };
 
   return (
-    <div className=" min-h-screen pt-40 px-4 sm:px-6 lg:px-8">
+    <div className=" min-h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8">
       {/* Hero Image */}
    
 

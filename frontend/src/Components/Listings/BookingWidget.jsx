@@ -125,7 +125,7 @@ const BookingWidget = ({
         </div>
       </div>
 
-      <div className="border-t pt-3 sm:pt-4 mb-3 sm:mb-4">
+              <div className="border-t pt-2 sm:pt-3 mb-3 sm:mb-4">
         <label className="text-xs font-semibold block mb-2 text-gray-700">GUESTS</label>
         <div className="space-y-2 sm:space-y-3">
           <div className="flex justify-between items-center py-1">
@@ -222,7 +222,7 @@ const BookingWidget = ({
       </div>
         
       {/* Guest Limits - Clickable to Edit */}
-      <div className="border-t pt-3 sm:pt-4 mb-4 sm:mb-6">
+              <div className="border-t pt-2 sm:pt-3 mb-4 sm:mb-6">
         <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Guest Limits</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
           <div>
@@ -358,7 +358,7 @@ const BookingWidget = ({
           </p>
           <p className="font-medium">₹{nights > 0 ? parseInt(listing.rate || 0) * nights : 0}</p>
         </div>
-        <div className="border-t pt-3 sm:pt-4 mb-3 sm:mb-4">
+        <div className="border-t pt-2 sm:pt-3 mb-3 sm:mb-4">
           <div className="flex justify-between font-semibold text-base sm:text-lg">
             <p>Total</p>
             <p>₹{calculateTotal()}</p>

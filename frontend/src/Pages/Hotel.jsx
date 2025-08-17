@@ -253,7 +253,7 @@ const Hotel = () => {
               <div className="text-right">
                 <p>$240</p>
               </div>
-              <div className="col-span-2 border-t mt-2 pt-4">
+              <div className="col-span-2 border-t mt-2 pt-2">
                 <div className="flex justify-between font-semibold">
                   <p>Total</p>
                   <p>$2,640</p>

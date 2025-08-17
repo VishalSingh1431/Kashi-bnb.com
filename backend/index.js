@@ -1,12 +1,25 @@
 import 'dotenv/config';
 import express from 'express';
+import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import { limiter } from './middleware/auth.js';
 import userRouter from './routes/user.js';
 import hotelRouter from './routes/hotel.js';
 import paymentRouter from './routes/payments.js';
+import adminRouter from './routes/admin.js';
+import otpRouter from './routes/otp.js';
+import authRouter from './routes/auth.js';
+import forgotPasswordRouter from './routes/forgotPassword.js';
+import contactRouter from './routes/contact.js';
 
 const app = express();
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
+
+// Trust NGINX proxy for correct client IPs and secure headers
+app.set('trust proxy', 1);
 
 // Essential middleware
 app.use(cookieParser());
@@ -18,13 +31,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// Security middleware
-app.use(limiter);
-
 // Routes
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/hotel', hotelRouter);
 app.use('/api/v1/payments', paymentRouter);
+app.use('/api/v1/admin', adminRouter);
+app.use('/api/v1/otp', otpRouter);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/forgot-password', forgotPasswordRouter);
+app.use('/api/v1/contact', contactRouter);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -38,11 +53,8 @@ app.listen(PORT, () => {
 
 
 
-
-
 // import 'dotenv/config';
 // import express from 'express';
-// import cors from 'cors'; // Add this import
 // import cookieParser from 'cookie-parser';
 // import { limiter } from './middleware/auth.js';
 // import userRouter from './routes/user.js';
@@ -50,21 +62,6 @@ app.listen(PORT, () => {
 // import paymentRouter from './routes/payments.js';
 
 // const app = express();
-
-// // CORS Configuration
-// const corsOptions = {
-//   origin: [
-//     'http://localhost:5173', // Your Vite/React frontend
-//     'https://kashibnb.com'   // Your production domain
-//   ],
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-//   credentials: true,
-//   optionsSuccessStatus: 200
-// };
-
-// // Apply CORS middleware before other middleware
-// app.use(cors(corsOptions));
 
 // // Essential middleware
 // app.use(cookieParser());
@@ -77,7 +74,7 @@ app.listen(PORT, () => {
 // });
 
 // // Security middleware
-// // app.use(limiter);
+// app.use(limiter);
 
 // // Routes
 // app.use('/api/v1/user', userRouter);
@@ -93,3 +90,4 @@ app.listen(PORT, () => {
 // app.listen(PORT, () => {
 //   console.log(`Server running on port ${PORT}`);
 // });
+

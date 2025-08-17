@@ -98,7 +98,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="mx-auto mt-8 max-w-6xl border-t border-[#e0e0e0] pt-5 text-center text-[#777]">
+      <div className="mx-auto mt-8 max-w-6xl border-t border-[#e0e0e0] pt-3 text-center text-[#777]">
         © 2025 KashiBnB. All rights reserved.
       </div>
     </footer>
