@@ -338,11 +338,25 @@ export const checkControl = (req,res,nex)=>{
 
 export const makeRequest = async (req, res, next) => {
     try {
+        console.log('makeRequest called with:', { 
+            body: req.body, 
+            user: { id: req.user.id, email: req.user.email, has_hotel: req.user.has_hotel } 
+        });
+
         if (req.user.has_hotel === true) {
             console.log(req.user.email, "already hoteler");
             return res.status(420).json({
                 success: false,
                 message: "User is already a hotel owner."
+            });
+        }
+
+        // Validate required fields
+        if (!req.body.phone || !req.body.email || !req.body.message) {
+            console.log('Missing required fields:', req.body);
+            return res.status(400).json({
+                success: false,
+                message: "Phone, email, and message are required"
             });
         }
 
@@ -361,6 +375,12 @@ export const makeRequest = async (req, res, next) => {
             });
         }
 
+        console.log('Creating new request with data:', {
+            ...req.body,
+            type: "hotelowner",
+            userId: req.user.id
+        });
+
         const newReq = await prisma.requests.create({
             data: {
                 ...req.body,
@@ -369,17 +389,33 @@ export const makeRequest = async (req, res, next) => {
             }
         });
 
+        console.log('Request created successfully:', newReq);
+
         return res.status(200).json({
             success: true,
             message: "request created",
             request: newReq
         });
     } catch (e) {
-        console.log(e);
+        console.error('Error in makeRequest:', e);
+        console.error('Error stack:', e.stack);
+        console.error('Error details:', {
+            name: e.name,
+            message: e.message,
+            code: e.code,
+            meta: e.meta
+        });
+        
         return res.status(500).json({
             success: false,
             message: "error creating request",
-            error: e.message
+            error: e.message,
+            details: process.env.NODE_ENV === 'development' ? {
+                name: e.name,
+                code: e.code,
+                meta: e.meta,
+                stack: e.stack
+            } : undefined
         });
     }
 };

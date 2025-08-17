@@ -10,6 +10,9 @@ import otpRouter from './routes/otp.js';
 import authRouter from './routes/auth.js';
 import forgotPasswordRouter from './routes/forgotPassword.js';
 import contactRouter from './routes/contact.js';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 const app = express();
 
@@ -44,6 +47,27 @@ app.use('/api/v1/contact', contactRouter);
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'healthy' });
+});
+
+// Database health check
+app.get('/health/db', async (req, res) => {
+  try {
+    // Test database connection
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(200).json({ 
+      status: 'healthy',
+      database: 'connected',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Database health check failed:', error);
+    res.status(500).json({ 
+      status: 'unhealthy',
+      database: 'disconnected',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
