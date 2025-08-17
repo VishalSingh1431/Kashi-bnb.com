@@ -1,36 +1,92 @@
 import { OAuth2Client } from 'google-auth-library';
 
-const googleClient = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_CALLBACK_URL
-);
+// Validate required environment variables
+const validateGoogleConfig = () => {
+  const required = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'];
+  const missing = required.filter(key => !process.env[key]);
+  
+  if (missing.length > 0) {
+    throw new Error(`Missing required Google OAuth environment variables: ${missing.join(', ')}`);
+  }
+  
+  // Get the callback URL - prioritize GOOGLE_CALLBACK_URL, then construct from BACKEND_URL
+  let callbackURL = process.env.GOOGLE_CALLBACK_URL;
+  
+  if (!callbackURL) {
+    if (process.env.BACKEND_URL) {
+      callbackURL = `${process.env.BACKEND_URL}/api/v1/auth/google/callback`;
+    } else if (process.env.NODE_ENV === 'production') {
+      throw new Error('GOOGLE_CALLBACK_URL or BACKEND_URL must be set in production');
+    } else {
+      callbackURL = 'http://localhost:3000/api/v1/auth/google/callback';
+    }
+  }
+  
+  return {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: callbackURL
+  };
+};
+
+// Initialize Google OAuth client
+let googleClient = null;
+
+const getGoogleClient = () => {
+  if (!googleClient) {
+    try {
+      const config = validateGoogleConfig();
+      googleClient = new OAuth2Client(
+        config.clientId,
+        config.clientSecret,
+        config.callbackURL
+      );
+      console.log('Google OAuth client initialized with callback URL:', config.callbackURL);
+    } catch (error) {
+      console.error('Failed to initialize Google OAuth client:', error.message);
+      throw error;
+    }
+  }
+  return googleClient;
+};
 
 // Generate Google OAuth URL
 export const generateGoogleAuthURL = (action = 'login') => {
-  const scopes = [
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email'
-  ];
+  try {
+    const client = getGoogleClient();
+    const config = validateGoogleConfig();
+    
+    const scopes = [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email'
+    ];
 
-  // Get the callback URL from environment or construct it
-  const callbackURL = process.env.GOOGLE_CALLBACK_URL || `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/v1/auth/google/callback`;
+    const authURL = client.generateAuthUrl({
+      access_type: 'offline',
+      scope: scopes,
+      prompt: 'consent',
+      state: action,
+      redirect_uri: config.callbackURL
+    });
 
-  return googleClient.generateAuthUrl({
-    access_type: 'offline',
-    scope: scopes,
-    prompt: 'consent',
-    state: action, // Pass action through state parameter
-    redirect_uri: callbackURL // Add the missing redirect_uri parameter
-  });
+    console.log('Generated Google OAuth URL with redirect_uri:', config.callbackURL);
+    return authURL;
+    
+  } catch (error) {
+    console.error('Error generating Google OAuth URL:', error);
+    throw new Error(`Failed to generate Google OAuth URL: ${error.message}`);
+  }
 };
 
 // Verify Google ID token
 export const verifyGoogleToken = async (idToken) => {
   try {
-    const ticket = await googleClient.verifyIdToken({
+    const client = getGoogleClient();
+    const config = validateGoogleConfig();
+    
+    const ticket = await client.verifyIdToken({
       idToken: idToken,
-      audience: process.env.GOOGLE_CLIENT_ID
+      audience: config.clientId
     });
 
     const payload = ticket.getPayload();
@@ -56,11 +112,13 @@ export const verifyGoogleToken = async (idToken) => {
 // Exchange authorization code for tokens
 export const exchangeCodeForTokens = async (code) => {
   try {
-    const { tokens } = await googleClient.getToken(code);
-    googleClient.setCredentials(tokens);
+    const client = getGoogleClient();
+    
+    const { tokens } = await client.getToken(code);
+    client.setCredentials(tokens);
 
     // Get user info using the access token
-    const userInfo = await googleClient.request({
+    const userInfo = await client.request({
       url: 'https://www.googleapis.com/oauth2/v2/userinfo'
     });
 

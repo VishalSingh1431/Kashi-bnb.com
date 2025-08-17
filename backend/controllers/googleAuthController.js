@@ -13,11 +13,28 @@ const getFrontendURL = () => {
 export const googleAuth = async (req, res) => {
   try {
     const { action } = req.query;
+    
+    // Generate Google OAuth URL with proper error handling
     const authURL = generateGoogleAuthURL(action || 'login');
+    
+    console.log('Redirecting to Google OAuth:', authURL);
     res.redirect(authURL);
+    
   } catch (error) {
     console.error('Error generating Google auth URL:', error);
-    res.status(500).json({ message: 'Failed to initiate Google authentication' });
+    
+    // Check if it's a configuration error
+    if (error.message.includes('Missing required Google OAuth environment variables')) {
+      return res.status(500).json({ 
+        message: 'Google OAuth is not properly configured. Please contact support.',
+        error: process.env.NODE_ENV === 'development' ? error.message : 'Configuration error'
+      });
+    }
+    
+    res.status(500).json({ 
+      message: 'Failed to initiate Google authentication',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
   }
 };
 
