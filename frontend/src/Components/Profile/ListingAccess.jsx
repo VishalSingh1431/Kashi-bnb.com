@@ -70,7 +70,16 @@ const ListingAccess = ({ userData, requestSent, listingRequestData, handleListin
                   name="phone"
                   value={listingRequestData.phone || ''}
                   onChange={handleListingRequestInputChange}
+                  maxLength="10"
                 />
+                {listingRequestData.phone && (
+                  <div className="mt-1 text-xs text-gray-500 text-center">
+                    {listingRequestData.phone.length === 10 ? 
+                      '✅ Valid phone number' : 
+                      `${listingRequestData.phone.length}/10 digits`
+                    }
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -87,9 +96,9 @@ const ListingAccess = ({ userData, requestSent, listingRequestData, handleListin
         <div className="text-center">
           <button 
             onClick={handleRequestListingAccess}
-            disabled={!listingRequestData.phone}
+            disabled={!listingRequestData.phone || listingRequestData.phone.length !== 10}
             className={`px-6 py-3 text-white rounded-lg font-medium ${
-              listingRequestData.phone 
+              listingRequestData.phone && listingRequestData.phone.length === 10
                 ? 'bg-indigo-600 hover:bg-indigo-700' 
                 : 'bg-gray-400 cursor-not-allowed'
             }`}

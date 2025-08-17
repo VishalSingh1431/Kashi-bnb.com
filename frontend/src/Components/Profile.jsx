@@ -54,10 +54,20 @@ const Profile = () => {
   });
   
   // Separate state for listing access requests
-  const [listingRequestData, setListingRequestData] = useState({
-    email: '',
-    mobile: '',
-    phone: ''
+  const [listingRequestData, setListingRequestData] = useState(() => {
+    // Initialize from localStorage for persistence
+    const savedEmail = localStorage.getItem('profileListingEmail');
+    const savedMobile = localStorage.getItem('profileListingMobile');
+    const savedPhone = localStorage.getItem('profileListingPhone');
+    
+    // Get current user email if available
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    return {
+      email: savedEmail || currentUser.email || '',
+      mobile: savedMobile || currentUser.mobile || '',
+      phone: savedPhone || ''
+    };
   });
 
   const [activeTab, setActiveTab] = useState('personal');
@@ -237,6 +247,31 @@ const Profile = () => {
     };
   }, []); // Empty dependency array - only run once on mount to prevent infinite loops
 
+  // Update listingRequestData email when user data changes
+  useEffect(() => {
+    if (userData?.email && userData.email !== listingRequestData.email) {
+      setListingRequestData(prev => ({
+        ...prev,
+        email: userData.email
+      }));
+      // Also update localStorage
+      localStorage.setItem('profileListingEmail', userData.email);
+    }
+  }, [userData?.email]);
+
+  // Debug: Log listing request data changes
+  useEffect(() => {
+    console.log('Profile: listingRequestData changed:', listingRequestData);
+  }, [listingRequestData]);
+
+  // Debug: Log when form gets cleared
+  useEffect(() => {
+    if (listingRequestData.phone === '' && listingRequestData.email === '' && listingRequestData.mobile === '') {
+      console.log('Profile: Form was cleared - checking call stack');
+      console.trace('Form clear trace');
+    }
+  }, [listingRequestData.phone, listingRequestData.email, listingRequestData.mobile]);
+
   const checkRecoveryNeeds = (userDataWithHotels) => {
     console.log('Profile: Checking recovery needs for user:', userDataWithHotels.id);
     
@@ -354,10 +389,41 @@ const Profile = () => {
 
   const handleListingRequestInputChange = (e) => {
     const { name, value } = e.target;
-    setListingRequestData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Phone number validation
+    if (name === 'phone') {
+      // Only allow numbers and limit to 10 digits
+      const phoneValue = value.replace(/\D/g, '').slice(0, 10);
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('profileListingPhone', phoneValue);
+      
+      setListingRequestData(prev => ({
+        ...prev,
+        [name]: phoneValue
+      }));
+    } else if (name === 'email') {
+      // Save to localStorage for persistence
+      localStorage.setItem('profileListingEmail', value);
+      
+      setListingRequestData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    } else if (name === 'mobile') {
+      // Save to localStorage for persistence
+      localStorage.setItem('profileListingMobile', value);
+      
+      setListingRequestData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    } else {
+      setListingRequestData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSaveProfile = async () => {
@@ -494,7 +560,30 @@ const Profile = () => {
     try {
       const token = localStorage.getItem("token");
       
-      await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, listingRequestData, {
+      // Get current user data for the message
+      const currentUser = JSON.parse(localStorage.getItem("user") || '{}');
+      
+      // Validate required fields
+      if (!listingRequestData.phone) {
+        setError('Phone number is required');
+        return;
+      }
+      
+      if (!currentUser.email) {
+        setError('User email not found. Please log out and log in again.');
+        return;
+      }
+      
+      // Construct the request data with required message field
+      const requestData = {
+        phone: listingRequestData.phone,
+        email: currentUser.email,
+        message: `User ${currentUser.email} (${currentUser.first_name || currentUser.name || 'User'}) is requesting listing access. Phone: ${listingRequestData.phone}`
+      };
+      
+      console.log('Sending listing access request:', requestData);
+      
+      await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, requestData, {
         headers: {
           'Authorization': getAuthHeader(token),
           'Content-Type': 'application/json'
@@ -503,6 +592,12 @@ const Profile = () => {
       
       setRequestSent(true);
       setError(null);
+      
+      // Clear localStorage after successful submission
+      localStorage.removeItem('profileListingEmail');
+      localStorage.removeItem('profileListingMobile');
+      localStorage.removeItem('profileListingPhone');
+      
     } catch (err) {
       console.error('Error requesting listing access:', err);
       setError(err.response?.data?.message || 'Failed to send request. Please try again.');

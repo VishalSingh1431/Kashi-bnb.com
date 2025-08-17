@@ -38,7 +38,13 @@ const Listings = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [showLoginMessage, setShowLoginMessage] = useState(false);
-  const [listingAccessForm, setListingAccessForm] = useState({ phone: '' });
+  
+  // Initialize phone number from localStorage or empty string
+  const [listingAccessForm, setListingAccessForm] = useState(() => {
+    const savedPhone = localStorage.getItem('listingAccessPhone');
+    return { phone: savedPhone || '' };
+  });
+  
   const [listingAccessRequestSent, setListingAccessRequestSent] = useState(false);
   const [isSubmittingAccess, setIsSubmittingAccess] = useState(false);
   const [listing, setListing] = useState({
@@ -75,8 +81,9 @@ const Listings = () => {
     // Remove the login check - anyone can view the page
     setShowLoginMessage(false);
     
-    // Reset listing access form when user changes
-    if (user) {
+    // Only reset form if user is completely new (not logged in before) AND form is empty
+    if (user && !localStorage.getItem('user') && (!listingAccessForm.phone || listingAccessForm.phone === '')) {
+      console.log('Resetting form for new user');
       setListingAccessForm({ phone: '' });
       setListingAccessRequestSent(false);
     }
@@ -118,7 +125,7 @@ const Listings = () => {
   // Cleanup function to reset state when component unmounts
   useEffect(() => {
     return () => {
-      // Reset all state when component unmounts
+      // Reset all state when component unmounts EXCEPT phone number
       setCurrentImageIndex(0);
       setStartDate(null);
       setEndDate(null);
@@ -130,7 +137,8 @@ const Listings = () => {
       });
       setImages([]);
       setVideoUrl('');
-      setListingAccessForm({ phone: '' });
+      // Don't clear phone number - preserve user input
+      // setListingAccessForm({ phone: '' });
       setListingAccessRequestSent(false);
       setListing({
         name: '',
@@ -257,11 +265,42 @@ const Listings = () => {
   // Listing Access Form Functions
   const handleListingAccessInputChange = (e) => {
     const { name, value } = e.target;
-    setListingAccessForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Phone number validation
+    if (name === 'phone') {
+      // Only allow numbers and limit to 10 digits
+      const phoneValue = value.replace(/\D/g, '').slice(0, 10);
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('listingAccessPhone', phoneValue);
+      
+      setListingAccessForm(prev => ({
+        ...prev,
+        [name]: phoneValue
+      }));
+    } else {
+      // For other fields
+      setListingAccessForm(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+    
+    console.log('Phone input change:', { name, value, currentForm: listingAccessForm });
   };
+
+  // Debug function to log form state changes
+  useEffect(() => {
+    console.log('ListingAccessForm state changed:', listingAccessForm);
+  }, [listingAccessForm]);
+
+  // Debug function to log when form gets cleared
+  useEffect(() => {
+    if (listingAccessForm.phone === '') {
+      console.log('Form was cleared - checking call stack');
+      console.trace('Form clear trace');
+    }
+  }, [listingAccessForm.phone]);
 
   const handleListingAccessSubmit = async () => {
     if (!listingAccessForm.phone) {
@@ -269,17 +308,35 @@ const Listings = () => {
       return;
     }
 
+    // Validate user data
+    if (!user || !user.email) {
+      alert('User information not found. Please log out and log in again.');
+      return;
+    }
+
+    console.log('Submitting listing access request with phone:', listingAccessForm.phone);
     setIsSubmittingAccess(true);
     
     try {
       const token = localStorage.getItem("token");
       
-      // Send request to backend
-      const response = await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, {
+      // Validate token
+      if (!token) {
+        alert('Authentication token not found. Please log in again.');
+        return;
+      }
+      
+      // Construct the request data with required fields
+      const requestData = {
         phone: listingAccessForm.phone,
         email: user.email,
         message: `User ${user.email} (${user.first_name || user.name || 'User'}) is requesting listing access. Phone: ${listingAccessForm.phone}`
-      }, {
+      };
+      
+      console.log('Sending listing access request:', requestData);
+      
+      // Send request to backend
+      const response = await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, requestData, {
         headers: {
           'Authorization': getAuthHeader(token),
           'Content-Type': 'application/json'
@@ -287,8 +344,12 @@ const Listings = () => {
       });
 
       if (response.data.success) {
+        console.log('Listing access request successful, clearing form');
         setListingAccessRequestSent(true);
+        // Only clear form after successful submission
         setListingAccessForm({ phone: '' });
+        // Clear localStorage after successful submission
+        localStorage.removeItem('listingAccessPhone');
         
         // Send email notification to admin
         try {
@@ -313,10 +374,23 @@ Please verify and contact the user.`
           console.error('Email notification failed:', emailError);
           // Don't fail the main request if email fails
         }
+      } else {
+        console.error('Listing access request failed:', response.data);
+        alert('Failed to submit request. Please try again.');
       }
     } catch (error) {
       console.error('Error submitting listing access request:', error);
-      alert('Failed to submit request. Please try again.');
+      
+      // Better error handling
+      if (error.response?.status === 500) {
+        alert('Server error occurred. Please try again later or contact support.');
+      } else if (error.response?.status === 401) {
+        alert('Authentication failed. Please log in again.');
+      } else if (error.response?.status === 400) {
+        alert(error.response.data?.message || 'Invalid request data. Please check your input.');
+      } else {
+        alert('Failed to submit request. Please try again.');
+      }
     } finally {
       setIsSubmittingAccess(false);
     }
@@ -616,7 +690,16 @@ Please verify and contact the user.`
                         name="phone"
                         value={listingAccessForm.phone || ''}
                         onChange={handleListingAccessInputChange}
+                        maxLength="10"
                       />
+                      {listingAccessForm.phone && (
+                        <div className="mt-1 text-xs text-gray-500 text-center">
+                          {listingAccessForm.phone.length === 10 ? 
+                            '✅ Valid phone number' : 
+                            `${listingAccessForm.phone.length}/10 digits`
+                          }
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -631,9 +714,9 @@ Please verify and contact the user.`
                 <div className="text-center">
                   <button 
                     onClick={handleListingAccessSubmit}
-                    disabled={!listingAccessForm.phone || isSubmittingAccess}
+                    disabled={!listingAccessForm.phone || listingAccessForm.phone.length !== 10 || isSubmittingAccess}
                     className={`px-6 py-3 text-white rounded-lg font-medium ${
-                      listingAccessForm.phone && !isSubmittingAccess
+                      listingAccessForm.phone && listingAccessForm.phone.length === 10 && !isSubmittingAccess
                         ? 'bg-orange-600 hover:bg-orange-700' 
                         : 'bg-gray-400 cursor-not-allowed'
                     }`}
