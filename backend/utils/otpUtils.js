@@ -23,7 +23,7 @@ export const sendOTPSMS = async (phoneNumber, otp, message = null) => {
     // Check if Twilio is configured
     if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
       console.warn('Twilio not configured, skipping SMS send');
-      return { success: true, messageId: 'dev-mode', note: 'SMS not sent - Twilio not configured' };
+      return { success: false, error: 'Twilio not configured', note: 'SMS not sent - Twilio not configured' };
     }
 
     // Validate Twilio phone number format

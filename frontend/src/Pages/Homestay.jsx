@@ -71,8 +71,11 @@ const Homestay = () => {
       case "price-high":
         results.sort((a, b) => b.rate - a.rate);
         break;
-      case "rating":
+      case "rating-high":
         results.sort((a, b) => (b.averageRating || b.rating || 0) - (a.averageRating || a.rating || 0));
+        break;
+      case "rating-low":
+        results.sort((a, b) => (a.averageRating || a.rating || 0) - (b.averageRating || b.rating || 0));
         break;
       case "recommended":
       default:
@@ -170,7 +173,8 @@ const Homestay = () => {
                     <option value="recommended" className="text-black">Recommended</option>
                     <option value="price-low" className="text-black">Price: Low to High</option>
                     <option value="price-high" className="text-black">Price: High to Low</option>
-                    <option value="rating" className="text-black">Rating</option>
+                    <option value="rating-high" className="text-black">Rating: High to Low</option>
+                    <option value="rating-low" className="text-black">Rating: Low to High</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                     <FiChevronDown size={14} className="text-white" />

@@ -1,306 +1,333 @@
-import React from "react";
-import { motion } from "framer-motion";
-import {
-  FaUserFriends,
-  FaUsers,
-  FaBuilding,
-  FaCalendarAlt,
-  FaHome,
-  FaCheckCircle,
-  FaHandshake,
-  FaBook,
-} from "react-icons/fa";
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { FaHeart, FaStar, FaUsers, FaHome, FaHandshake } from 'react-icons/fa';
+import Navbar from '../Components/Navbar';
 
 const About = () => {
-  // Animation variants
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 }
+    }
   };
 
   const cardHoverEffect = {
-    scale: 1.03,
-    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
-    transition: { type: "spring", stiffness: 400, damping: 20 },
+    scale: 1.05,
+    y: -10,
+    transition: { type: "spring", stiffness: 300 }
   };
 
   return (
-    <div className=" min-h-[calc(100vh-6rem)] px-4 sm:px-6 lg:px-8">
-      {/* Hero Image */}
-   
-
-      {/* Why Choose KashiBNB */}
-      <motion.div
-        className="max-w-5xl mx-auto mt-16"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <motion.h1
-          className="text-3xl md:text-5xl font-bold text-gray-900 mb-10 text-center"
-          variants={itemVariants}
-        >
-          Why Choose KashiBNB?
-        </motion.h1>
-
-        {/* For Guests */}
-        <motion.div
-          className="bg-white p-8 rounded-xl shadow-md mb-10 border border-gray-200"
-          variants={itemVariants}
-          whileHover={cardHoverEffect}
-        >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-3">
-            <FaUserFriends className="text-indigo-900" /> For Guests
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {[
-              "Register for free and book a home.",
-              "Safe rental process guaranteed.",
-              "Rent by price per night or price per guest.",
-              "24/7 Support hours for customers.",
-              "The most affordable rentals platform.",
-              "Book extra options with your house rental.",
-            ].map((text, index) => (
-              <motion.div
-                key={index}
-                className="bg-gray-50 p-4 rounded-lg flex items-start gap-3"
-                variants={itemVariants}
-              >
-                <FaCheckCircle className="text-blue-400 mt-1" />
-                <p className="text-gray-700 text-base">{text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* For Hotel Owners */}
-        <motion.div
-          className="bg-white p-8 rounded-xl shadow-md border border-gray-200"
-          variants={itemVariants}
-          whileHover={cardHoverEffect}
-        >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-3">
-            <FaBuilding className="text-indigo-900" /> For Hotel Owners
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[
-              "Boost Your Visibility.",
-              "Affordable Listing.",
-              "Enhanced Guest Experience.",
-              "24/7 Support hours for customers.",
-            ].map((text, index) => (
-              <motion.div
-                key={index}
-                className="bg-gray-50 p-4 rounded-lg flex items-start gap-3"
-                variants={itemVariants}
-              >
-                <FaHandshake className="text-blue-400 mt-1" />
-                <p className="text-gray-700 text-base">{text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </motion.div>
+    <div style={{ backgroundColor: '#f3eadb' }}>
+      <Navbar />
       
-      {/* What We Offer */}
-      <motion.div
-        className="max-w-5xl mx-auto mt-16 bg-white p-8 rounded-xl shadow-md border border-gray-200"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+      {/* Hero Section */}
+      <motion.section 
+        className="py-32 relative overflow-hidden"
+        style={{ backgroundColor: '#f3eadb' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
       >
-        <motion.h1
-          className="text-3xl md:text-5xl font-bold text-gray-900 mb-10 text-center"
-          variants={itemVariants}
-        >
-          What We Offer
-        </motion.h1>
-        <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[
-            "Verified Homestays: Every property listed on KashiBnB is personally vetted for quality and safety.",
-            "End-to-End Services: Travel Arrangements, Cultural Experiences, and Culinary Delights.",
-            "Affordable Platform: Keep more of your earnings with our minimal fees while gaining maximum exposure.",
-            "How it Works: Browse, Choose, and Book with ease.",
-          ].map((text, index) => (
-            <motion.div
-              key={index}
-              className="bg-gray-50 p-6 rounded-lg flex items-start gap-4"
-              variants={itemVariants}
-              whileHover={{ scale: 1.03 }}
-            >
-              <FaBook className="text-indigo-900 text-2xl" />
-              <p className="text-gray-700 text-base">{text}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.div>
-
-      {/* Stats Section with Image */}
-      <motion.div
-        className="max-w-5xl mx-auto mt-16 bg-white p-8 rounded-xl shadow-md border border-gray-200"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <motion.h1
-          className="text-3xl md:text-5xl font-bold text-gray-900 mb-10 text-center"
-          variants={itemVariants}
-        >
-          Our Achievements
-        </motion.h1>
-        <motion.div
-          className="w-full mb-8 overflow-hidden rounded-lg shadow-lg"
-          variants={itemVariants}
-        >
-          <img
-            className="w-full h-64 object-cover"
-            src="/images/achievements.jpg"
-            alt="Our Achievements"
-          />
-        </motion.div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-          {[
-            { number: 100, label: "Team Members", icon: <FaUserFriends className="text-4xl text-indigo-900" /> },
-            { number: 1000, label: "Customers", icon: <FaUsers className="text-4xl text-indigo-900" /> },
-            { number: 50, label: "Rental Offices", icon: <FaBuilding className="text-4xl text-indigo-900" /> },
-            { number: 20, label: "Business Years", icon: <FaCalendarAlt className="text-4xl text-indigo-900" /> },
-          ].map((stat, index) => (
-            <motion.div
-              key={index}
-              className="text-center bg-gray-50 p-6 rounded-lg"
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="flex justify-center mb-3">{stat.icon}</div>
-              <h3 className="text-3xl font-bold text-gray-900">{stat.number}+</h3>
-              <p className="text-gray-600 text-sm md:text-base">{stat.label}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* How We Help You with Image */}
-      <motion.div
-        className="max-w-5xl mx-auto mt-16 bg-white p-8 rounded-xl shadow-md border border-gray-200 mb-12"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <motion.h1
-          className="text-3xl md:text-5xl font-bold text-gray-900 mb-10 text-center"
-          variants={itemVariants}
-        >
-          How We Help You
-        </motion.h1>
-        <motion.div
-          className="w-full mb-8 overflow-hidden rounded-lg shadow-lg"
-          variants={itemVariants}
-        >
-          <img
-            className="w-full  object-cover"
-            src="/images/How we.jpg"
-            alt="How We Help You"
-          />
-        </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              title: "Find the perfect home",
-              description: "Choose from the largest number of items and look through the listings added to our site.",
-            },
-            {
-              title: "Personal contact",
-              description: "Use Contact Owner button to arrange a viewing of the listing you wish and even book it.",
-            },
-            {
-              title: "Book your home",
-              description: "Send a booking request and owner will approve it. If a deposit is needed, you can pay it through secure merchants to admin.",
-            },
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              className="bg-gray-50 p-6 rounded-lg flex flex-col gap-3"
-              variants={itemVariants}
-              whileHover={{ scale: 1.03 }}
-            >
-              <div className="flex items-center gap-3">
-                <FaHome className="text-indigo-900 text-2xl" />
-                <h3 className="text-lg font-semibold text-gray-800">{item.title}</h3>
-              </div>
-              <p className="text-gray-600 text-base">{item.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-      <motion.div
-        className="relative w-full h-64 md:h-96 overflow-hidden rounded-xl shadow-2xl"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <img
-          className="w-full h-full object-cover"
-          src="/images/About Us.png"
-          alt="About Us"
-        />
-        {/* <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-          <motion.h1
-            className="text-4xl md:text-6xl font-extrabold text-white tracking-tight"
-            variants={itemVariants}
+        <div className="container mx-auto px-4 text-center">
+          <motion.h1 
+            className="text-6xl md:text-7xl font-bold text-orange-700 mb-8"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            About KashiBNB
+            🌸 About Us – The KashiBnB Story
           </motion.h1>
-        </div> */}
-      </motion.div>
+          <motion.p 
+            className="text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            We didn't start with a business plan. We started with a feeling—that hosting could be better. That travel could be more human.
+          </motion.p>
+        </div>
+      </motion.section>
 
-      {/* Welcome Section */}
-      <motion.div
-        className="max-w-5xl mx-auto mt-12 text-center"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <motion.h1
-          className="text-3xl md:text-5xl font-bold text-gray-900 mb-6"
-          variants={itemVariants}
-        >
-          Welcome to KashiBNB
-        </motion.h1>
-        <motion.p
-          className="text-gray-600 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto"
-          variants={itemVariants}
-        >
-          Your one-stop solution for authentic homestay experiences in Varanasi!
-          Whether you’re a traveler seeking a seamless journey or a property owner
-          looking for better visibility, KashiBnB is here to redefine the way you
-          explore and host in the spiritual heart of India.
-        </motion.p>
-      </motion.div>
+      {/* Main Content */}
+      <section className="py-20" style={{ backgroundColor: '#f3eadb' }}>
+        <div className="container mx-auto px-4 max-w-5xl">
+          
+          {/* Introduction */}
+          <motion.div 
+            className="mb-20"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div 
+              className="bg-gradient-to-r from-orange-50 to-amber-50 p-8 rounded-2xl shadow-lg border border-orange-100"
+              variants={itemVariants}
+              whileHover={cardHoverEffect}
+            >
+              <div className="flex items-center mb-6">
+                <FaHeart className="text-4xl text-orange-500 mr-4" />
+                <h2 className="text-3xl font-bold text-orange-700">Namaste! 🙏</h2>
+              </div>
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                Our team is made up of everyday people—caretakers, hosts, service partners—all of whom helped shape some of the most loved and highly rated homestays and villa hotels in Varanasi.
+              </p>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                And no, it's not a luxury villa or a five-star resort. It's just creativity, hospitality, and genuine human experience that made it stand out. With over <strong className="text-orange-600">500+ reviews on Airbnb</strong>, <strong className="text-orange-600">10,000+ on Google</strong>, and <strong className="text-orange-600">10,000+ happy guests</strong>—we've proven that trust and care go further than polish and price.
+              </p>
+            </motion.div>
+          </motion.div>
 
-      {/* Hotel Room Image */}
-      <motion.div
-        className="max-w-5xl mx-auto mt-12"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <img
-          className="w-full h-64 md:h-96 object-cover rounded-xl shadow-lg"
-                          src="/images/About Us.png"
-          alt="Hotel Room"
-        />
-      </motion.div>
+          {/* What Makes Us Different */}
+          <motion.div 
+            className="mb-20"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.h2 
+              className="text-4xl font-bold text-gray-800 mb-12 text-center"
+              variants={itemVariants}
+            >
+              ✨ What Makes Us Different?
+            </motion.h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { icon: FaHome, text: "We're built for India—not for big hotel chains, but for real people and real homes." },
+                { icon: FaHandshake, text: "We support both homestays and villa hotels—no matter how small or big." },
+                { icon: FaStar, text: "We physically audit every property—trust should be earned, not assumed." },
+                { icon: FaUsers, text: "We train hosts in hospitality and professionalism." },
+                { icon: FaHeart, text: "We don't charge guests hidden fees and let hosts keep what they earn." }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:border-orange-200 transition-all duration-300"
+                  variants={itemVariants}
+                  whileHover={cardHoverEffect}
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="p-3 bg-orange-100 rounded-full mr-4">
+                      <item.icon className="text-2xl text-orange-600" />
+                    </div>
+                  </div>
+                  <p className="text-gray-700 leading-relaxed">{item.text}</p>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div 
+              className="mt-12 text-center"
+              variants={itemVariants}
+            >
+              <div className="bg-gradient-to-r from-orange-100 to-amber-100 p-6 rounded-xl inline-block">
+                <p className="text-xl text-gray-700 font-medium">
+                  KashiBnB doesn't dictate—it empowers. Through ground support, digital tools, and one-on-one handholding, we help hosts grow their property with pride—not pressure.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Travel Story */}
+          <motion.div 
+            className="mb-20"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div 
+              className="bg-gradient-to-br from-blue-50 to-indigo-50 p-10 rounded-2xl shadow-lg border border-blue-100"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+            >
+              <h2 className="text-4xl font-bold text-blue-800 mb-8 text-center">🧵 Travel Should Feel Like a Story</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                    KashiBnB is about more than a place to stay. It's about meeting the woman who makes your chai, the boatman who knows the Ganga by heart, the artisan still weaving by hand.
+                  </p>
+                  <p className="text-xl text-gray-700 leading-relaxed">
+                    Our verified hosts don't just rent rooms—they share culture, care, and stories.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="text-8xl mb-4">🏠</div>
+                  <div className="text-6xl mb-4">☕</div>
+                  <div className="text-7xl">🚣</div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Proudly Indian */}
+          <motion.div 
+            className="mb-20"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div 
+              className="bg-gradient-to-r from-green-50 to-emerald-50 p-10 rounded-2xl shadow-lg border border-green-100"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+            >
+              <h2 className="text-4xl font-bold text-green-800 mb-8 text-center">🇮🇳 Proudly Indian. Powered Locally.</h2>
+              <p className="text-xl text-gray-700 mb-8 text-center leading-relaxed">
+                KashiBnB is 100% local. We don't send commission to other countries. We keep the money in India—circulating in neighbourhoods, small businesses, and families.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {[
+                  "Local homestay and villa hotel owners",
+                  "Local artisans and service teams", 
+                  "The Indian travel ecosystem—with jobs and dignity"
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    className="bg-white p-6 rounded-xl shadow-md text-center"
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                  >
+                    <div className="text-4xl mb-3">🏘️</div>
+                    <p className="text-gray-700 font-medium">{item}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Getting Started */}
+          <motion.div 
+            className="mb-20"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div 
+              className="bg-gradient-to-r from-purple-50 to-pink-50 p-10 rounded-2xl shadow-lg border border-purple-100"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+            >
+              <h2 className="text-4xl font-bold text-purple-800 mb-8 text-center">🚀 We're Just Getting Started…</h2>
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                We currently manage 3 signature properties. Our hosts are all Airbnb Superhosts for 3+ years with glowing reviews and strong guest loyalty.
+              </p>
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                But this is just the beginning. Our dream? A nationwide network of certified, soulful Indian homestays and villas that offer travellers <strong className="text-purple-600">real value</strong>—and give hosts <strong className="text-purple-600">real dignity</strong>.
+              </p>
+              <p className="text-xl text-gray-700 mb-6 text-center">
+                Whether you're a host or a traveller—KashiBnB is your home online.
+              </p>
+              <motion.p 
+                className="text-3xl font-bold text-purple-600 text-center"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                One room. One family. One story at a time.
+              </motion.p>
+            </motion.div>
+          </motion.div>
+
+          {/* Team Section */}
+          <motion.div 
+            className="mb-20"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.h2 
+              className="text-4xl font-bold text-gray-800 mb-12 text-center"
+              variants={itemVariants}
+            >
+              👨‍👩‍👧‍👦 Meet the KashiBnB Team — Real People, Real Hospitality
+            </motion.h2>
+            
+            <motion.div 
+              className="bg-gradient-to-r from-orange-50 to-amber-50 p-10 rounded-2xl shadow-lg border border-orange-100 mb-12"
+              variants={itemVariants}
+            >
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                You won't find shiny nameplates or corporate designations here. At KashiBnB, the team is made up of the folks you'll actually meet — not in a boardroom, but at the door with a smile, in the kitchen with chai, or during check-in with a helping hand.
+              </p>
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                We're a team of locals — caretakers, co-hosts, support staff, and hospitality lovers — who believe that making someone feel at home is an art.
+              </p>
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                No five-star training. No hospitality degrees. Just heart, honesty, and a commitment to doing the simple things really well.
+              </p>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                Together, we've taken three humble properties in Varanasi — not villas, not resorts — and turned them into some of the highest-rated homestays in the city, loved by over 10,000+ guests from all over the world.
+              </p>
+            </motion.div>
+
+            {/* Interactive Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              {[
+                { icon: "⭐", number: "500+", label: "reviews on Airbnb", color: "orange" },
+                { icon: "🌟", number: "1,000+", label: "Google reviews", color: "amber" },
+                { icon: "🏅", number: "Three", label: "Superhosts, year after year", color: "yellow" }
+              ].map((stat, index) => (
+                <motion.div
+                  key={index}
+                  className="bg-orange-50 p-8 rounded-2xl shadow-lg border border-orange-100 text-center cursor-pointer"
+                  variants={itemVariants}
+                  whileHover={{ 
+                    scale: 1.1, 
+                    y: -10,
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="text-6xl mb-4">{stat.icon}</div>
+                  <div className="text-4xl font-bold text-gray-800 mb-2">{stat.number}</div>
+                  <div className="text-gray-600 text-lg">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div 
+              className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+            >
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                What sets us apart isn't money or scale. It's that everyone in the team genuinely cares. Whether it's a host adjusting pillows at midnight or a caretaker making sure your taxi arrives on time — every action here comes from the heart.
+              </p>
+              <p className="text-xl text-gray-700 mb-6 leading-relaxed">
+                We're not trying to be the biggest. We're just trying to be the most trusted.
+              </p>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                You'll see our faces below — not stock photos, but the real people who run this place day in and day out. When you book a KashiBnB stay, you're not booking a room — you're becoming part of a team that takes pride in welcoming you like family.
+              </p>
+            </motion.div>
+          </motion.div>
+
+        </div>
+      </section>
     </div>
   );
 };

@@ -72,12 +72,10 @@ export const sendResetPasswordOTP = async (req, res) => {
         expiresIn: '10 minutes'
       });
     } else {
-      // If SMS fails (including Twilio verification errors), return OTP for development
-      res.status(200).json({ 
-        message: 'Reset password OTP generated successfully! (SMS delivery failed - check console for details)',
-        developmentMode: true,
-        otp: otp,
-        smsError: smsResult.error || 'SMS delivery failed'
+      // If SMS fails, return error instead of showing OTP
+      res.status(500).json({ 
+        message: 'Failed to send OTP via SMS. Please try again later or contact support.',
+        error: smsResult.error || 'SMS delivery failed'
       });
     }
 

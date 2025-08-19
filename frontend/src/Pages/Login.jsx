@@ -63,15 +63,6 @@ const Login = () => {
         } else {
           setMessage("OTP sent successfully! Check your phone for the verification code.");
         }
-        
-        // If it's development mode, show the OTP
-        if (response.data.developmentMode) {
-          let devMessage = `Development Mode - OTP: ${response.data.otp}`;
-          if (response.data.smsError) {
-            devMessage += ` (SMS Error: ${response.data.smsError})`;
-          }
-          setMessage(devMessage);
-        }
       }
     } catch (err) {
       console.log('Phone OTP Error:', err);

@@ -38,7 +38,7 @@ const Navbar = () => {
         <div className="flex-shrink-0 mr-auto border-0 outline-none">
           <Link to="/" className="focus:outline-none border-0 outline-none">
             <img
-              className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg border-0"
+              className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-lg border-0"
               src="/images/newlogo.jpg"
               alt="Logo"
             />

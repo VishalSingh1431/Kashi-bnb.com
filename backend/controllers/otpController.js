@@ -86,13 +86,10 @@ export const sendLoginOTP = async (req, res) => {
         userType: existingUser.googleId ? 'google' : 'regular'
       });
     } else {
-      // If SMS fails (including Twilio verification errors), return OTP for development
-      res.status(200).json({ 
-        message: 'OTP generated successfully! (SMS delivery failed - check console for details)',
-        developmentMode: true,
-        otp: otp,
-        userType: existingUser.googleId ? 'google' : 'regular',
-        smsError: smsResult.error || 'SMS delivery failed'
+      // If SMS fails, return error instead of showing OTP
+      res.status(500).json({ 
+        message: 'Failed to send OTP via SMS. Please try again later or contact support.',
+        error: smsResult.error || 'SMS delivery failed'
       });
     }
 
@@ -149,12 +146,10 @@ export const sendSignupOTP = async (req, res) => {
         expiresIn: '10 minutes'
       });
     } else {
-      // If SMS fails (including Twilio verification errors), return OTP for development
-      res.status(200).json({ 
-        message: 'OTP generated successfully! (SMS delivery failed - check console for details)',
-        developmentMode: true,
-        otp: otp,
-        smsError: smsResult.error || 'SMS delivery failed'
+      // If SMS fails, return error instead of showing OTP
+      res.status(500).json({ 
+        message: 'Failed to send OTP via SMS. Please try again later or contact support.',
+        error: smsResult.error || 'SMS delivery failed'
       });
     }
 
@@ -439,17 +434,8 @@ export const sendEmailOTP = async (req, res) => {
         expiresIn: '10 minutes'
       });
     } else {
-      // If email fails, return OTP for development mode
-      if (process.env.NODE_ENV === 'development') {
-        res.status(200).json({ 
-          message: 'OTP generated successfully! (Email delivery failed - check console for details)',
-          developmentMode: true,
-          otp: otp,
-          emailError: emailResult.error || 'Email delivery failed'
-        });
-      } else {
-        res.status(500).json({ message: 'Failed to send OTP email. Please try again.' });
-      }
+      // If email fails, return error
+      res.status(500).json({ message: 'Failed to send OTP email. Please try again.' });
     }
 
   } catch (error) {
@@ -505,17 +491,8 @@ export const sendSignupEmailOTP = async (req, res) => {
         expiresIn: '10 minutes'
       });
     } else {
-      // If email fails, return OTP for development mode
-      if (process.env.NODE_ENV === 'development') {
-        res.status(200).json({ 
-          message: 'OTP generated successfully! (Email delivery failed - check console for details)',
-          developmentMode: true,
-          otp: otp,
-          emailError: emailResult.error || 'Email delivery failed'
-        });
-      } else {
-        res.status(500).json({ message: 'Failed to send verification OTP. Please try again.' });
-      }
+      // If email fails, return error
+      res.status(500).json({ message: 'Failed to send verification OTP. Please try again.' });
     }
 
   } catch (error) {
@@ -775,13 +752,10 @@ export const sendPhoneRecoveryOTP = async (req, res) => {
         expiresIn: '10 minutes'
       });
     } else {
-      // If SMS fails (including Twilio verification errors), return OTP for development
-      // This handles cases where phone numbers aren't verified in Twilio trial accounts
-      res.status(200).json({ 
-        message: 'OTP generated successfully! (SMS delivery failed - check console for details)',
-        developmentMode: true,
-        otp: otp,
-        smsError: smsResult.error || 'SMS delivery failed'
+      // If SMS fails, return error instead of showing OTP
+      res.status(500).json({ 
+        message: 'Failed to send OTP via SMS. Please try again later or contact support.',
+        error: smsResult.error || 'SMS delivery failed'
       });
     }
 
@@ -949,20 +923,11 @@ export const sendAddEmailOTP = async (req, res) => {
         expiresIn: '10 minutes'
       });
     } else {
-      // If email fails, return OTP for development mode
-      if (process.env.NODE_ENV === 'development') {
-        res.status(200).json({ 
-          message: 'OTP generated successfully! (Email delivery failed - check console for details)',
-          developmentMode: true,
-          otp: otp,
-          emailError: emailResult.error || 'Email delivery failed'
-        });
-      } else {
-        res.status(500).json({ 
-          message: 'Failed to send OTP email. Please try again.',
-          error: 'EMAIL_DELIVERY_FAILED'
-        });
-      }
+      // If email fails, return error
+      res.status(500).json({ 
+        message: 'Failed to send OTP email. Please try again.',
+        error: 'EMAIL_DELIVERY_FAILED'
+      });
     }
 
   } catch (error) {
