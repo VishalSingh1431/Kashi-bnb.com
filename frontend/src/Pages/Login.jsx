@@ -5,8 +5,15 @@ import { BACKEND } from "../assets/Vars";
 import { useAuth } from "../App";
 import { Mail, Phone, Lock, Eye, EyeOff, Smartphone } from "lucide-react";
 
+/*
+ * PHONE LOGIN TEMPORARILY HIDDEN FROM UI - WILL RE-ENABLE LATER
+ * All phone OTP functionality is preserved but hidden from user interface
+ * Only Google login is currently visible to users
+ * All code remains intact for easy restoration
+ */
+
 const Login = () => {
-  const [loginMethod, setLoginMethod] = useState("phone"); // "phone" or "google"
+  const [loginMethod, setLoginMethod] = useState("google"); // Temporarily hidden: "phone" or "google"
   const [formData, setFormData] = useState({
     phone: "",
     otp: ""
@@ -129,7 +136,8 @@ const Login = () => {
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
-        {/* Method Selection */}
+        {/* Method Selection - TEMPORARILY HIDDEN */}
+        {/* 
         <div className="flex gap-2">
           <button
             onClick={() => setLoginMethod("phone")}
@@ -159,6 +167,7 @@ const Login = () => {
             <span className="hidden sm:inline">Google</span>
           </button>
         </div>
+        */}
 
         {error && (
           <div className="p-3 text-red-600 rounded-lg text-center bg-red-50 border border-red-200">
@@ -221,7 +230,8 @@ const Login = () => {
           </div>
         )}
 
-        {/* Phone OTP Login */}
+        {/* Phone OTP Login - TEMPORARILY HIDDEN */}
+        {/* 
         {loginMethod === "phone" && (
           <div className="space-y-4">
             {!otpSent ? (
@@ -256,6 +266,7 @@ const Login = () => {
             ) : (
               <form onSubmit={handleVerifyPhoneOTP} className="space-y-4">
                 <div className="text-center py-4">
+                  <div className="text-center py-4">
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">Verify OTP</h3>
                   <p className="text-gray-600 text-sm">
                     We've sent a 6-digit OTP to {formData.phone}
@@ -305,6 +316,7 @@ const Login = () => {
             )}
           </div>
         )}
+        */}
 
         {/* Google Login */}
         {loginMethod === "google" && (

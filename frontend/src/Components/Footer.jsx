@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import ScrollToTopLink from "../utils/scrollToTopLink";
 import {
   Facebook,
   Twitter,
@@ -144,7 +145,7 @@ const Footer = () => {
           >
             {/* Brand Section */}
             <motion.div variants={itemVariants} className="flex flex-col">
-              <Link to="/" className="group flex items-center gap-3 mb-4">
+              <ScrollToTopLink to="/" className="group flex items-center gap-3 mb-4">
                 <motion.div
                   className="relative overflow-hidden rounded-xl shadow-lg"
                   whileHover={{ scale: 1.05 }}
@@ -171,7 +172,7 @@ const Footer = () => {
                 >
                   KashiBNB
                 </motion.h3>
-              </Link>
+              </ScrollToTopLink>
               
               <motion.p 
                 className="text-sm sm:text-base leading-relaxed text-gray-700 mb-4"
@@ -240,13 +241,13 @@ const Footer = () => {
                     whileHover={linkHoverEffect}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <Link 
+                    <ScrollToTopLink 
                       to={item.path}
                       className="flex items-center gap-3 text-sm sm:text-base font-medium text-gray-700 hover:text-orange-600 transition-colors duration-300"
                     >
                       <span className="text-lg">{item.icon}</span>
                       <span>{item.name}</span>
-                    </Link>
+                    </ScrollToTopLink>
                   </motion.li>
                 ))}
               </ul>
@@ -270,7 +271,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 {[
                   { name: "Restaurants & Hotels", path: "/restaurants-hotels", icon: "🍽️" },
-                  { name: "Add Your Business", path: "/add-business", icon: "➕" },
+                  { name: "Add Your Business", path: "/add-listing", icon: "➕" },
                   { name: "Blogs", path: "/blogs", icon: "📝" },
                 ].map((item) => (
                   <motion.li
@@ -278,13 +279,13 @@ const Footer = () => {
                     whileHover={linkHoverEffect}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <Link 
+                    <ScrollToTopLink 
                       to={item.path}
                       className="flex items-center gap-3 text-sm sm:text-base font-medium text-gray-700 hover:text-orange-600 transition-colors duration-300"
                     >
                       <span className="text-lg">{item.icon}</span>
                       <span>{item.name}</span>
-                    </Link>
+                    </ScrollToTopLink>
                   </motion.li>
                 ))}
               </ul>
@@ -354,7 +355,7 @@ const Footer = () => {
                     <Mail className="h-4 w-4 text-blue-600" />
                   </motion.div>
                   <div className="text-gray-700 leading-relaxed text-sm">
-                    kashibnb@gmail.com
+                    info@kashibnb.com
                   </div>
                 </motion.li>
               </ul>

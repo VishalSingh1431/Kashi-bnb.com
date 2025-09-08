@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axiosConfig';
 import { BACKEND, getAuthHeader } from '../assets/Vars';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PersonalInfo from './Profile/PersonalInfo';
@@ -164,7 +164,7 @@ const Profile = () => {
         console.log('Profile: Authentication passed, fetching user data');
         setLoading(true);
 
-        const response = await axios.get(`${BACKEND}/api/v1/user/profile/id/${currentUser.id}`, {
+        const response = await api.get(`/api/v1/user/profile/id/${currentUser.id}`, {
           headers: {
             'Authorization': getAuthHeader(token)
           }
@@ -175,7 +175,7 @@ const Profile = () => {
         // If user is admin, fetch all hotels
         if (currentUser.is_admin) {
           try {
-            const hotelsResponse = await axios.get(`${BACKEND}/api/v1/hotel/hotels`, {
+            const hotelsResponse = await api.get(`/api/v1/hotel/hotels`, {
               headers: {
                 'Authorization': getAuthHeader(token)
               }
@@ -322,7 +322,7 @@ const Profile = () => {
     try {
       setRequestsLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BACKEND}/api/v1/user/admin/request`, {
+      const response = await api.get(`/api/v1/user/admin/request`, {
         headers: { 'Authorization': getAuthHeader(token) }
       });
       setAccessRequests(response.data.request || []);
@@ -337,7 +337,7 @@ const Profile = () => {
     try {
       setUsersLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BACKEND}/api/v1/admin/users`, {
+      const response = await api.get(`/api/v1/admin/users`, {
         headers: {
           'Authorization': getAuthHeader(token)
         }
@@ -468,7 +468,7 @@ const Profile = () => {
       
       console.log('Sending profile update with data:', updateData);
       
-      const response = await axios.put(`${BACKEND}/api/v1/user/profile`, updateData, {
+      const response = await api.put(`/api/v1/user/profile`, updateData, {
         headers: {
           'Authorization': getAuthHeader(token)
         }
@@ -583,7 +583,7 @@ const Profile = () => {
       
       console.log('Sending listing access request:', requestData);
       
-      await axios.post(`${BACKEND}/api/v1/user/upgrade_request`, requestData, {
+      await api.post(`/api/v1/user/upgrade_request`, requestData, {
         headers: {
           'Authorization': getAuthHeader(token),
           'Content-Type': 'application/json'
@@ -611,8 +611,8 @@ const Profile = () => {
         ? `${BACKEND}/api/v1/user/admin/makeAdmin` 
         : `${BACKEND}/api/v1/user/admin/makeHoteler`;
       
-      const response = await axios.post(
-        endpoint,
+      const response = await api.post(
+        endpoint.replace(BACKEND, ''),
         { email },
         { headers: { 'Authorization': getAuthHeader(token) } }
       );
@@ -637,7 +637,7 @@ const Profile = () => {
   const handleDeleteRequest = async (requestId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${BACKEND}/api/v1/user/admin/request/${requestId}`, {
+      await api.delete(`/api/v1/user/admin/request/${requestId}`, {
         headers: { 'Authorization': getAuthHeader(token) }
       });
       await fetchAccessRequests();
@@ -680,7 +680,7 @@ const Profile = () => {
         ? { email: recoveryFormData.email }
         : { mobile: recoveryFormData.phone, userId: authUser.id };
 
-      const response = await axios.post(endpoint, data);
+      const response = await api.post(endpoint.replace(BACKEND, ''), data);
 
       if (response.status === 200) {
         setOtpSent(true);
@@ -733,7 +733,7 @@ const Profile = () => {
 
     try {
       if (recoveryType === "email") {
-        const response = await axios.post(`${BACKEND}/api/v1/otp/verify-email-otp`, {
+        const response = await api.post(`/api/v1/otp/verify-email-otp`, {
           email: recoveryFormData.email,
           otp: recoveryOtp
         });
@@ -766,7 +766,7 @@ const Profile = () => {
           }, 3000);
         }
       } else {
-        const response = await axios.post(`${BACKEND}/api/v1/otp/verify-phone-recovery-otp`, {
+        const response = await api.post(`/api/v1/otp/verify-phone-recovery-otp`, {
           mobile: recoveryFormData.phone,
           otp: recoveryOtp,
           userId: authUser.id
@@ -840,7 +840,7 @@ const Profile = () => {
   const handleDeleteUser = async (userId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${BACKEND}/api/v1/admin/users/${userId}`, {
+      await api.delete(`/api/v1/admin/users/${userId}`, {
         headers: {
           'Authorization': getAuthHeader(token)
         }

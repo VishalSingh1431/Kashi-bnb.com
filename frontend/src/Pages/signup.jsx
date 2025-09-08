@@ -5,8 +5,15 @@ import { BACKEND } from '../assets/Vars';
 import { Mail, Phone, Lock, Eye, EyeOff, Smartphone, User, X } from "lucide-react";
 import { useAuth } from '../App';
 
+/*
+ * PHONE SIGNUP TEMPORARILY HIDDEN FROM UI - WILL RE-ENABLE LATER
+ * All phone OTP functionality is preserved but hidden from user interface
+ * Only Google signup is currently visible to users
+ * All code remains intact for easy restoration
+ */
+
 const Signup = () => {
-  const [signupMethod, setSignupMethod] = useState("phone"); // "phone" or "google"
+  const [signupMethod, setSignupMethod] = useState("google"); // Temporarily hidden: "phone" or "google"
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -428,7 +435,8 @@ const Signup = () => {
           <p className="text-gray-600">Choose your preferred way to sign up</p>
         </div>
 
-        {/* Method Selection */}
+        {/* Method Selection - TEMPORARILY HIDDEN */}
+        {/* 
         <div className="flex gap-2">
           <button
             onClick={() => setSignupMethod("phone")}
@@ -458,6 +466,7 @@ const Signup = () => {
             <span className="hidden sm:inline">Google</span>
           </button>
         </div>
+        */}
 
         {error && (
           <div className="p-3 text-red-600 rounded-lg text-center bg-red-50 border border-red-200">
@@ -471,7 +480,8 @@ const Signup = () => {
           </div>
         )}
 
-        {/* Phone OTP Signup */}
+        {/* Phone OTP Signup - TEMPORARILY HIDDEN */}
+        {/* 
         {signupMethod === "phone" && (
           <div className="space-y-4">
             {!otpSent ? (
@@ -494,7 +504,7 @@ const Signup = () => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-2 font-medium">Phone Number</label>
+                  <label className="block text-gray-500 mb-2 font-medium">Phone Number</label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <input
@@ -572,6 +582,7 @@ const Signup = () => {
             )}
           </div>
         )}
+        */}
 
         {/* Google Signup */}
         {signupMethod === "google" && (

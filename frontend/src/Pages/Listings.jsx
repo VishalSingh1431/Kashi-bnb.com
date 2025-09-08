@@ -354,7 +354,7 @@ const Listings = () => {
         // Send email notification to admin
         try {
           await axios.post(`${BACKEND}/api/v1/user/send-notification-email`, {
-            to: 'vishalsingh05072003@gmail.com',
+            to: 'info@kashibnb.com',
             subject: 'New Listing Access Request',
             message: `A new user has requested listing access:
 

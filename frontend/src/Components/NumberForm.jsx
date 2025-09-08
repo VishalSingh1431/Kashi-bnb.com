@@ -41,7 +41,7 @@ const NumberForm = () => {
     setError("");
 
     try {
-      // Send contact request - this will send email to vishalsingh05072003@gmail.com
+      // Send contact request - this will send email to info@kashibnb.com
       await axios.post(`${BACKEND}/api/v1/contact/contact-request`, formData);
       
       // Show success message

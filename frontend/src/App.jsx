@@ -120,7 +120,7 @@ function App() {
     window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { isLoggedIn: true, user: userData } }));
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback((redirectToLogin = false) => {
     // Prevent multiple simultaneous logout calls
     if (!localStorage.getItem("token") && !localStorage.getItem("user")) {
       console.log('Logout: Already logged out, skipping');
@@ -140,6 +140,11 @@ function App() {
     setIsLoggedIn(false);
     // Dispatch custom event for auth state change
     window.dispatchEvent(new CustomEvent('authStateChanged', { detail: { isLoggedIn: false, user: null } }));
+    
+    // Redirect to login page if requested
+    if (redirectToLogin) {
+      window.location.href = '/login';
+    }
   }, []);
 
   const validateToken = useCallback(async () => {
@@ -158,7 +163,7 @@ function App() {
       } else if (response.status === 401 || response.status === 403) {
         // Only logout on actual authentication errors, not network issues
         console.log('Token validation failed with auth error, logging out');
-        logout();
+        logout(true); // Redirect to login page
         return false;
       } else {
         // For other HTTP errors, don't logout - might be server issues

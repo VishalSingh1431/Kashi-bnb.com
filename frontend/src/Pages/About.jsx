@@ -41,7 +41,7 @@ const About = () => {
       
       {/* Hero Section */}
       <motion.section 
-        className="py-32 relative overflow-hidden"
+        className="py-20 relative overflow-hidden"
         style={{ backgroundColor: '#f3eadb' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -54,7 +54,7 @@ const About = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            🌸 About Us – The KashiBnB Story
+            About Us
           </motion.h1>
           <motion.p 
             className="text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed"
@@ -68,12 +68,12 @@ const About = () => {
       </motion.section>
 
       {/* Main Content */}
-      <section className="py-20" style={{ backgroundColor: '#f3eadb' }}>
+      <section className="py-12" style={{ backgroundColor: '#f3eadb' }}>
         <div className="container mx-auto px-4 max-w-5xl">
           
           {/* Introduction */}
           <motion.div 
-            className="mb-20"
+            className="mb-12"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -84,9 +84,8 @@ const About = () => {
               variants={itemVariants}
               whileHover={cardHoverEffect}
             >
-              <div className="flex items-center mb-6">
-                <FaHeart className="text-4xl text-orange-500 mr-4" />
-                <h2 className="text-3xl font-bold text-orange-700">Namaste! 🙏</h2>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold text-orange-700">Namaste!</h2>
               </div>
               <p className="text-xl text-gray-700 mb-6 leading-relaxed">
                 Our team is made up of everyday people—caretakers, hosts, service partners—all of whom helped shape some of the most loved and highly rated homestays and villa hotels in Varanasi.
@@ -99,14 +98,14 @@ const About = () => {
 
           {/* What Makes Us Different */}
           <motion.div 
-            className="mb-20"
+            className="mb-12"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
             <motion.h2 
-              className="text-4xl font-bold text-gray-800 mb-12 text-center"
+              className="text-4xl font-bold text-gray-800 mb-8 text-center"
               variants={itemVariants}
             >
               ✨ What Makes Us Different?
@@ -148,41 +147,9 @@ const About = () => {
             </motion.div>
           </motion.div>
 
-          {/* Travel Story */}
-          <motion.div 
-            className="mb-20"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <motion.div 
-              className="bg-gradient-to-br from-blue-50 to-indigo-50 p-10 rounded-2xl shadow-lg border border-blue-100"
-              variants={itemVariants}
-              whileHover={{ scale: 1.02 }}
-            >
-              <h2 className="text-4xl font-bold text-blue-800 mb-8 text-center">🧵 Travel Should Feel Like a Story</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                  <p className="text-xl text-gray-700 mb-6 leading-relaxed">
-                    KashiBnB is about more than a place to stay. It's about meeting the woman who makes your chai, the boatman who knows the Ganga by heart, the artisan still weaving by hand.
-                  </p>
-                  <p className="text-xl text-gray-700 leading-relaxed">
-                    Our verified hosts don't just rent rooms—they share culture, care, and stories.
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="text-8xl mb-4">🏠</div>
-                  <div className="text-6xl mb-4">☕</div>
-                  <div className="text-7xl">🚣</div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-
           {/* Proudly Indian */}
           <motion.div 
-            className="mb-20"
+            className="mb-12"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -193,8 +160,8 @@ const About = () => {
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
             >
-              <h2 className="text-4xl font-bold text-green-800 mb-8 text-center">🇮🇳 Proudly Indian. Powered Locally.</h2>
-              <p className="text-xl text-gray-700 mb-8 text-center leading-relaxed">
+              <h2 className="text-4xl font-bold text-green-800 mb-6 text-center">🇮🇳 Proudly Indian. Powered Locally.</h2>
+              <p className="text-xl text-gray-700 mb-6 text-center leading-relaxed">
                 KashiBnB is 100% local. We don't send commission to other countries. We keep the money in India—circulating in neighbourhoods, small businesses, and families.
               </p>
               
@@ -220,7 +187,7 @@ const About = () => {
 
           {/* Getting Started */}
           <motion.div 
-            className="mb-20"
+            className="mb-12"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -253,7 +220,7 @@ const About = () => {
 
           {/* Team Section */}
           <motion.div 
-            className="mb-20"
+            className="mb-12"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"

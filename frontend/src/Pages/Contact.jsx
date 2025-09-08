@@ -331,7 +331,7 @@ const Contact = () => {
               <FaEnvelope className="text-black text-2xl animate-pulse" />
               <h3 className="text-lg font-semibold text-black">Email</h3>
             </div>
-            <p className="text-black">kashibnb@gmail.com</p>
+            <p className="text-black">info@kashibnb.com</p>
           </motion.div>
 
           {/* Office Address */}

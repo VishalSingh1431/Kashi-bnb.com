@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FiEdit, FiSave, FiLogOut, FiUser, FiMail, FiPhone, FiMapPin, FiClock, FiX, FiCheck, FiShield } from 'react-icons/fi';
-import axios from 'axios';
+import api from '../../utils/axiosConfig';
 import { BACKEND } from '../../assets/Vars';
 import { useAuth } from '../../App';
 
@@ -84,7 +84,7 @@ const PersonalInfo = ({ userData, editMode, profileFormData, handleProfileInputC
         return;
       }
 
-      const response = await axios.post(endpoint, data);
+      const response = await api.post(endpoint.replace(BACKEND, ''), data);
 
       if (response.status === 200) {
         setOtpSent(true);
@@ -147,7 +147,7 @@ const PersonalInfo = ({ userData, editMode, profileFormData, handleProfileInputC
         data = { email: profileFormData.email, otp: otp, userId: userData.id };  // Include userId
       }
 
-      const response = await axios.post(endpoint, data);
+      const response = await api.post(endpoint.replace(BACKEND, ''), data);
 
       if (response.status === 200) {
         setOtpMessage(`${verificationField.charAt(0).toUpperCase() + verificationField.slice(1)} verified successfully! You can now save your profile.`);

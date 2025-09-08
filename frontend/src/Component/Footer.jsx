@@ -77,7 +77,7 @@ const Footer = () => {
           <p className="my-1">
             <strong>Email:</strong>
             <br />
-            <a href="mailto:kashibnb@gmail.com">kashibnb@gmail.com</a>
+            <a href="mailto:info@kashibnb.com">info@kashibnb.com</a>
           </p>
 
           <h4 className="my-4 font-semibold">Stay Updated</h4>
