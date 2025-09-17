@@ -492,7 +492,7 @@ const Owner = () => {
                  </th>
                  <th className='border border-gray-300 px-1 sm:px-2 lg:px-4 py-2 sm:py-3 lg:py-4 text-center font-bold text-gray-900 text-xs sm:text-sm'>
                    <Tooltip content="Percentage and amount more you earn with KashiBnB compared to other platforms. Calculated as: (KashiBnB Income - Other Platform Income) / Other Platform Income × 100" position="bottom">
-                     <span className='cursor-help hover:text-blue-600 transition-colors'>% More with KashiBnB</span>
+                     <span className='cursor-help hover:text-blue-600 transition-colors'>% More earn with KashiBnB</span>
                    </Tooltip>
                  </th>
               </tr>
