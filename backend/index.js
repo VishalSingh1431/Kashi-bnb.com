@@ -133,7 +133,7 @@ app.use((req, res, next) => {
 });
 
 // Security middleware
-app.use(limiter);
+// app.use(limiter);
 
 // Routes
 app.use('/api/v1/user', userRouter);
