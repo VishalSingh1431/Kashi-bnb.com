@@ -8,8 +8,17 @@ const razorpayInstance = new Razorpay({
 })
 
 export const paymentControl = async (req,res,nex)=>{
-    // console.log(req);
-    const { amount } = req.body;
+    console.log("Payment order request body:", req.body);
+    const { amount, hotelId, from, to } = req.body;
+    
+    // Validate required fields
+    if (!amount) {
+        return res.status(400).json({
+            success: false,
+            message: "Amount is required"
+        });
+    }
+    
     try {
         const options = {
             amount: Number(amount),
@@ -19,27 +28,30 @@ export const paymentControl = async (req,res,nex)=>{
 
         razorpayInstance.orders.create(options, async (e, order) => {
         if (e) {
-            console.log(e);
+            console.log("Razorpay order creation error:", e);
             return res.status(500).json({ 
-                sucess: false,
+                success: false,
                 message: "Something Went Wrong!" , 
-                e
+                error: e.message
             })
         }
 
         res.status(200).json({ 
             success: true,
             data: order ,
-            bookingId : 123
+            bookingId : 123,
+            hotelId: hotelId,
+            from: from,
+            to: to
         });
-        console.log(order);
+        console.log("Order created successfully:", order);
         });
     } catch (e) {
-        console.log(e);
+        console.log("Payment control error:", e);
         res.status(500).json({ 
             success: false,
             message: "Internal Server Error!",
-            e
+            error: e.message
         });
     }
 };

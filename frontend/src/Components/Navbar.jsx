@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, User, ChevronDown, Phone } from "lucide-react";
+import { Menu, X, User, ChevronDown } from "lucide-react";
 import Profile from "./Profile";
 import NumberForm from "./NumberForm";
 import { useAuth } from "../App";
@@ -115,69 +115,70 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="rounded-2xl py-3 px-4 md:px-6 lg:px-8 transition-all duration-300 border-0 hover:scale-105 active:scale-95 group">
-                <Link to="/number" className="flex items-center gap-2 cursor-pointer focus:outline-none border-0 block w-full h-full text-black group-hover:text-orange-600 group-active:text-orange-800">
-                  <Phone size={20} /> Call Us
+                <Link to="/number" className="cursor-pointer focus:outline-none border-0 block w-full h-full text-black group-hover:text-orange-600 group-active:text-orange-800">
+                  Call Us
                 </Link>
               </li>
-            </ul>
 
-            {isLoggedIn ? (
-              <div className="relative border-0 overflow-visible">
-                <div 
-                  className="flex flex-col border-0 overflow-visible p-4"
-                  onMouseEnter={() => setIsProfileOpen(true)}
-                  onMouseLeave={() => setIsProfileOpen(false)}
-                >
-                  <button className="flex items-center gap-2 py-3 px-6 rounded-2xl text-lg font-bold text-black transition-all duration-300 cursor-pointer focus:outline-none border-0 hover:text-orange-600 hover:scale-105 active:text-orange-800 active:scale-95">
-                    <User size={20} />
-                    {user.first_name || user.name || "Profile"}
-                  </button>
+              {isLoggedIn ? (
+                <li className="relative border-0 overflow-visible rounded-2xl py-4 px-6 md:px-8 lg:px-10 transition-all duration-300 hover:scale-105 active:scale-95 group">
                   <div 
-                    className={`absolute top-full right-0 mt-0 w-40 rounded-lg py-2 z-50 border-0 transition-all duration-300 ${isProfileOpen ? 'block' : 'hidden'}`}
-                    style={{ 
-                      backgroundColor: '#f3eadb',
-                      boxShadow: '0 0 0 1px rgba(0,0,0,0.1), 0 20px 40px rgba(0,0,0,0.3), 0 10px 20px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1)',
-                      filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.4))'
-                    }}
+                    className="flex flex-col border-0 overflow-visible"
                     onMouseEnter={() => setIsProfileOpen(true)}
                     onMouseLeave={() => setIsProfileOpen(false)}
                   >
-                    <Link
-                      to="/profile"
-                      className="block w-full px-3 py-2 font-bold text-black hover:text-orange-600 hover:bg-orange-50 focus:outline-none border-0 transition-all duration-200 rounded-md text-center"
-                    >
-                      My Profile
-                    </Link>
-                    {user?.is_admin && (
-                      <>
-                        <div className="border-t border-gray-300 my-1 mx-2"></div>
-                        <Link
-                          to="/admin/requests"
-                          className="block w-full px-3 py-2 font-bold text-black hover:text-orange-600 hover:bg-orange-50 focus:outline-none border-0 transition-all duration-200 rounded-md text-center"
-                        >
-                          Admin Panel
-                        </Link>
-                      </>
-                    )}
-                    <div className="border-t border-gray-300 my-1 mx-2"></div>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full px-3 py-2 font-bold text-black hover:text-orange-600 hover:bg-orange-50 focus:outline-none border-0 transition-all duration-200 rounded-md text-center"
-                    >
-                      Logout
+                    <button className="flex items-center gap-2 cursor-pointer focus:outline-none border-0 block w-full h-full text-black group-hover:text-orange-600 group-active:text-orange-800 py-2">
+                      <User size={20} />
+                      {user.first_name || user.name || "Profile"}
                     </button>
+                    {/* Invisible bridge to prevent dropdown from closing */}
+                    <div className="absolute top-full right-0 h-2 w-full"></div>
+                    <div 
+                      className={`absolute top-full right-0 mt-0 w-40 rounded-lg py-2 z-50 border-0 transition-all duration-300 ${isProfileOpen ? 'block' : 'hidden'}`}
+                      style={{ 
+                        backgroundColor: '#f3eadb',
+                        boxShadow: '0 0 0 1px rgba(0,0,0,0.1), 0 20px 40px rgba(0,0,0,0.3), 0 10px 20px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1)',
+                        filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.4))'
+                      }}
+                    >
+                      <Link
+                        to="/profile"
+                        className="block w-full px-3 py-2 font-bold text-black hover:text-orange-600 hover:bg-orange-50 focus:outline-none border-0 transition-all duration-200 rounded-md text-center"
+                      >
+                        My Profile
+                      </Link>
+                      {user?.is_admin && (
+                        <>
+                          <div className="border-t border-gray-300 my-1 mx-2"></div>
+                          <Link
+                            to="/admin/requests"
+                            className="block w-full px-3 py-2 font-bold text-black hover:text-orange-600 hover:bg-orange-50 focus:outline-none border-0 transition-all duration-200 rounded-md text-center"
+                          >
+                            Admin Panel
+                          </Link>
+                        </>
+                      )}
+                      <div className="border-t border-gray-300 my-1 mx-2"></div>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full px-3 py-2 font-bold text-black hover:text-orange-600 hover:bg-orange-50 focus:outline-none border-0 transition-all duration-200 rounded-md text-center"
+                      >
+                        Logout
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="text-black rounded-3xl py-3 px-6 text-lg font-bold transition-all duration-300 cursor-pointer focus:outline-none border-0 hover:text-orange-600 hover:scale-105 active:text-orange-800 active:scale-95"
-                style={{ backgroundColor: '#f3eadb' }}
-              >
-                Login
-              </Link>
-            )}
+                </li>
+              ) : (
+                <li className="rounded-2xl py-3 px-4 md:px-6 lg:px-8 transition-all duration-300 border-0 hover:scale-105 active:scale-95 group">
+                  <Link
+                    to="/login"
+                    className="cursor-pointer focus:outline-none border-0 block w-full h-full text-black group-hover:text-orange-600 group-active:text-orange-800"
+                  >
+                    Login
+                  </Link>
+                </li>
+              )}
+            </ul>
           </div>
         </div>
 
@@ -267,9 +268,9 @@ const Navbar = () => {
                     <Link
                       to="/number"
                       onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-center gap-2 text-xl font-bold text-black focus:outline-none group-hover:text-orange-600 group-active:text-orange-800"
+                      className="block w-full text-xl font-bold text-black focus:outline-none group-hover:text-orange-600 group-active:text-orange-800"
                     >
-                      <Phone size={20} /> Call Us
+                      Call Us
                     </Link>
                   </li>
                 </ul>

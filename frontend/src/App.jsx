@@ -18,10 +18,13 @@ import Owner from "./Pages/owner";
 import Tourist from "./Pages/Tourist";
 import Checkout from './Pages/Checkout';
 import NumberForm from "./Components/NumberForm";
+import ScrollToTop from "./Components/ScrollToTop";
 import Tour from "./Pages/Tour";
 import AuthCallback from "./Pages/AuthCallback";
 import ForgotPassword from "./Pages/ForgotPassword";
-import AdminRequests from "./Pages/AdminRequests"; 
+import AdminRequests from "./Pages/AdminRequests";
+import OwnerBookings from "./Pages/OwnerBookings";
+import TeamMemberDashboard from "./Pages/TeamMemberDashboard"; 
 
 // Create Auth Context
 const AuthContext = createContext();
@@ -222,6 +225,7 @@ function App() {
   return (
     <AuthContext.Provider value={authValue}>
       <Router>
+        <ScrollToTop />
         <div className="min-h-screen" style={{ backgroundColor: '#f3eadb' }}>
           <Navbar />
           <RouteAwareSpacer />
@@ -245,6 +249,8 @@ function App() {
             <Route path="/hotel/:id" element={<HotelPage/>} />
             <Route path="/checkout/:id" element={<Checkout />} />
             <Route path="/admin/requests" element={<AdminRequests />} />
+            <Route path="/owner-bookings/:hotelId" element={<OwnerBookings />} />
+            <Route path="/team/dashboard" element={<TeamMemberDashboard />} />
 
           </Routes>
           <Footer />

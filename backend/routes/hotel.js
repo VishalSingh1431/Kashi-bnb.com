@@ -29,6 +29,10 @@ router.get('/hotel/bookings/rateable',authorisation,getRateableBookings);
 // router.get('/auth-check',authorisation,isAdmin,checkControl);
 // router.get('/admin-check',authorisation,isAdmin,checkControl);
 
+// unauthorised routes (moved before authorized routes to avoid conflicts)
+router.get('/hotel/:uid',getUniqueHotel);
+router.get('/hotel/:uid/reviews',getHotelReviews);
+
 // hoteler-authorised
 router.get('/my-hotels',authorisation,hasHotel,getMyHotels);
 router.post('/create-hotel',authorisation,addNewHotel);
@@ -36,10 +40,6 @@ router.post('/hotel/:uid/update-hotel',authorisation,updateHotel);
 router.post('/hotel/:uid/upload-images',authorisation,upload.array("images",100),uploadHotImage);
 router.delete('/hotel/:uid',authorisation,deleteHotel);
 // router.post('/hotel/:uid/upload-images',upload.array("images",5),uploadHotImage);
-
-// unauthorised (moved after authorized routes)
-router.get('/hotel/:uid',getUniqueHotel);
-router.get('/hotel/:uid/reviews',getHotelReviews);
 
 // admin-authorised
 router.patch('/review/:reviewId/visibility',authorisation,updateReviewVisibility);

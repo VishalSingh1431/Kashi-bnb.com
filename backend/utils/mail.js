@@ -198,6 +198,17 @@ dotenv.config();
                 <p style="color: #666; margin: 20px 0 0 0; font-size: 14px;">
                   <strong>Next Steps:</strong> Visit your profile page to access admin features in the "Access Requests" and "All Users" tabs!
                 </p>
+              ` : promotionType === 'team member' ? `
+                <ul style="color: #666; margin: 0; padding-left: 20px; line-height: 1.6;">
+                  <li>✅ Help manage the platform and assist users</li>
+                  <li>✅ Promote users to hotel and restaurant owners</li>
+                  <li>✅ Access team member dashboard</li>
+                  <li>✅ View and manage user listings</li>
+                  <li>✅ Assist with platform operations</li>
+                </ul>
+                <p style="color: #666; margin: 20px 0 0 0; font-size: 14px;">
+                  <strong>Next Steps:</strong> Visit your profile page to access the team member dashboard and start helping manage the platform!
+                </p>
               ` : ''}
             </div>
             

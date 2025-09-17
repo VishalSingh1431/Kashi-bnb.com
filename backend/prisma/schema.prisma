@@ -8,53 +8,45 @@ datasource db {
 }
 
 model users {
-  id          String     @id @default(uuid())
-  email       String?    @unique
-  name        String
-  first_name  String?
-  last_name   String?
-  password    String?
-  phone       String?    @unique
-  mobile      String?    @unique
-  token       String?
-  time        DateTime   @updatedAt
-  has_hotel   Boolean    @default(false)
-  has_restr   Boolean    @default(false)
-  is_admin    Boolean    @default(false)
-  verified    Boolean    @default(false)
-  p_verified  Boolean    @default(false)
-  address     String?
-  googleId              String?    @unique
-  resetPasswordToken    String?
-  resetPasswordExpires  DateTime?
-  blogs_name            blogs[]
-  bookings              bookings[]
-  hotels_name           hotels[]
-  requests              requests[]
-  restr_name            restr[]
-  otps                  OTP[]
-  ratings               rating[]
-  reviews               review[]
+  id                   String     @id @default(uuid())
+  email                String?    @unique
+  name                 String
+  password             String?
+  phone                String?    @unique
+  token                String?
+  time                 DateTime   @updatedAt
+  has_hotel            Boolean    @default(false)
+  has_restr            Boolean    @default(false)
+  is_admin             Boolean    @default(false)
+  is_team_member       Boolean    @default(false)
+  verified             Boolean    @default(false)
+  p_verified           Boolean    @default(false)
+  address              String?
+  googleId             String?    @unique
+  mobile               String?    @unique
+  resetPasswordExpires DateTime?
+  resetPasswordToken   String?
+  first_name           String?
+  last_name            String?
+  otps                 OTP[]
+  blogs_name           blogs[]
+  bookings             bookings[]
+  hotels_name          hotels[]
+  ratings              rating[]
+  requests             requests[]
+  restr_name           restr[]
+  reviews              review[]
 }
 
 model OTP {
   id        String   @id @default(uuid())
-  mobile    String   // Changed from 'phone' to 'mobile' for consistency with users table
+  mobile    String
   otp       String
   type      OTPType
   expiresAt DateTime
-  time      DateTime @default(now()) // Changed from 'createdAt' to 'time' for consistency
-  user      users?   @relation(fields: [userId], references: [id])
+  time      DateTime @default(now())
   userId    String?
-}
-
-enum OTPType {
-  LOGIN
-  SIGNUP
-  RESET
-  EMAIL_RECOVERY
-  PHONE_RECOVERY
-  EMAIL_ADD
+  user      users?   @relation(fields: [userId], references: [id])
 }
 
 model hotels {
@@ -92,11 +84,14 @@ model hotels {
   waterFilter      Boolean    @default(false)
   averageRating    Float      @default(0.0)
   totalRatings     Int        @default(0)
+  petCharge        Decimal    @default(0.0)
+  extraAdultCharge Decimal    @default(0.0)
+  icalLink         String?
   bookings         bookings[]
   images           himages[]
+  owner            users      @relation(fields: [ownerId], references: [id])
   ratings          rating[]
   reviews          review[]
-  owner            users      @relation(fields: [ownerId], references: [id])
 }
 
 model restr {
@@ -134,21 +129,21 @@ model rimages {
 }
 
 model requests {
-  id             String    @id @default(uuid())
-  email         String
-  message       String
-  phone         String
-  type          UserType
-  userId        String
-  user          users     @relation(fields: [userId], references: [id])
-  status        String?   @default("pending") // pending, approved, rejected, declined
-  approvedAt    DateTime?
-  approvedBy    String?
-  rejectedAt    DateTime?
-  rejectedBy    String?
+  id              String    @id @default(uuid())
+  email           String
+  message         String
+  phone           String
+  type            UserType
+  userId          String
+  approvedAt      DateTime?
+  approvedBy      String?
+  createdAt       DateTime  @default(now())
+  rejectedAt      DateTime?
+  rejectedBy      String?
   rejectionReason String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  status          String?   @default("pending")
+  updatedAt       DateTime  @updatedAt
+  user            users     @relation(fields: [userId], references: [id])
 }
 
 model bookings {
@@ -161,7 +156,7 @@ model bookings {
   to      DateTime
   hotelId String
   userId  String
-  status  String   @default("pending") // pending, confirmed, completed, cancelled
+  status  String   @default("pending")
   hotel   hotels   @relation(fields: [hotelId], references: [id])
   user    users    @relation(fields: [userId], references: [id])
   payment payment?
@@ -181,7 +176,7 @@ model payment {
 
 model rating {
   id        String   @id @default(uuid())
-  rating    Int      // 1-5 stars
+  rating    Int
   bookingId String   @unique
   hotelId   String
   userId    String
@@ -194,17 +189,26 @@ model rating {
 
 model review {
   id        String   @id @default(uuid())
-  content   String   // Review text content
-  rating    Int      // Associated rating (1-5 stars)
+  content   String
+  rating    Int
   bookingId String   @unique
   hotelId   String
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  isVisible Boolean  @default(true) // Admin can hide inappropriate reviews
+  isVisible Boolean  @default(true)
   booking   bookings @relation(fields: [bookingId], references: [id])
   hotel     hotels   @relation(fields: [hotelId], references: [id])
   user      users    @relation(fields: [userId], references: [id])
+}
+
+enum OTPType {
+  LOGIN
+  SIGNUP
+  RESET
+  EMAIL_RECOVERY
+  PHONE_RECOVERY
+  EMAIL_ADD
 }
 
 enum UserType {

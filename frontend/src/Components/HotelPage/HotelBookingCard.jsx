@@ -2,8 +2,42 @@ import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FiPlus, FiMinus } from "react-icons/fi";
+import EnhancedBookingCard from "../Calendar/EnhancedBookingCard";
 
 const HotelBookingCard = ({
+  hotel,
+  editMode,
+  tempHotel,
+  handleInputChange,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+  guestCount,
+  handleGuestChange,
+  handleReserve,
+  calculateTotal
+}) => {
+  return (
+    <EnhancedBookingCard
+      hotel={hotel}
+      editMode={editMode}
+      tempHotel={tempHotel}
+      handleInputChange={handleInputChange}
+      startDate={startDate}
+      setStartDate={setStartDate}
+      endDate={endDate}
+      setEndDate={setEndDate}
+      guestCount={guestCount}
+      handleGuestChange={handleGuestChange}
+      handleReserve={handleReserve}
+      calculateTotal={calculateTotal}
+    />
+  );
+};
+
+// Keep the original component as fallback
+const OriginalHotelBookingCard = ({
   hotel,
   editMode,
   tempHotel,

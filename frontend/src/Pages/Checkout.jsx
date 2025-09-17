@@ -3,6 +3,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FiArrowLeft, FiCheckCircle, FiXCircle } from "react-icons/fi";
 import { BACKEND, RZPKID } from "../assets/Vars";
+import { clearBookingData } from "../utils/bookingStorage";
+import { checkAuthStatus, handleTokenExpiration } from "../utils/authUtils";
 const Razorpay = window.Razorpay;
 
 const Checkout = () => {
@@ -12,6 +14,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [bookingDetails, setBookingDetails] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const token = localStorage.getItem("token");
   const authHeader = token
     ? (token.startsWith("Bearer ") ? token : `Bearer ${token}`)
@@ -26,10 +29,33 @@ const Checkout = () => {
     setBookingDetails(location.state);
   }, [location.state, hotelId, nav]);
 
+  // Check authentication status
+  useEffect(() => {
+    const { isAuthenticated } = checkAuthStatus();
+    
+    if (isAuthenticated) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+      // Redirect to login if not authenticated
+      handleTokenExpiration(nav);
+    }
+  }, [nav]);
+
   const initiatePayment = async () => {
     setLoading(true);
     try {
       if (!authHeader) {
+        console.log("No auth header found");
+        setLoading(false);
+        setPaymentStatus("failed");
+        return;
+      }
+
+      // Check if token exists and is not expired
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found in localStorage");
         setLoading(false);
         setPaymentStatus("failed");
         return;
@@ -45,6 +71,7 @@ const Checkout = () => {
         {
           headers: {
             Authorization: authHeader,
+            'Content-Type': 'application/json',
           },
         }
       );
@@ -80,6 +107,9 @@ const Checkout = () => {
               }
             );
             setPaymentStatus("success");
+            
+            // Clear stored booking data after successful payment
+            clearBookingData(hotelId);
           } catch (error) {
             console.error("Verification failed:", error);
             setPaymentStatus("failed");
@@ -87,7 +117,35 @@ const Checkout = () => {
         },
         prefill: {
           name: userData.name,
-          email: userData.email
+          email: userData.email,
+          contact: userData.phone || userData.mobile || '9999999999' // Use user's phone or fallback
+        },
+        readonly: {
+          name: true,
+          email: true,
+          contact: true // Make contact field readonly so user can't edit it
+        },
+        // Hide the contact field completely
+        display: {
+          hide: ['contact']
+        },
+        // Additional approach to ensure contact field is hidden
+        config: {
+          display: {
+            hide: ['contact']
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            setPaymentStatus("failed");
+          }
+        },
+        // Additional options to hide contact field completely
+        notes: {
+          address: "Booking for " + bookingDetails.hotelName
+        },
+        retry: {
+          enabled: false
         },
         theme: {
           color: "#F37254",
@@ -98,6 +156,17 @@ const Checkout = () => {
       rzp.open();
     } catch (error) {
       console.error("Payment initiation failed:", error);
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        console.error("Error status:", error.response.status);
+        
+        // Handle JWT token issues
+        if (error.response.status === 411 || error.response.status === 401) {
+          console.log("JWT token issue detected");
+          handleTokenExpiration(nav);
+          return;
+        }
+      }
       setPaymentStatus("failed");
     } finally {
       setLoading(false);

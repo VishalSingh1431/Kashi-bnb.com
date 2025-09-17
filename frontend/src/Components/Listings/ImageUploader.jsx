@@ -165,7 +165,7 @@ const ImageUploader = ({ images, currentImageIndex, handleImageUpload, nextImage
                     e.stopPropagation();
                     removeImage(index);
                   }}
-                  className="absolute -top-1 sm:-top-2 -right-1 sm:-right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                  className="absolute -top-1 sm:-top-2 -right-1 sm:-right-2 bg-red-500 text-white rounded-full p-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-red-600"
                   title="Remove image"
                 >
                   <FiX size={10} className="sm:w-3 sm:h-3" />
@@ -177,14 +177,47 @@ const ImageUploader = ({ images, currentImageIndex, handleImageUpload, nextImage
 
         {/* Upload Guidelines */}
         <div className="bg-blue-50 rounded-xl p-3 sm:p-4">
-          <h4 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base text-center">📸 Image Guidelines</h4>
-          <ul className="text-xs sm:text-sm text-blue-700 space-y-1 text-left">
-            <li>• Upload at least 5 high-quality photos</li>
-            <li>• Include exterior, interior, and room shots</li>
-            <li>• Use good lighting and clear angles</li>
-            <li>• Show amenities and unique features</li>
-            <li>• Maximum file size: 10MB per image</li>
-          </ul>
+          <h4 className="font-semibold text-blue-800 mb-3 text-sm sm:text-base text-center">📸 Image Configuration Guidelines</h4>
+          
+          {/* Technical Specifications */}
+          <div className="mb-3">
+            <h5 className="font-semibold text-blue-800 mb-2 text-xs sm:text-sm">🛠️ Technical Specifications</h5>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-blue-700">
+              <div className="bg-white/50 rounded-lg p-2">
+                <strong>Recommended Size:</strong><br/>
+                1920×1080px (16:9)<br/>
+                or 1600×1200px (4:3)
+              </div>
+              <div className="bg-white/50 rounded-lg p-2">
+                <strong>File Format:</strong><br/>
+                JPG, JPEG, PNG<br/>
+                (JPG preferred)
+              </div>
+              <div className="bg-white/50 rounded-lg p-2">
+                <strong>File Size:</strong><br/>
+                Max 10MB per image<br/>
+                (2-5MB optimal)
+              </div>
+              <div className="bg-white/50 rounded-lg p-2">
+                <strong>Quality:</strong><br/>
+                High resolution<br/>
+                (300 DPI recommended)
+              </div>
+            </div>
+          </div>
+
+          {/* Content Guidelines */}
+          <div className="mb-3">
+            <h5 className="font-semibold text-blue-800 mb-2 text-xs sm:text-sm">📋 Content Guidelines</h5>
+            <ul className="text-xs sm:text-sm text-blue-700 space-y-1">
+              <li>• Upload at least 5 high-quality photos</li>
+              <li>• Include exterior, interior, and room shots</li>
+              <li>• Use good lighting and clear angles</li>
+              <li>• Show amenities and unique features</li>
+              <li>• Avoid blurry or dark images</li>
+            </ul>
+          </div>
+
         </div>
       </div>
     </div>

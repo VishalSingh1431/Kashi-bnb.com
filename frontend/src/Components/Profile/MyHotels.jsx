@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiPlus, FiStar, FiMapPin, FiHome, FiChevronRight, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiStar, FiMapPin, FiHome, FiChevronRight, FiTrash2, FiCalendar } from 'react-icons/fi';
 import axios from 'axios';
 import { BACKEND } from '../../assets/Vars';
 
@@ -131,12 +131,21 @@ const MyHotels = ({ userData, navigate }) => {
                   </div>
                 )}
                 <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
-                  <button 
-                    onClick={() => navigate(`/hotel/${hotel.id}`)}
-                    className="flex items-center px-2 sm:px-3 py-1 text-xs sm:text-sm bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200"
-                  >
-                    View <FiChevronRight className="ml-1" />
-                  </button>
+                  <div className="flex gap-1 sm:gap-2">
+                    <button 
+                      onClick={() => navigate(`/hotel/${hotel.id}`)}
+                      className="flex items-center px-2 sm:px-3 py-1 text-xs sm:text-sm bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200"
+                    >
+                      View <FiChevronRight className="ml-1" />
+                    </button>
+                    <button 
+                      onClick={() => navigate(`/owner-bookings/${hotel.id}`)}
+                      className="flex items-center px-2 sm:px-3 py-1 text-xs sm:text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                    >
+                      <FiCalendar className="mr-1" size={12} />
+                      Bookings
+                    </button>
+                  </div>
                   <div className="flex gap-1 sm:gap-2">
                     <button 
                       onClick={() => navigate(`/edit-hotel/${hotel.id}`)}

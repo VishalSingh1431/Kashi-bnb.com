@@ -109,7 +109,14 @@ const Login = () => {
 
       if (response.status === 200) {
         login(response.data.token, response.data.user);
-        navigate("/");
+        
+        // Check for redirect parameter and navigate accordingly
+        const redirectUrl = searchParams.get('redirect');
+        if (redirectUrl) {
+          navigate(decodeURIComponent(redirectUrl));
+        } else {
+          navigate("/");
+        }
       }
     } catch (err) {
       console.log('Phone OTP Verification Error:', err);
@@ -125,7 +132,14 @@ const Login = () => {
 
   // Google Login Flow
   const handleGoogleLogin = () => {
-    window.location.href = `${BACKEND}/api/v1/auth/google?action=login`;
+    const redirectUrl = searchParams.get('redirect');
+    const googleAuthUrl = `${BACKEND}/api/v1/auth/google?action=login`;
+    
+    if (redirectUrl) {
+      window.location.href = `${googleAuthUrl}&redirect=${encodeURIComponent(redirectUrl)}`;
+    } else {
+      window.location.href = googleAuthUrl;
+    }
   };
 
   return (

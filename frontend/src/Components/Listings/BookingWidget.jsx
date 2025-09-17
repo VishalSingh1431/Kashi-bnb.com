@@ -1,30 +1,23 @@
-import React, { useState } from 'react';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { FiPlus, FiMinus, FiEdit3, FiCheck, FiX } from "react-icons/fi";
+import React, { useState, useEffect } from 'react';
+import { FiEdit3, FiCheck, FiX } from "react-icons/fi";
+import AuthPromptModal from '../AuthPromptModal';
 
 const BookingWidget = ({
   listing,
-  startDate,
-  endDate,
-  guestCount,
-  setStartDate,
-  setEndDate,
-  setGuestCount,
-  calculateTotal,
   handleInputChange
 }) => {
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
   
-  const nights = startDate && endDate ? Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) : 0;
+  // Check if user is logged in
+  const token = localStorage.getItem('token');
+  const user = localStorage.getItem('user');
+  const isAuthenticated = token && user;
   
-  const handleGuestChange = (type, action) => {
-    setGuestCount(prev => ({
-      ...prev,
-      [type]: action === 'increment' ? prev[type] + 1 : Math.max(0, prev[type] - 1)
-    }));
-  };
+
+  
+
 
   const startEditing = (field, currentValue) => {
     setEditingField(field);
@@ -91,135 +84,7 @@ const BookingWidget = ({
         </div>
       </div>
         
-      <div className="mb-3 sm:mb-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-          <div>
-            <label htmlFor="checkin" className="text-xs font-semibold block mb-1 text-gray-700">CHECK-IN</label>
-            <DatePicker
-              id="checkin"
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-              placeholderText="Add date"
-              className="w-full p-2 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm"
-              popperPlacement="auto"
-            />
-          </div>
-          <div>
-            <label htmlFor="checkout" className="text-xs font-semibold block mb-1 text-gray-700">CHECKOUT</label>
-            <DatePicker
-              id="checkout"
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              minDate={startDate}
-              placeholderText="Add date"
-              className="w-full p-2 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm"
-              popperPlacement="auto"
-            />
-          </div>
-        </div>
-      </div>
 
-              <div className="border-t pt-2 sm:pt-3 mb-3 sm:mb-4">
-        <label className="text-xs font-semibold block mb-2 text-gray-700">GUESTS</label>
-        <div className="space-y-2 sm:space-y-3">
-          <div className="flex justify-between items-center py-1">
-            <div className="flex-1 min-w-0">
-              <span className="font-medium text-xs sm:text-sm md:text-base leading-tight">Adults</span>
-              <p className="text-xs text-gray-500 leading-tight truncate">Ages 13 or above</p>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button 
-                onClick={() => handleGuestChange('adults', 'decrement')}
-                className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 transition disabled:opacity-50"
-                disabled={guestCount.adults <= 1}
-              >
-                <FiMinus size={10} className="sm:w-3 sm:h-3" />
-              </button>
-              <span className="w-6 sm:w-8 text-center text-sm sm:text-base">{guestCount.adults}</span>
-              <button 
-                onClick={() => handleGuestChange('adults', 'increment')}
-                className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 transition"
-              >
-                <FiPlus size={10} className="sm:w-3 sm:h-3" />
-              </button>
-            </div>
-          </div>
-            
-          <div className="flex justify-between items-center py-1">
-            <div className="flex-1 min-w-0">
-              <span className="font-medium text-xs sm:text-sm md:text-base leading-tight">Children</span>
-              <p className="text-xs text-gray-500 leading-tight truncate">Ages 2-12</p>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button 
-                onClick={() => handleGuestChange('children', 'decrement')}
-                className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 transition disabled:opacity-50"
-                disabled={guestCount.children <= 0}
-              >
-                <FiMinus size={10} className="sm:w-3 sm:h-3" />
-              </button>
-              <span className="w-6 sm:w-8 text-center text-sm sm:text-base">{guestCount.children}</span>
-              <button 
-                onClick={() => handleGuestChange('children', 'increment')}
-                className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 transition"
-              >
-                <FiPlus size={10} className="sm:w-3 sm:h-3" />
-              </button>
-            </div>
-          </div>
-            
-          <div className="flex justify-between items-center py-1">
-            <div className="flex-1 min-w-0">
-              <span className="font-medium text-xs sm:text-sm md:text-base leading-tight">Infants</span>
-              <p className="text-xs text-gray-500 leading-tight truncate">Under 2</p>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button 
-                onClick={() => handleGuestChange('infants', 'decrement')}
-                className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 transition disabled:opacity-50"
-                disabled={guestCount.infants <= 0}
-              >
-                <FiMinus size={10} className="sm:w-3 sm:h-3" />
-              </button>
-              <span className="w-6 sm:w-8 text-center text-sm sm:text-base">{guestCount.infants}</span>
-              <button 
-                onClick={() => handleGuestChange('infants', 'increment')}
-                className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 transition"
-              >
-                <FiPlus size={10} className="sm:w-3 sm:h-3" />
-              </button>
-            </div>
-          </div>
-            
-          <div className="flex justify-between items-center py-1">
-            <div className="flex-1">
-              <span className="font-medium text-sm sm:text-base">Pets</span>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button 
-                onClick={() => handleGuestChange('pets', 'decrement')}
-                className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 transition disabled:opacity-50"
-                disabled={guestCount.pets <= 0}
-              >
-                <FiMinus size={10} className="sm:w-3 sm:h-3" />
-              </button>
-              <span className="w-6 sm:w-8 text-center text-sm sm:text-base">{guestCount.pets}</span>
-              <button 
-                onClick={() => handleGuestChange('pets', 'increment')}
-                className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded-full flex items-center justify-center hover:border-gray-400 transition"
-              >
-                <FiPlus size={10} className="sm:w-3 sm:h-3" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
         
       {/* Guest Limits - Clickable to Edit */}
               <div className="border-t pt-2 sm:pt-3 mb-4 sm:mb-6">
@@ -344,27 +209,43 @@ const BookingWidget = ({
         </div>
       </div>
       
-      <button 
-        className="w-full bg-rose-500 text-white py-2 sm:py-3 rounded-lg font-semibold hover:bg-rose-600 transition focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-        disabled={!startDate || !endDate}
-      >
-        Reserve
-      </button>
-      
-      <div className="mt-4 sm:mt-6 space-y-3 sm:space-y-4 text-sm">
-        <div className="flex justify-between items-center">
-          <p className="text-gray-600">
-            ₹{listing.rate || 0} x {nights > 0 ? nights : 0} nights
-          </p>
-          <p className="font-medium">₹{nights > 0 ? parseInt(listing.rate || 0) * nights : 0}</p>
-        </div>
-        <div className="border-t pt-2 sm:pt-3 mb-3 sm:mb-4">
-          <div className="flex justify-between font-semibold text-base sm:text-lg">
-            <p>Total</p>
-            <p>₹{calculateTotal()}</p>
+      {/* Guest and Room Form Inputs */}
+      <div className="mt-4 sm:mt-6">
+        <h3 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-gray-800">Property Capacity</h3>
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          <div className="min-w-0 text-center sm:text-left">
+            <p className="text-xs sm:text-sm text-gray-500 truncate leading-tight mb-1">Guests</p>
+            <input
+              type="number"
+              name="maxInRoom"
+              value={listing.maxInRoom || 2}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-lg text-center sm:text-left text-sm"
+              min="1"
+              max="50"
+            />
+          </div>
+          <div className="min-w-0 text-center sm:text-left">
+            <p className="text-xs sm:text-sm text-gray-500 truncate leading-tight mb-1">Rooms</p>
+            <input
+              type="number"
+              name="totalRoom"
+              value={listing.totalRoom || 1}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-lg text-center sm:text-left text-sm"
+              min="1"
+              max="20"
+            />
           </div>
         </div>
       </div>
+
+      {/* Authentication Modal */}
+      <AuthPromptModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        message="Please login to manage bookings"
+      />
     </div>
   );
 };

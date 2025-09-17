@@ -24,8 +24,13 @@ const AuthCallback = () => {
           const userData = JSON.parse(decodeURIComponent(userDataParam));
           login(token, userData);
           
-          // Redirect to home page or dashboard
-          navigate('/', { replace: true });
+          // Check for redirect parameter and navigate accordingly
+          const redirectUrl = searchParams.get('redirect');
+          if (redirectUrl) {
+            navigate(decodeURIComponent(redirectUrl), { replace: true });
+          } else {
+            navigate('/', { replace: true });
+          }
         } catch (error) {
           console.error('Error parsing user data:', error);
           navigate('/login', { replace: true });
@@ -36,8 +41,13 @@ const AuthCallback = () => {
         const userData = { id: userId };
         login(token, userData);
         
-        // Redirect to home page or dashboard
-        navigate('/', { replace: true });
+        // Check for redirect parameter and navigate accordingly
+        const redirectUrl = searchParams.get('redirect');
+        if (redirectUrl) {
+          navigate(decodeURIComponent(redirectUrl), { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
       } else {
         hasProcessed.current = true;
         // No token or userId, redirect to login

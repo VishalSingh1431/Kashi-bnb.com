@@ -146,6 +146,33 @@ const hasRestr = async (req,res,nex)=>{
     }
 };
 
+//  Checks if the user is a team member or admin.
+const isTeamMember = async (req,res,nex)=>{
+    try
+    {    
+        const user= req.user;
+        if(user.is_team_member==true || user.is_admin==true){
+            nex();
+        }
+        else{
+            console.log("you are not a team member or admin");
+            return res.status(411).json({
+                success : false,
+                message:" not team member or admin"
+            });
+        }
+    }
+    catch(e){
+        console.log(e);
+        return res.status(411).json({
+            success : false,
+            message:" error getting data",
+            e
+        });
+    
+    }
+};
+
 
 // Limits the number of requests a user can make in a short time (rate limiting).
 const limiter = rateLimit({
@@ -154,4 +181,4 @@ const limiter = rateLimit({
     message: "Too many requests, please try again later."
 });
 
-export {isAdmin,authorisation,hasHotel,hasRestr,limiter};
+export {isAdmin,authorisation,hasHotel,hasRestr,isTeamMember,limiter};

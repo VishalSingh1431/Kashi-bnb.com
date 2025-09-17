@@ -14,6 +14,7 @@ import YouTubeVideoForm from "../Components/Listings/YouTubeVideoForm";
 import NumberForm from "../Components/NumberForm";
 import PropertyTypeSelector from "../Components/Listings/PropertyTypeSelector";
 import GuestAccessSelector from "../Components/Listings/GuestAccessSelector";
+import AdditionalChargesForm from "../Components/Listings/AdditionalChargesForm";
 // Keep constants and localStorage access in the parent
 import { BACKEND, getAuthHeader } from "../assets/Vars";
 import ImageUploader from "../Components/Listings/ImageUploader";
@@ -25,14 +26,6 @@ const Listings = () => {
   
   // State definitions moved to the top
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [guestCount, setGuestCount] = useState({
-    adults: 1,
-    children: 0,
-    infants: 0,
-    pets: 0
-  });
   const [images, setImages] = useState([]);
   const [videoUrl, setVideoUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,7 +66,10 @@ const Listings = () => {
     firstaid: false,
     geyser: false,
     microwave: false,
-    waterFilter: false
+    waterFilter: false,
+    petCharge: '',
+    extraAdultCharge: '',
+    icalLink: ''
   });
 
   // Check authentication status on mount and when navigation occurs
@@ -127,14 +123,6 @@ const Listings = () => {
     return () => {
       // Reset all state when component unmounts EXCEPT phone number
       setCurrentImageIndex(0);
-      setStartDate(null);
-      setEndDate(null);
-      setGuestCount({
-        adults: 1,
-        children: 0,
-        infants: 0,
-        pets: 0
-      });
       setImages([]);
       setVideoUrl('');
       // Don't clear phone number - preserve user input
@@ -166,17 +154,14 @@ const Listings = () => {
         firstaid: false,
         geyser: false,
         microwave: false,
-        waterFilter: false
+        waterFilter: false,
+        petCharge: '',
+        extraAdultCharge: '',
+        icalLink: ''
       });
     };
   }, [nav]);
   
-  // All logic remains in the parent component
-  const calculateTotal = () => {
-    if (!startDate || !endDate || !listing.rate) return 0;
-    const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-    return nights > 0 ? parseInt(listing.rate) * nights : 0;
-  };
 
   const nextImage = () => {
     if (images?.length) {
@@ -470,7 +455,11 @@ Please verify and contact the user.`
         maxChildren: parseInt(listing.maxChildren) || 0,
         maxInfants: parseInt(listing.maxInfants) || 0,
         maxPets: parseInt(listing.maxPets) || 0,
-        maxInRoom: parseInt(listing.maxInRoom) || 2
+        maxInRoom: parseInt(listing.maxInRoom) || 2,
+        // New fields for charges and iCal
+        petCharge: listing.petCharge ? parseFloat(listing.petCharge) : 0,
+        extraAdultCharge: listing.extraAdultCharge ? parseFloat(listing.extraAdultCharge) : 0,
+        icalLink: listing.icalLink ? listing.icalLink.trim() : null
       };
       
       console.log("Sending listing data:", listingData);
@@ -920,6 +909,7 @@ Please verify and contact the user.`
               <div className="space-y-4 sm:space-y-6 md:space-y-8">
                 <RoomDetailsForm listing={listing} handleInputChange={handleInputChange} user={user || {}} />
                 <AmenitiesForm listing={listing} handleAmenityChange={handleAmenityChange} />
+                <AdditionalChargesForm listing={listing} handleInputChange={handleInputChange} />
                 <LocationForm listing={listing} handleInputChange={handleInputChange} />
               </div>
             </div>
@@ -962,13 +952,6 @@ Please verify and contact the user.`
               {/* Booking Widget */}
               <BookingWidget 
                 listing={listing}
-                startDate={startDate}
-                endDate={endDate}
-                guestCount={guestCount}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-                setGuestCount={setGuestCount}
-                calculateTotal={calculateTotal}
                 handleInputChange={handleInputChange}
               />
 

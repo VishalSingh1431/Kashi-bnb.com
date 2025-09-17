@@ -85,6 +85,34 @@ export const bookHotel = async (req,res,nex) => {
                 message : "no id",
             });
         }
+
+        const { from, to } = req.body;
+        
+        // Check availability before booking
+        const conflicts = await prisma.bookings.findMany({
+            where: {
+                hotelId: id,
+                status: { in: ['confirmed', 'pending'] },
+                OR: [
+                    {
+                        from: { lte: new Date(to) },
+                        to: { gte: new Date(from) }
+                    }
+                ]
+            }
+        });
+
+        if (conflicts.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Selected dates are not available",
+                conflicts: conflicts.map(conflict => ({
+                    from: conflict.from,
+                    to: conflict.to,
+                    status: conflict.status
+                }))
+            });
+        }
         
         const booking = await prisma.bookings.create({
             data : {
@@ -229,6 +257,10 @@ export const addNewHotel = async (req,res,nex) =>{
             microwave: Boolean(req.body.microwave),
             waterFilter: Boolean(req.body.waterFilter),
             maxInRoom: req.body.maxInRoom ? parseInt(req.body.maxInRoom) : 2,
+            // New fields for charges and iCal
+            petCharge: req.body.petCharge ? parseFloat(req.body.petCharge) : 0.0,
+            extraAdultCharge: req.body.extraAdultCharge ? parseFloat(req.body.extraAdultCharge) : 0.0,
+            icalLink: req.body.icalLink ? req.body.icalLink.trim() : null,
             // Set initial rating to 5 stars for new hotels
             averageRating: 5.0,
             totalRatings: 1
@@ -269,7 +301,7 @@ export const addNewHotel = async (req,res,nex) =>{
                 has_hotel: updatedUser.has_hotel
             },
             process.env.JWT_SECRET,
-            { expiresIn: '7d' }
+            { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
         );
 
         await prisma.users.update({ where: { id: updatedUser.id }, data: { token } });

@@ -135,7 +135,7 @@ export const makeHoteler = async (req,res,nex)=>{
                 token = jwt.sign(
                     { id: user.id, email: user.email, name: user.name, first_name: user.first_name, last_name: user.last_name, verified: user.verified, is_admin: user.is_admin, has_hotel: user.has_hotel },
                     process.env.JWT_SECRET,
-                    { expiresIn: '7d' }
+                    { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
                 );
                 await prisma.users.update({ where: { id: user.id }, data: { token } });
                 publishUserUpdate(user);
@@ -329,6 +329,7 @@ export const viewAllUsers = async (req, res, next) => {
                 mobile: true,
                 verified: true,
                 is_admin: true,
+                is_team_member: true,
                 has_hotel: true,
                 has_restr: true,
                 time: true
@@ -445,6 +446,215 @@ export const deleteUser = async (req, res, next) => {
         res.status(500).json({
             success: false,
             message: "Error deleting user",
+            error: e.message
+        });
+    }
+};
+
+// Promote user to team member (admin only)
+export const promoteToTeamMember = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        console.log('Promoting user to team member:', userId);
+        
+        // Check if user exists
+        const userExists = await prisma.users.findUnique({
+            where: { id: userId }
+        });
+        
+        if (!userExists) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // Check if user is already a team member
+        if (userExists.is_team_member) {
+            return res.status(400).json({
+                success: false,
+                message: "User is already a team member"
+            });
+        }
+
+        // Prevent promoting admins
+        if (userExists.is_admin) {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot promote admin to team member"
+            });
+        }
+
+        // Update user to be a team member
+        const updated = await prisma.users.update({
+            where: { id: userId },
+            data: { is_team_member: true }
+        });
+
+        console.log('User promoted to team member successfully:', updated);
+
+        // Send promotion notification email
+        try {
+            const userName = updated.first_name && updated.last_name 
+                ? `${updated.first_name} ${updated.last_name}` 
+                : updated.name || 'Valued User';
+            
+            await sendPromotionEmail(
+                updated.email, 
+                'team member', 
+                userName
+            );
+            console.log('Team member promotion email sent successfully to:', updated.email);
+        } catch (emailError) {
+            console.error('Error sending team member promotion email:', emailError);
+            // Don't fail the main operation if email fails
+        }
+
+        // Refresh token for the affected user
+        let token = null;
+        try {
+            const user = await prisma.users.findUnique({ where: { id: userId } });
+            if (user) {
+                token = jwt.sign(
+                    { 
+                        id: user.id, 
+                        email: user.email, 
+                        name: user.name, 
+                        first_name: user.first_name, 
+                        last_name: user.last_name, 
+                        verified: user.verified, 
+                        is_admin: user.is_admin, 
+                        is_team_member: user.is_team_member,
+                        has_hotel: user.has_hotel,
+                        has_restr: user.has_restr
+                    },
+                    process.env.JWT_SECRET,
+                    { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
+                );
+                await prisma.users.update({ where: { id: user.id }, data: { token } });
+                publishUserUpdate(user);
+            }
+        } catch(e) { 
+            console.error('Token refresh error:', e);
+            // Don't fail the main operation if token refresh fails
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User promoted to team member successfully",
+            token,
+            updatedUser: updated
+        });
+    } catch(e) {
+        console.error('Error promoting user to team member:', e);
+        
+        let errorMessage = "Unable to promote user to team member";
+        
+        if (e.code === 'P2025') {
+            errorMessage = "User not found";
+        } else if (e.message) {
+            errorMessage = e.message;
+        }
+        
+        return res.status(500).json({
+            success: false,
+            message: errorMessage,
+            error: e.message
+        });
+    }
+};
+
+// Demote team member to regular user (admin only)
+export const demoteToUser = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        console.log('Demoting team member to regular user:', userId);
+        
+        // Check if user exists
+        const userExists = await prisma.users.findUnique({
+            where: { id: userId }
+        });
+        
+        if (!userExists) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // Check if user is actually a team member
+        if (!userExists.is_team_member) {
+            return res.status(400).json({
+                success: false,
+                message: "User is not a team member"
+            });
+        }
+
+        // Prevent demoting admins
+        if (userExists.is_admin) {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot demote admin"
+            });
+        }
+
+        // Update user to remove team member status
+        const updated = await prisma.users.update({
+            where: { id: userId },
+            data: { is_team_member: false }
+        });
+
+        console.log('Team member demoted to regular user successfully:', updated);
+
+        // Refresh token for the affected user
+        let token = null;
+        try {
+            const user = await prisma.users.findUnique({ where: { id: userId } });
+            if (user) {
+                token = jwt.sign(
+                    { 
+                        id: user.id, 
+                        email: user.email, 
+                        name: user.name, 
+                        first_name: user.first_name, 
+                        last_name: user.last_name, 
+                        verified: user.verified, 
+                        is_admin: user.is_admin, 
+                        is_team_member: user.is_team_member,
+                        has_hotel: user.has_hotel,
+                        has_restr: user.has_restr
+                    },
+                    process.env.JWT_SECRET,
+                    { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
+                );
+                await prisma.users.update({ where: { id: user.id }, data: { token } });
+                publishUserUpdate(user);
+            }
+        } catch(e) { 
+            console.error('Token refresh error:', e);
+            // Don't fail the main operation if token refresh fails
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Team member demoted to regular user successfully",
+            token,
+            updatedUser: updated
+        });
+    } catch(e) {
+        console.error('Error demoting team member:', e);
+        
+        let errorMessage = "Unable to demote team member";
+        
+        if (e.code === 'P2025') {
+            errorMessage = "User not found";
+        } else if (e.message) {
+            errorMessage = e.message;
+        }
+        
+        return res.status(500).json({
+            success: false,
+            message: errorMessage,
             error: e.message
         });
     }

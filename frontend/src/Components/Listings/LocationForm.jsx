@@ -19,6 +19,32 @@ const LocationForm = ({ listing, handleInputChange }) => {
       }
     }
     
+    // Handle phone location sharing URLs (goo.gl/maps, maps.app.goo.gl, etc.)
+    if (url.includes('goo.gl/maps') || url.includes('maps.app.goo.gl')) {
+      // For short URLs, we'll need to resolve them, but for now return the original URL
+      // The iframe should handle the redirect
+      return url.includes('output=embed') ? url : `${url}&output=embed`;
+    }
+    
+    // Handle coordinates in various formats
+    const coordPatterns = [
+      // @lat,lng format
+      /@(-?\d+\.?\d*),(-?\d+\.?\d*)/,
+      // ll=lat,lng format
+      /ll=(-?\d+\.?\d*),(-?\d+\.?\d*)/,
+      // q=lat,lng format
+      /q=(-?\d+\.?\d*),(-?\d+\.?\d*)/
+    ];
+    
+    for (const pattern of coordPatterns) {
+      const match = url.match(pattern);
+      if (match) {
+        const lat = match[1];
+        const lng = match[2];
+        return `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
+      }
+    }
+    
     // Handle regular Google Maps URLs
     const googlePatterns = [
       /maps\.google\.com\/maps\?q=([^&\s]+)/,
@@ -47,6 +73,11 @@ const LocationForm = ({ listing, handleInputChange }) => {
     // If it's a direct embed URL
     if (url.includes('embed')) {
       return url;
+    }
+    
+    // For any other Google Maps URL, try to add embed parameter
+    if (url.includes('maps.google.com') || url.includes('google.com/maps')) {
+      return url.includes('output=embed') ? url : `${url}${url.includes('?') ? '&' : '?'}output=embed`;
     }
     
     return null;
@@ -126,7 +157,7 @@ const LocationForm = ({ listing, handleInputChange }) => {
               name="gmap"
               value={listing.gmap || ''}
               onChange={handleUrlChange}
-              placeholder="https://www.google.com/maps/place/Your+Property+Name/@coordinates..."
+              placeholder="https://maps.app.goo.gl/... or https://www.google.com/maps/place/Your+Property+Name/@coordinates..."
               className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors text-center sm:text-left"
             />
             {listing.gmap && !isValidUrl && (
@@ -158,6 +189,12 @@ const LocationForm = ({ listing, handleInputChange }) => {
 
         {/* Map Guidelines */}
         <div className="bg-green-50 rounded-xl p-3 sm:p-4">
+          <h4 className="font-semibold text-green-800 mb-2">📍 How to get your Google Maps URL:</h4>
+          <ul className="text-sm text-green-700 space-y-1">
+            <li>• <strong>From Phone:</strong> Share location → Copy link (maps.app.goo.gl/...)</li>
+            <li>• <strong>From Computer:</strong> Search your property → Share → Copy link</li>
+            <li>• <strong>Direct Link:</strong> https://maps.google.com/maps/place/Your+Property</li>
+          </ul>
           <h4 className="text-sm sm:text-base font-semibold text-green-800 mb-2 sm:mb-3 text-center leading-tight">🗺️ Location Guidelines</h4>
           <ul className="text-xs sm:text-sm text-green-700 space-y-1 sm:space-y-2 text-left leading-tight">
             <li className="break-words">• Copy the URL from Google Maps when you search for your property</li>

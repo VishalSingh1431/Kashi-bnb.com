@@ -16,6 +16,19 @@ import PropertyTypeSelector from "./Listings/PropertyTypeSelector";
 import GuestAccessSelector from "./Listings/GuestAccessSelector";
 import HotelReviews from "./HotelPage/HotelReviews";
 import { FiMapPin } from "react-icons/fi";
+import { saveBookingData, getBookingData, parseStoredDates, saveBookingPreferences } from '../utils/bookingStorage';
+
+// GST calculation utility
+const calculateGST = (roomRate, taxableAmount) => {
+  const rate = parseInt(roomRate);
+  if (rate < 1000) {
+    return { gstRate: 0, gstAmount: 0 };
+  } else if (rate >= 1001 && rate <= 7499) {
+    return { gstRate: 12, gstAmount: Math.round(taxableAmount * 0.12) };
+  } else {
+    return { gstRate: 18, gstAmount: Math.round(taxableAmount * 0.18) };
+  }
+};
 
 
 const token = localStorage.getItem("token");
@@ -58,6 +71,38 @@ const HotelPage = () => {
   
     fetchHotelData();
   }, [id]);
+
+  // Load stored booking data when component mounts
+  useEffect(() => {
+    if (!id) return;
+    
+    const storedData = getBookingData(id);
+    if (storedData) {
+      const parsedData = parseStoredDates(storedData);
+      
+      if (parsedData.startDate) setStartDate(parsedData.startDate);
+      if (parsedData.endDate) setEndDate(parsedData.endDate);
+      if (parsedData.guestCount) setGuestCount(parsedData.guestCount);
+    }
+  }, [id]);
+
+  // Save booking data whenever dates or guest count changes
+  useEffect(() => {
+    if (!id || !hotel) return;
+    
+    // Only save if we have meaningful data
+    if (startDate || endDate || guestCount.adults > 1 || guestCount.children > 0 || guestCount.infants > 0 || guestCount.pets > 0) {
+      const bookingData = {
+        startDate: startDate ? startDate.toISOString() : null,
+        endDate: endDate ? endDate.toISOString() : null,
+        guestCount,
+        hotelName: hotel.name,
+        hotelRate: hotel.rate
+      };
+      
+      saveBookingData(id, bookingData);
+    }
+  }, [id, startDate, endDate, guestCount, hotel]);
 
   const handleEditToggle = () => {
     if (editMode) {
@@ -194,10 +239,15 @@ const HotelPage = () => {
       if (newValue > maxLimit) return prev;
       if (type === 'adults' && newValue < 1) return prev;
 
-      return {
+      const updatedGuestCount = {
         ...prev,
         [type]: newValue
       };
+
+      // Save guest preferences for future use
+      saveBookingPreferences({ guestCount: updatedGuestCount });
+
+      return updatedGuestCount;
     });
   };
 
@@ -216,7 +266,11 @@ const HotelPage = () => {
   const calculateTotal = () => {
     if (!startDate || !endDate) return 0;
     const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-    return parseInt(hotel.rate) * nights;
+    const basePrice = parseInt(hotel.rate) * nights;
+    const petCharges = (guestCount.pets || 0) * 300 * nights;
+    const taxableAmount = basePrice + petCharges;
+    const { gstAmount } = calculateGST(hotel.rate, taxableAmount);
+    return taxableAmount + gstAmount;
   };
 
   if (loading) return <div className="text-center py-10 text-gray-600">Loading...</div>;

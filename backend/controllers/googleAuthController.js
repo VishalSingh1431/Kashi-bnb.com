@@ -150,7 +150,7 @@ export const googleAuthCallback = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name, first_name: user.first_name, last_name: user.last_name, verified: user.verified, is_admin: user.is_admin, has_hotel: user.has_hotel },
       jwtSecret,
-      { expiresIn: '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
     );
 
     // Update user token
@@ -313,7 +313,7 @@ export const verifyGoogleIdToken = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name, first_name: user.first_name, last_name: user.last_name, verified: user.verified, is_admin: user.is_admin, has_hotel: user.has_hotel },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
     );
 
     // Update user token

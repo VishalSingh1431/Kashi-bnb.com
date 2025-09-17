@@ -126,7 +126,7 @@ export const loginWithMobile = async (req, res) => {
                 has_hotel: user.has_hotel 
             },
             jwtSecret2,
-            { expiresIn: '7d' }
+            { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
         );
 
         // Update user token

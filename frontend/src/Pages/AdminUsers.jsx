@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { BACKEND } from '../assets/Vars';
-import { FiTrash2, FiEye, FiUser, FiMail, FiPhone, FiCalendar, FiShield, FiHome, FiCoffee, FiX } from 'react-icons/fi';
+import { FiTrash2, FiEye, FiUser, FiMail, FiPhone, FiCalendar, FiShield, FiHome, FiCoffee, FiX, FiUserPlus, FiUserMinus, FiUsers } from 'react-icons/fi';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -66,6 +66,50 @@ const AdminUsers = () => {
     }
   };
 
+  const handlePromoteToTeamMember = async (userId) => {
+    try {
+      await axios.patch(`${BACKEND}/api/v1/admin/users/${userId}/promote`, {
+        role: 'team_member'
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Update user in state
+      setUsers(users.map(u => 
+        u.id === userId ? { ...u, is_team_member: true } : u
+      ));
+      
+      alert('User promoted to team member successfully');
+    } catch (error) {
+      console.error('Error promoting user:', error);
+      alert('Failed to promote user: ' + (error.response?.data?.message || error.message));
+    }
+  };
+
+  const handleDemoteToUser = async (userId) => {
+    try {
+      await axios.patch(`${BACKEND}/api/v1/admin/users/${userId}/demote`, {
+        role: 'user'
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Update user in state
+      setUsers(users.map(u => 
+        u.id === userId ? { ...u, is_team_member: false } : u
+      ));
+      
+      alert('User demoted to regular user successfully');
+    } catch (error) {
+      console.error('Error demoting user:', error);
+      alert('Failed to demote user: ' + (error.response?.data?.message || error.message));
+    }
+  };
+
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -73,9 +117,10 @@ const AdminUsers = () => {
     
     const matchesRole = filterRole === 'all' || 
                        (filterRole === 'admin' && user.is_admin) ||
+                       (filterRole === 'team_member' && user.is_team_member) ||
                        (filterRole === 'hoteler' && user.has_hotel) ||
                        (filterRole === 'restaurant' && user.has_restr) ||
-                       (filterRole === 'regular' && !user.is_admin && !user.has_hotel && !user.has_restr);
+                       (filterRole === 'regular' && !user.is_admin && !user.is_team_member && !user.has_hotel && !user.has_restr);
     
     return matchesSearch && matchesRole;
   });
@@ -94,7 +139,10 @@ const AdminUsers = () => {
     <div className="min-h-screen px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-8">
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">User & Team Management</h1>
+            <p className="text-gray-600 mt-2">Manage all registered users, promote to team members, and assign roles</p>
+          </div>
           <Link
             to="/admin/bookings"
             className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center gap-2"
@@ -102,7 +150,19 @@ const AdminUsers = () => {
             📋 Manage Bookings
           </Link>
         </div>
-        <p className="text-gray-600">Manage all registered users and their roles</p>
+        
+        {/* Team Management Info */}
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-3">
+            <FiUsers className="h-6 w-6 text-purple-600" />
+            <div>
+              <h3 className="text-lg font-semibold text-purple-900">Team Member Management</h3>
+              <p className="text-purple-700 text-sm">
+                Promote users to team members who can help manage the platform. Team members have elevated access to promote users to hotel owners and manage listings.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Search and Filter Controls */}
@@ -123,6 +183,7 @@ const AdminUsers = () => {
         >
           <option value="all">All Users</option>
           <option value="admin">Admins</option>
+          <option value="team_member">Team Members</option>
           <option value="hoteler">Hotel Owners</option>
           <option value="restaurant">Restaurant Owners</option>
           <option value="regular">Regular Users</option>
@@ -197,6 +258,12 @@ const AdminUsers = () => {
                             Admin
                           </span>
                         )}
+                        {user.is_team_member && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            <FiUsers className="h-3 w-3 mr-1" />
+                            Team Member
+                          </span>
+                        )}
                         {user.has_hotel && (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                             <FiHome className="h-3 w-3 mr-1" />
@@ -209,7 +276,7 @@ const AdminUsers = () => {
                             Restaurant Owner
                           </span>
                         )}
-                        {!user.is_admin && !user.has_hotel && !user.has_restr && (
+                        {!user.is_admin && !user.is_team_member && !user.has_hotel && !user.has_restr && (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                             Regular User
                           </span>
@@ -240,6 +307,30 @@ const AdminUsers = () => {
                         >
                           <FiEye className="h-4 w-4" />
                         </button>
+                        
+                        {/* Promote/Demote Team Member Buttons */}
+                        {!user.is_admin && user.id !== JSON.parse(localStorage.getItem("user"))?.id && (
+                          <>
+                            {!user.is_team_member ? (
+                              <button
+                                onClick={() => handlePromoteToTeamMember(user.id)}
+                                className="text-purple-600 hover:text-purple-900 p-1 rounded hover:bg-purple-50"
+                                title="Promote to Team Member"
+                              >
+                                <FiUserPlus className="h-4 w-4" />
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleDemoteToUser(user.id)}
+                                className="text-orange-600 hover:text-orange-900 p-1 rounded hover:bg-orange-50"
+                                title="Demote to Regular User"
+                              >
+                                <FiUserMinus className="h-4 w-4" />
+                              </button>
+                            )}
+                          </>
+                        )}
+                        
                         <button
                           onClick={() => setDeleteConfirm(user)}
                           className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
@@ -308,6 +399,7 @@ const AdminUsers = () => {
                   <label className="block text-sm font-medium text-gray-700">Roles</label>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {selectedUser.is_admin && <span className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded">Admin</span>}
+                    {selectedUser.is_team_member && <span className="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded">Team Member</span>}
                     {selectedUser.has_hotel && <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">Hotel Owner</span>}
                     {selectedUser.has_restr && <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">Restaurant Owner</span>}
                   </div>

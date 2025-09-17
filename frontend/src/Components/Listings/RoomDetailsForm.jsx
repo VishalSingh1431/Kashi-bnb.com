@@ -27,28 +27,6 @@ const RoomDetailsForm = ({ listing, handleInputChange, user }) => {
             <p className="text-xs sm:text-sm text-gray-600 truncate leading-tight">Contact: {user?.email}</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
-          <div className="min-w-0 text-center sm:text-left">
-            <p className="text-xs sm:text-sm text-gray-500 truncate leading-tight">Guests</p>
-            <input
-              type="number"
-              name="maxInRoom"
-              value={listing.maxInRoom}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-lg text-center sm:text-left"
-            />
-          </div>
-          <div className="min-w-0 text-center sm:text-left">
-            <p className="text-xs sm:text-sm text-gray-500 truncate leading-tight">Rooms</p>
-            <input
-              type="number"
-              name="totalRoom"
-              value={listing.totalRoom}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-lg text-center sm:text-left"
-            />
-          </div>
-        </div>
       </div>
        <div className="border-b pb-6 mb-6 text-center sm:text-left">
         <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 leading-tight">About this place</h2>

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { checkControl } from "../controllers/user.js";
 import { authorisation, isAdmin } from "../middleware/auth.js";
-import { makeAdmin, makeHoteler, rejectHoteler, makeRestr, viewRequest, viewAllUsers, deleteUser } from "../controllers/admin.js";
+import { makeAdmin, makeHoteler, rejectHoteler, makeRestr, viewRequest, viewAllUsers, deleteUser, promoteToTeamMember, demoteToUser } from "../controllers/admin.js";
 
 const router = Router();
 
@@ -36,5 +36,11 @@ router.post('/makeRestr', authorisation, isAdmin, makeRestr);
 
 // Delete user (admin only)
 router.delete('/users/:userId', authorisation, isAdmin, deleteUser);
+
+// Promote user to team member (admin only)
+router.patch('/users/:userId/promote', authorisation, isAdmin, promoteToTeamMember);
+
+// Demote team member to regular user (admin only)
+router.patch('/users/:userId/demote', authorisation, isAdmin, demoteToUser);
 
 export default router;

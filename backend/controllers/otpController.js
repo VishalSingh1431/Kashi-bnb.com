@@ -208,7 +208,7 @@ export const verifyLoginOTP = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name, first_name: user.first_name, last_name: user.last_name, verified: user.verified, is_admin: user.is_admin, has_hotel: user.has_hotel },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
     );
 
     // Update user token
@@ -303,7 +303,7 @@ export const verifySignupOTP = async (req, res) => {
     const token = jwt.sign(
       { id: newUser.id, mobile: newUser.mobile, name: newUser.name, first_name: newUser.first_name, last_name: newUser.last_name, verified: newUser.verified, is_admin: newUser.is_admin, has_hotel: newUser.has_hotel },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
     );
 
     // Update user token
@@ -555,7 +555,7 @@ export const verifySignupEmailOTP = async (req, res) => {
         has_hotel: newUser.has_hotel 
       },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '30d' }
     );
 
     // Update user token

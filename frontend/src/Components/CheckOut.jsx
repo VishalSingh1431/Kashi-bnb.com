@@ -3,6 +3,20 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCalendar, FiUser, FiHome, FiCreditCard, FiUsers, FiHeart } from 'react-icons/fi';
 import { BACKEND } from '../assets/Vars';
 import axios from 'axios';
+import AuthPromptModal from './AuthPromptModal';
+import { getBookingData, clearBookingData, parseStoredDates } from '../utils/bookingStorage';
+
+// GST calculation utility
+const calculateGST = (roomRate, taxableAmount) => {
+  const rate = parseInt(roomRate);
+  if (rate < 1000) {
+    return { gstRate: 0, gstAmount: 0 };
+  } else if (rate >= 1001 && rate <= 7499) {
+    return { gstRate: 12, gstAmount: Math.round(taxableAmount * 0.12) };
+  } else {
+    return { gstRate: 18, gstAmount: Math.round(taxableAmount * 0.18) };
+  }
+};
 
 const CheckOut = () => {
   const { id } = useParams();
@@ -17,15 +31,43 @@ const CheckOut = () => {
     children: 0,
     pets: 0
   });
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Get booking details from location state or use defaults
-  const bookingDetails = location.state || {
-    startDate: null,
-    endDate: null,
-    guests: { adults: 1, children: 0, pets: 0 },
-    total: 0,
-    hotelName: ''
+  // Check if user is logged in
+  const token = localStorage.getItem('token');
+  const user = localStorage.getItem('user');
+  const isAuthenticated = token && user;
+
+  // Get booking details from location state or stored data
+  const getBookingDetails = () => {
+    if (location.state) {
+      return location.state;
+    }
+    
+    // Try to get stored booking data
+    const storedData = getBookingData(id);
+    if (storedData) {
+      const parsedData = parseStoredDates(storedData);
+      return {
+        startDate: parsedData.startDate,
+        endDate: parsedData.endDate,
+        guests: parsedData.guestCount || { adults: 1, children: 0, pets: 0 },
+        total: 0, // Will be calculated
+        hotelName: parsedData.hotelName || ''
+      };
+    }
+    
+    // Default fallback
+    return {
+      startDate: null,
+      endDate: null,
+      guests: { adults: 1, children: 0, pets: 0 },
+      total: 0,
+      hotelName: ''
+    };
   };
+
+  const bookingDetails = getBookingDetails();
 
   const [bookingData, setBookingData] = useState({
     startDate: bookingDetails.startDate,
@@ -33,6 +75,14 @@ const CheckOut = () => {
     total: bookingDetails.total,
     hotelName: bookingDetails.hotelName
   });
+
+  // Check authentication on component mount
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!id) return; // No id on non-checkout routes (e.g., Home), skip fetching
@@ -51,6 +101,11 @@ const CheckOut = () => {
   }, [id]);
 
   const handleGuestChange = (type, operation) => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    
     setGuestCount(prev => {
       const newValue = operation === 'increment' ? prev[type] + 1 : prev[type] - 1;
       
@@ -89,20 +144,35 @@ const CheckOut = () => {
 
   const calculateTotal = () => {
     const nights = calculateNights();
-    return hotel ? parseInt(hotel.rate) * nights : 0;
-  };
-
-  const calculateServiceFee = () => {
-    return Math.round(calculateTotal() * 0.1); // 10% service fee
+    if (!hotel) return 0;
+    const basePrice = parseInt(hotel.rate) * nights;
+    const petCharges = (bookingDetails.guests.pets || 0) * 300 * nights;
+    return basePrice + petCharges;
   };
 
   const calculateFinalTotal = () => {
-    return calculateTotal() + calculateServiceFee();
+    const taxableAmount = calculateTotal();
+    const { gstAmount } = calculateGST(hotel?.rate || 0, taxableAmount);
+    return taxableAmount + gstAmount;
   };
 
   const handlePayment = async () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    
     // Payment logic here
     console.log('Processing payment...');
+    
+    // After successful payment, clear the stored booking data
+    // This would typically be called after payment verification
+    // clearBookingData(id);
+  };
+
+  // Clear booking data after successful booking (this would be called from payment success handler)
+  const clearBookingDataAfterSuccess = () => {
+    clearBookingData(id);
   };
 
   if (!id) {
@@ -295,13 +365,26 @@ const CheckOut = () => {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span>₹{hotel.rate} × {calculateNights()} nights</span>
-                  <span>₹{calculateTotal()}</span>
+                  <span>₹{parseInt(hotel.rate) * calculateNights()}</span>
                 </div>
                 
-                <div className="flex justify-between">
-                  <span>Service fee</span>
-                  <span>₹{calculateServiceFee()}</span>
-                </div>
+                {(bookingDetails.guests.pets || 0) > 0 && (
+                  <div className="flex justify-between">
+                    <span>Pet charges (₹300 × {bookingDetails.guests.pets} pets × {calculateNights()} nights)</span>
+                    <span>₹{(bookingDetails.guests.pets || 0) * 300 * calculateNights()}</span>
+                  </div>
+                )}
+                
+                {(() => {
+                  const taxableAmount = calculateTotal();
+                  const { gstRate, gstAmount } = calculateGST(hotel.rate, taxableAmount);
+                  return gstAmount > 0 && (
+                    <div className="flex justify-between">
+                      <span>GST ({gstRate}%)</span>
+                      <span>₹{gstAmount}</span>
+                    </div>
+                  );
+                })()}
                 
                 <div className="border-t pt-2">
                   <div className="flex justify-between font-bold text-lg">
@@ -325,6 +408,13 @@ const CheckOut = () => {
           </div>
         </div>
       </div>
+
+      {/* Authentication Modal */}
+      <AuthPromptModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        message="Please login to complete your booking and checkout"
+      />
     </div>
   );
 };

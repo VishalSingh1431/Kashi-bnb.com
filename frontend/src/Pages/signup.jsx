@@ -63,8 +63,13 @@ const Signup = () => {
         // setShowRecoveryPopup(true); // This line is removed
         // setRecoveryType("phone"); // This line is removed
         
-        // Clear URL params and redirect to home
-        navigate('/', { replace: true });
+        // Check for redirect parameter and navigate accordingly
+        const redirectUrl = searchParams.get('redirect');
+        if (redirectUrl) {
+          navigate(decodeURIComponent(redirectUrl), { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
       } catch (error) {
         console.error('Error parsing Google user data:', error);
         setError('Failed to process Google signup data');
@@ -190,9 +195,13 @@ const Signup = () => {
           console.error('Phone signup: Missing token or user data in response');
         }
         
-        // Redirect to home - recovery popup will show on next visit
-        console.log('Phone signup: Redirecting to home page');
-        navigate('/');
+        // Check for redirect parameter and navigate accordingly
+        const redirectUrl = searchParams.get('redirect');
+        if (redirectUrl) {
+          navigate(decodeURIComponent(redirectUrl));
+        } else {
+          navigate('/');
+        }
       }
     } catch (err) {
       console.log('Phone OTP Verification Error:', err);
@@ -208,7 +217,14 @@ const Signup = () => {
 
   // Google Signup Flow
   const handleGoogleSignup = () => {
-    window.location.href = `${BACKEND}/api/v1/auth/google?action=signup`;
+    const redirectUrl = searchParams.get('redirect');
+    const googleAuthUrl = `${BACKEND}/api/v1/auth/google?action=signup`;
+    
+    if (redirectUrl) {
+      window.location.href = `${googleAuthUrl}&redirect=${encodeURIComponent(redirectUrl)}`;
+    } else {
+      window.location.href = googleAuthUrl;
+    }
   };
 
   // Recovery Flow (Email/Phone)
@@ -416,7 +432,14 @@ const Signup = () => {
 
           <div className="pt-2">
             <button
-              onClick={() => navigate('/')}
+              onClick={() => {
+                const redirectUrl = searchParams.get('redirect');
+                if (redirectUrl) {
+                  navigate(decodeURIComponent(redirectUrl));
+                } else {
+                  navigate('/');
+                }
+              }}
               className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-3 rounded-lg hover:from-orange-600 hover:to-yellow-600 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               Go to Home
