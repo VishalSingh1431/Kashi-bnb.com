@@ -827,7 +827,8 @@ export const deleteHotel = async (req, res, nex) => {
             where: { id: hotelId },
             include: {
                 bookings: true,
-                images: true
+                images: true,
+                staffimages: true
             }
         });
 
@@ -867,6 +868,10 @@ export const deleteHotel = async (req, res, nex) => {
         });
 
         await prisma.himages.deleteMany({
+            where: { hotelId: hotelId }
+        });
+
+        await prisma.staffimages.deleteMany({
             where: { hotelId: hotelId }
         });
 
