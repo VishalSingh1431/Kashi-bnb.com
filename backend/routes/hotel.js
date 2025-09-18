@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getHotels,getUniqueHotel,bookHotel,getMyHotels, updateHotel, addNewHotel, uploadHotImage, uploadStaffImages, deleteHotel, submitRating, submitReview, getHotelReviews, getRateableBookings, updateReviewVisibility } from '../controllers/hotel.js';
+import { getHotels,getUniqueHotel,bookHotel,getMyHotels, updateHotel, addNewHotel, uploadHotImage, uploadStaffImages, deleteStaffImage, deleteHotel, submitRating, submitReview, getHotelReviews, getRateableBookings, updateReviewVisibility } from '../controllers/hotel.js';
 import { authorisation,hasHotel } from '../middleware/auth.js'
 import multer from 'multer';
 
@@ -39,6 +39,7 @@ router.post('/create-hotel',authorisation,addNewHotel);
 router.post('/hotel/:uid/update-hotel',authorisation,updateHotel);
 router.post('/hotel/:uid/upload-images',authorisation,upload.array("images",100),uploadHotImage);
 router.post('/hotel/:uid/upload-staff-images',authorisation,upload.array("images",20),uploadStaffImages);
+router.delete('/hotel/:uid/staff-image/:imageId',authorisation,deleteStaffImage);
 router.delete('/hotel/:uid',authorisation,deleteHotel);
 // router.post('/hotel/:uid/upload-images',upload.array("images",5),uploadHotImage);
 

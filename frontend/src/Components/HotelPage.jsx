@@ -209,8 +209,48 @@ const HotelPage = () => {
         },
       });
       console.log("Upload response:", response.data);
+      // Refresh hotel data to show new images
+      fetchHotel();
     } catch (error) {
       console.error("Error uploading files:", error);
+    }
+  };
+
+  const handleStaffImageUpload = async (event) => {
+    const files = event.target.files;
+    const formData = new FormData();
+  
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i]);
+    }
+  
+    try {
+      const response = await axios.post(`${BACKEND}/api/v1/hotel/hotel/${id}/upload-staff-images`, formData, {
+        headers: {
+          "Authorization": getAuthHeader(token),
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Staff images upload response:", response.data);
+      // Refresh hotel data to show new staff images
+      fetchHotel();
+    } catch (error) {
+      console.error("Error uploading staff images:", error);
+    }
+  };
+
+  const handleDeleteStaffImage = async (imageId) => {
+    try {
+      const response = await axios.delete(`${BACKEND}/api/v1/hotel/hotel/${id}/staff-image/${imageId}`, {
+        headers: {
+          "Authorization": getAuthHeader(token),
+        },
+      });
+      console.log("Staff image deleted:", response.data);
+      // Refresh hotel data to show updated staff images
+      fetchHotel();
+    } catch (error) {
+      console.error("Error deleting staff image:", error);
     }
   };
 
@@ -360,6 +400,8 @@ const HotelPage = () => {
           <HotelStaffSection
             hotel={hotel}
             editMode={editMode}
+            handleStaffImageUpload={handleStaffImageUpload}
+            handleDeleteStaffImage={handleDeleteStaffImage}
           />
           
           <HotelReviews

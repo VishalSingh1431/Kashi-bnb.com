@@ -478,8 +478,7 @@ Please verify and contact the user.`
         // New fields for charges and iCal
         petCharge: listing.petCharge ? parseFloat(listing.petCharge) : 0,
         extraAdultCharge: listing.extraAdultCharge ? parseFloat(listing.extraAdultCharge) : 0,
-        icalLink: listing.icalLink ? listing.icalLink.trim() : null,
-        staffImages: staffImages
+        icalLink: listing.icalLink ? listing.icalLink.trim() : null
       };
       
       console.log("Sending listing data:", listingData);
@@ -573,6 +572,56 @@ Please verify and contact the user.`
         alert(`Listing created successfully, but failed to upload images: ${failedImageNumbers}. You can edit the listing later to add images.`);
       } else {
         alert('Listing created successfully!');
+      }
+      
+      // Upload staff images if any
+      if (staffImages.length > 0) {
+        const staffUploadResults = [];
+        for (let i = 0; i < staffImages.length; i++) {
+          const staffImage = staffImages[i];
+          let uploadSuccess = false;
+          let uploadRetryCount = 0;
+          const maxUploadRetries = 3;
+          
+          while (!uploadSuccess && uploadRetryCount < maxUploadRetries) {
+            try {
+              const formData = new FormData();
+              formData.append('images', staffImage.file); // Use the actual file, not the base64 URL
+              
+              const uploadResponse = await axios.post(
+                `${BACKEND}/api/v1/hotel/hotel/${hotelId}/upload-staff-images`,
+                formData,
+                { 
+                  headers: { 
+                    'Authorization': currentToken.startsWith('Bearer ') ? currentToken : `Bearer ${currentToken}`, 
+                    'Content-Type': 'multipart/form-data' 
+                  },
+                  timeout: 18000000
+                }
+              );
+              
+              staffUploadResults.push({ success: true, imageIndex: i });
+              uploadSuccess = true;
+              
+            } catch (imgErr) {
+              uploadRetryCount++;
+              console.error(`Staff image ${i + 1} upload attempt ${uploadRetryCount} failed:`, imgErr);
+              
+              if (uploadRetryCount >= maxUploadRetries) {
+                staffUploadResults.push({ success: false, imageIndex: i, error: imgErr.message });
+              } else {
+                // Wait before retrying
+                await new Promise(resolve => setTimeout(resolve, 2000 * uploadRetryCount));
+              }
+            }
+          }
+        }
+        
+        const failedStaffUploads = staffUploadResults.filter(result => !result.success);
+        if (failedStaffUploads.length > 0) {
+          const failedStaffImageNumbers = failedStaffUploads.map(f => f.imageIndex + 1).join(', ');
+          alert(`Staff images upload failed: ${failedStaffImageNumbers}. You can edit the listing later to add staff images.`);
+        }
       }
       
       nav('/');

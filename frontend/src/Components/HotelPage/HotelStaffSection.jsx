@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { FiUsers, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiUsers, FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
 
-const HotelStaffSection = ({ hotel, editMode }) => {
+const HotelStaffSection = ({ hotel, editMode, handleStaffImageUpload, handleDeleteStaffImage }) => {
   const [currentStaffImageIndex, setCurrentStaffImageIndex] = useState(0);
 
   // Check if hotel has staff images
@@ -72,29 +72,55 @@ const HotelStaffSection = ({ hotel, editMode }) => {
                   loading="lazy"
                 />
               </div>
+              
+              {/* Delete button in edit mode */}
+              {editMode && (
+                <button
+                  onClick={() => handleDeleteStaffImage(hotel.staffimages[currentStaffImageIndex]?.id)}
+                  className="absolute top-2 right-2 p-1 sm:p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-colors"
+                  aria-label="Delete staff photo"
+                >
+                  <FiX className="h-3 w-3 sm:h-4 sm:w-4" />
+                </button>
+              )}
             </div>
 
             {/* Thumbnail Navigation */}
             {hotel.staffimages.length > 1 && (
               <div className="flex gap-1 sm:gap-1.5 md:gap-2 overflow-x-auto pb-1 sm:pb-2 scrollbar-hide">
                 {hotel.staffimages.map((image, index) => (
-                  <button
-                    key={image.id}
-                    onClick={() => setCurrentStaffImageIndex(index)}
-                    className={`flex-shrink-0 w-10 h-7 sm:w-12 sm:h-8 md:w-16 md:h-10 lg:w-20 lg:h-12 rounded-md sm:rounded-lg overflow-hidden border-2 transition-all duration-200 touch-manipulation ${
-                      index === currentStaffImageIndex
-                        ? 'border-purple-500 ring-2 ring-purple-200 scale-105'
-                        : 'border-gray-200 hover:border-gray-300 hover:scale-105 active:scale-95'
-                    }`}
-                    aria-label={`View staff photo ${index + 1}`}
-                  >
-                    <img
-                      src={image.url}
-                      alt={`KashiBnB trained staff ${index + 1}`}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </button>
+                  <div key={image.id} className="relative">
+                    <button
+                      onClick={() => setCurrentStaffImageIndex(index)}
+                      className={`flex-shrink-0 w-10 h-7 sm:w-12 sm:h-8 md:w-16 md:h-10 lg:w-20 lg:h-12 rounded-md sm:rounded-lg overflow-hidden border-2 transition-all duration-200 touch-manipulation ${
+                        index === currentStaffImageIndex
+                          ? 'border-purple-500 ring-2 ring-purple-200 scale-105'
+                          : 'border-gray-200 hover:border-gray-300 hover:scale-105 active:scale-95'
+                      }`}
+                      aria-label={`View staff photo ${index + 1}`}
+                    >
+                      <img
+                        src={image.url}
+                        alt={`KashiBnB trained staff ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </button>
+                    
+                    {/* Delete button for thumbnail in edit mode */}
+                    {editMode && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteStaffImage(image.id);
+                        }}
+                        className="absolute -top-1 -right-1 p-0.5 sm:p-1 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-colors"
+                        aria-label="Delete staff photo"
+                      >
+                        <FiX className="h-2 w-2 sm:h-3 sm:w-3" />
+                      </button>
+                    )}
+                  </div>
                 ))}
               </div>
             )}
@@ -115,6 +141,31 @@ const HotelStaffSection = ({ hotel, editMode }) => {
           </div>
         )}
       </div>
+
+      {/* Edit mode upload section */}
+      {editMode && (
+        <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gray-50 rounded-lg sm:rounded-xl border border-gray-200">
+          <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+            Upload Staff Images
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleStaffImageUpload}
+            className="block w-full text-xs sm:text-sm text-gray-500
+              file:mr-2 sm:file:mr-4 file:py-1 sm:file:py-2 file:px-2 sm:file:px-4
+              file:rounded-md sm:file:rounded-lg file:border-0
+              file:text-xs sm:file:text-sm file:font-semibold
+              file:bg-purple-50 file:text-purple-700
+              hover:file:bg-purple-100
+              border border-gray-300 rounded-md sm:rounded-lg p-2"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Upload photos of your trained staff members (PNG, JPG, JPEG up to 10MB each)
+          </p>
+        </div>
+      )}
     </div>
   );
 };

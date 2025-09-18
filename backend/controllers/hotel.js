@@ -720,6 +720,78 @@ export const uploadStaffImages = async (req, res, nex) => {
     }
 };
 
+// Delete a staff image
+export const deleteStaffImage = async (req, res, nex) => {
+    try {
+        const { uid, imageId } = req.params;
+        
+        if (!uid || !imageId) {
+            return res.status(400).json({
+                success: false,
+                message: "Hotel ID and Image ID are required",
+            });
+        }
+        
+        // Check if the hotel exists and user owns it
+        const existingHotel = await prisma.hotels.findUnique({
+            where: { id: uid },
+            include: { owner: true }
+        });
+        
+        if (!existingHotel) {
+            return res.status(404).json({
+                success: false,
+                message: "Hotel not found"
+            });
+        }
+        
+        // Check if user is the owner or admin
+        if (existingHotel.ownerId !== req.user.id && !req.user.is_admin) {
+            return res.status(403).json({
+                success: false,
+                message: "You can only delete staff images from your own hotels"
+            });
+        }
+        
+        // Check if the staff image exists and belongs to this hotel
+        const staffImage = await prisma.staffimages.findFirst({
+            where: {
+                id: imageId,
+                hotelId: uid
+            }
+        });
+        
+        if (!staffImage) {
+            return res.status(404).json({
+                success: false,
+                message: "Staff image not found"
+            });
+        }
+        
+        // Delete the staff image from database
+        await prisma.staffimages.delete({
+            where: {
+                id: imageId
+            }
+        });
+        
+        console.log(`Staff image ${imageId} deleted from hotel ${uid}`);
+        
+        return res.status(200).json({
+            success: true,
+            message: "Staff image deleted successfully"
+        });
+    }
+    catch (e) {
+        console.log("ERROR in deleteStaffImage:", e);
+        return res.status(500).json({
+            success: false,
+            message: "Error deleting staff image",
+            error: e.message
+        });
+    }
+};
+
 // Delete a hotel (hotel owner can delete their own, admin can delete any)
 export const deleteHotel = async (req, res, nex) => {
     try {
