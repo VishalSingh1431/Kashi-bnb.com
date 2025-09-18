@@ -359,6 +359,7 @@ const HotelPage = () => {
           
           <HotelStaffSection
             hotel={hotel}
+            editMode={editMode}
           />
           
           <HotelReviews
