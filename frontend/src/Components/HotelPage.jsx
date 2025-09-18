@@ -12,6 +12,7 @@ import HotelHostInfo from "./HotelPage/HotelHostInfo";
 import HotelHeader from "./HotelPage/HotelHeader";
 import HotelVideoSection from "./HotelPage/HotelVideoSection";
 import HotelMapSection from "./HotelPage/HotelMapSection";
+import HotelStaffSection from "./HotelPage/HotelStaffSection";
 import PropertyTypeSelector from "./Listings/PropertyTypeSelector";
 import GuestAccessSelector from "./Listings/GuestAccessSelector";
 import HotelReviews from "./HotelPage/HotelReviews";
@@ -354,6 +355,10 @@ const HotelPage = () => {
             editMode={editMode}
             tempHotel={tempHotel}
             handleInputChange={handleInputChange}
+          />
+          
+          <HotelStaffSection
+            hotel={hotel}
           />
           
           <HotelReviews

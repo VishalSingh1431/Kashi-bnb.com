@@ -18,6 +18,7 @@ import AdditionalChargesForm from "../Components/Listings/AdditionalChargesForm"
 // Keep constants and localStorage access in the parent
 import { BACKEND, getAuthHeader } from "../assets/Vars";
 import ImageUploader from "../Components/Listings/ImageUploader";
+import StaffImagesUploader from "../Components/Listings/StaffImagesUploader";
 import { useAuth } from "../App";
 
 const Listings = () => {
@@ -27,6 +28,8 @@ const Listings = () => {
   // State definitions moved to the top
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [images, setImages] = useState([]);
+  const [currentStaffImageIndex, setCurrentStaffImageIndex] = useState(0);
+  const [staffImages, setStaffImages] = useState([]);
   const [videoUrl, setVideoUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -69,7 +72,8 @@ const Listings = () => {
     waterFilter: false,
     petCharge: '',
     extraAdultCharge: '',
-    icalLink: ''
+    icalLink: '',
+    staffImages: []
   });
 
   // Check authentication status on mount and when navigation occurs
@@ -124,6 +128,8 @@ const Listings = () => {
       // Reset all state when component unmounts EXCEPT phone number
       setCurrentImageIndex(0);
       setImages([]);
+      setCurrentStaffImageIndex(0);
+      setStaffImages([]);
       setVideoUrl('');
       // Don't clear phone number - preserve user input
       // setListingAccessForm({ phone: '' });
@@ -157,7 +163,8 @@ const Listings = () => {
         waterFilter: false,
         petCharge: '',
         extraAdultCharge: '',
-        icalLink: ''
+        icalLink: '',
+        staffImages: []
       });
     };
   }, [nav]);
@@ -172,6 +179,18 @@ const Listings = () => {
   const prevImage = () => {
     if (images?.length) {
       setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    }
+  };
+
+  const nextStaffImage = () => {
+    if (staffImages?.length) {
+      setCurrentStaffImageIndex((prevIndex) => (prevIndex + 1) % staffImages.length);
+    }
+  };
+
+  const prevStaffImage = () => {
+    if (staffImages?.length) {
+      setCurrentStaffImageIndex((prevIndex) => (prevIndex - 1 + staffImages.length) % staffImages.length);
     }
   };
 
@@ -459,7 +478,8 @@ Please verify and contact the user.`
         // New fields for charges and iCal
         petCharge: listing.petCharge ? parseFloat(listing.petCharge) : 0,
         extraAdultCharge: listing.extraAdultCharge ? parseFloat(listing.extraAdultCharge) : 0,
-        icalLink: listing.icalLink ? listing.icalLink.trim() : null
+        icalLink: listing.icalLink ? listing.icalLink.trim() : null,
+        staffImages: staffImages
       };
       
       console.log("Sending listing data:", listingData);
@@ -911,6 +931,14 @@ Please verify and contact the user.`
                 <AmenitiesForm listing={listing} handleAmenityChange={handleAmenityChange} />
                 <AdditionalChargesForm listing={listing} handleInputChange={handleInputChange} />
                 <LocationForm listing={listing} handleInputChange={handleInputChange} />
+                <StaffImagesUploader 
+                  staffImages={staffImages}
+                  setStaffImages={setStaffImages}
+                  currentStaffImageIndex={currentStaffImageIndex}
+                  setCurrentStaffImageIndex={setCurrentStaffImageIndex}
+                  nextStaffImage={nextStaffImage}
+                  prevStaffImage={prevStaffImage}
+                />
               </div>
             </div>
           </div>
@@ -938,6 +966,12 @@ Please verify and contact the user.`
                     <span className="text-xs sm:text-sm text-gray-600">Images:</span>
                     <span className="font-medium text-gray-800 text-xs sm:text-sm">
                       {images.length} uploaded
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-gray-600">Trained Staff:</span>
+                    <span className="font-medium text-gray-800 text-xs sm:text-sm">
+                      {staffImages.length} uploaded
                     </span>
                   </div>
                   <div className="flex items-center justify-between">

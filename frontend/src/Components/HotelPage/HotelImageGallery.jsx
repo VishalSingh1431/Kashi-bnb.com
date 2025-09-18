@@ -35,7 +35,7 @@ const HotelImageGallery = ({
       {/* Simple border frame */}
       <div className="rounded-xl overflow-hidden border-4 border-gray-300 bg-white p-3 transition-all duration-500" style={{boxShadow: '0 0 0 2px rgba(255, 255, 255, 0.6), 0 0 0 4px rgba(255, 255, 255, 0.4), 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1)'}} onMouseEnter={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(255, 255, 255, 0.7), 0 0 0 6px rgba(255, 255, 255, 0.5), 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.2)'} onMouseLeave={(e) => e.target.style.boxShadow = '0 0 0 2px rgba(255, 255, 255, 0.6), 0 0 0 4px rgba(255, 255, 255, 0.4), 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1)'}>
         {/* Main image container */}
-        <div className="aspect-[16/9] bg-gray-200 relative rounded-lg overflow-hidden" style={{boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.3), inset 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1)'}}>
+        <div className="aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] bg-gray-200 relative rounded-lg overflow-hidden" style={{boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.3), inset 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1)'}}>
           {hotel.images?.length ? (
             <>
               <img 
@@ -46,19 +46,19 @@ const HotelImageGallery = ({
               />
 
               {/* Image counter */}
-              <div className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-full text-sm font-bold border-2 border-gray-300" style={{boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 0 2px rgba(255, 255, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.8)'}}>
+              <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-white/95 px-2 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold border-2 border-gray-300" style={{boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 0 2px rgba(255, 255, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.8)'}}>
                 {currentImageIndex + 1} / {hotel.images.length}
               </div>
 
               {/* Simple thumbnail strip */}
               {hotel.images.length > 1 && (
-                <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-3">
-                  <div className="flex gap-2 overflow-x-auto">
+                <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 sm:p-3">
+                  <div className="flex gap-1 sm:gap-2 overflow-x-auto">
                     {hotel.images.map((image, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`flex-shrink-0 w-12 h-8 rounded overflow-hidden border-2 transition-all duration-300 ${
+                        className={`flex-shrink-0 w-10 h-7 sm:w-12 sm:h-8 rounded overflow-hidden border-2 transition-all duration-300 ${
                           index === currentImageIndex 
                             ? 'border-white' 
                             : 'border-white/50 hover:border-white'

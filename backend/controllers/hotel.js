@@ -57,6 +57,7 @@ export const getUniqueHotel = async (req,res,nex)=>{
                     },
                 },
                 images : true,
+                staffimages : true,
                 bookings : true,
             }
         });
@@ -577,6 +578,147 @@ export const uploadHotImage = async (req,res,nex) => {
         });
     }
 }
+
+// Upload staff images for a hotel
+export const uploadStaffImages = async (req, res, nex) => {
+    try {
+        const id = req.params.uid;
+        if (!id) {
+            console.log("ERROR: No hotel ID provided");
+            return res.status(400).json({
+                success: false,
+                message: "Hotel ID is required",
+            });
+        }
+        
+        // First check if the hotel exists and user owns it
+        const existingHotel = await prisma.hotels.findUnique({
+            where: { id: id },
+            include: { owner: true }
+        });
+        
+        if (!existingHotel) {
+            console.log("ERROR: Hotel not found with ID:", id);
+            return res.status(404).json({
+                success: false,
+                message: "Hotel not found"
+            });
+        }
+        
+        console.log("Hotel found:", existingHotel.name);
+        console.log("Hotel owner ID:", existingHotel.ownerId);
+        console.log("User ID:", req.user.id);
+        
+        // Check if user is the owner or admin
+        if (existingHotel.ownerId !== req.user.id && !req.user.is_admin) {
+            console.log("ERROR: User not authorized to upload staff images to this hotel");
+            return res.status(403).json({
+                success: false,
+                message: "You can only upload staff images to your own hotels"
+            });
+        }
+        
+        // Validate files
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No staff images provided"
+            });
+        }
+        
+        // Log basic file info for debugging
+        for (let i = 0; i < req.files.length; i++) {
+            const file = req.files[i];
+            console.log(`Staff Image ${i + 1}:`, {
+                originalname: file.originalname,
+                mimetype: file.mimetype,
+                size: file.size
+            });
+        }
+        
+        // Check if hotel already has too many staff images
+        const existingStaffImageCount = await prisma.staffimages.count({
+            where: { hotelId: id }
+        });
+        
+        const maxStaffImages = 20; // Limit staff images to 20
+        if (existingStaffImageCount + req.files.length > maxStaffImages) {
+            console.log(`ERROR: Too many staff images. Current: ${existingStaffImageCount}, Adding: ${req.files.length}, Max: ${maxStaffImages}`);
+            return res.status(400).json({
+                success: false,
+                message: `Hotel can have maximum ${maxStaffImages} staff images. You currently have ${existingStaffImageCount} staff images.`
+            });
+        }
+        
+        // Upload staff images with retry logic
+        const uploadResults = [];
+        for (let i = 0; i < req.files.length; i++) {
+            const file = req.files[i];
+            let uploadSuccess = false;
+            let retryCount = 0;
+            const maxRetries = 3;
+            
+            while (!uploadSuccess && retryCount < maxRetries) {
+                try {
+                    const [imageUrl, imageName] = await iUploader(file, i);
+                    
+                    // Save to database
+                    await prisma.staffimages.create({
+                        data: {
+                            url: imageUrl,
+                            name: imageName,
+                            hotelId: id
+                        }
+                    });
+                    
+                    uploadResults.push({
+                        success: true,
+                        index: i,
+                        url: imageUrl,
+                        name: imageName
+                    });
+                    
+                    uploadSuccess = true;
+                    console.log(`Staff image ${i + 1} uploaded successfully`);
+                    
+                } catch (uploadError) {
+                    retryCount++;
+                    console.log(`Staff image ${i + 1} upload attempt ${retryCount} failed:`, uploadError.message);
+                    
+                    if (retryCount >= maxRetries) {
+                        uploadResults.push({
+                            success: false,
+                            index: i,
+                            error: uploadError.message
+                        });
+                    }
+                }
+            }
+        }
+        
+        const successfulUploads = uploadResults.filter(result => result.success);
+        const failedUploads = uploadResults.filter(result => !result.success);
+        
+        if (failedUploads.length > 0) {
+            console.log(`Some staff images failed to upload: ${failedUploads.length} failed, ${successfulUploads.length} successful`);
+        }
+        
+        return res.status(200).json({
+            success: true,
+            message: `Staff images uploaded successfully. ${successfulUploads.length} uploaded, ${failedUploads.length} failed.`,
+            uploadedImages: uploadResults,
+            totalStaffImages: existingStaffImageCount + successfulUploads.length
+        });
+    }
+    catch (e) {
+        console.log("ERROR in uploadStaffImages:", e);
+        return res.status(500).json({
+            success: false,
+            message: "Error uploading staff images",
+            error: e.message
+        });
+    }
+};
 
 // Delete a hotel (hotel owner can delete their own, admin can delete any)
 export const deleteHotel = async (req, res, nex) => {

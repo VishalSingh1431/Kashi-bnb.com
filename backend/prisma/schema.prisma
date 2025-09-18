@@ -89,6 +89,7 @@ model hotels {
   icalLink         String?
   bookings         bookings[]
   images           himages[]
+  staffimages      staffimages[]
   owner            users      @relation(fields: [ownerId], references: [id])
   ratings          rating[]
   reviews          review[]
@@ -113,6 +114,14 @@ model blogs {
 }
 
 model himages {
+  id      String  @id @default(uuid())
+  url     String
+  name    String?
+  hotelId String
+  hotel   hotels  @relation(fields: [hotelId], references: [id])
+}
+
+model staffimages {
   id      String  @id @default(uuid())
   url     String
   name    String?

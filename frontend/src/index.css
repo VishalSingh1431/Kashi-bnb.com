@@ -80,3 +80,12 @@ input[placeholder="Search by hotel name, amenities, or keywords..."]:focus {
   --tw-ring-color: transparent !important;
   --tw-ring-width: 0px !important;
 }
+
+/* Hide scrollbar for thumbnail navigation */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
