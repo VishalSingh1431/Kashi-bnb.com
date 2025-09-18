@@ -582,6 +582,12 @@ export const uploadHotImage = async (req,res,nex) => {
 // Upload staff images for a hotel
 export const uploadStaffImages = async (req, res, nex) => {
     try {
+        console.log("=== STAFF IMAGE UPLOAD START ===");
+        console.log("Request params:", req.params);
+        console.log("Request files:", req.files);
+        console.log("Request body:", req.body);
+        console.log("Request user:", req.user);
+        
         const id = req.params.uid;
         if (!id) {
             console.log("ERROR: No hotel ID provided");
@@ -711,7 +717,9 @@ export const uploadStaffImages = async (req, res, nex) => {
         });
     }
     catch (e) {
+        console.log("=== STAFF IMAGE UPLOAD ERROR ===");
         console.log("ERROR in uploadStaffImages:", e);
+        console.log("Error stack:", e.stack);
         return res.status(500).json({
             success: false,
             message: "Error uploading staff images",

@@ -17,6 +17,7 @@ const StaffImagesUploader = ({
 
     setIsUploading(true);
     const newImages = [];
+    let processedCount = 0;
 
     for (const file of files) {
       if (file.type.startsWith('image/')) {
@@ -29,12 +30,19 @@ const StaffImagesUploader = ({
             name: file.name
           });
           
-          if (newImages.length === files.length) {
+          processedCount++;
+          if (processedCount === files.length) {
             setStaffImages(prev => [...prev, ...newImages]);
             setIsUploading(false);
           }
         };
         reader.readAsDataURL(file);
+      } else {
+        processedCount++;
+        if (processedCount === files.length) {
+          setStaffImages(prev => [...prev, ...newImages]);
+          setIsUploading(false);
+        }
       }
     }
   };

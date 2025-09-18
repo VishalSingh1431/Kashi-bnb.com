@@ -116,11 +116,7 @@ app.use(helmet({
 app.set('trust proxy', 1);
 
 // CORS configuration
-// app.use(cors({
-//   origin: "http://localhost:5173",   // React frontend URL
-//   methods: ["GET", "POST", "PUT", "DELETE"],
-//   credentials: true
-// }));
+// app.use staff in 
 
 // Essential middleware
 app.use(cookieParser());
