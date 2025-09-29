@@ -6,18 +6,24 @@ import { Mail, Phone, Lock, Eye, EyeOff, Smartphone, User, X } from "lucide-reac
 import { useAuth } from '../App';
 
 /*
+ * SIGNUP METHODS AVAILABLE:
+ * 1. Email/Password signup with OTP verification - Primary method
+ *    - Step 1: User fills form and receives OTP via email
+ *    - Step 2: User verifies OTP to complete account creation
+ * 2. Google OAuth signup - Alternative method
+ * 
  * PHONE SIGNUP TEMPORARILY HIDDEN FROM UI - WILL RE-ENABLE LATER
  * All phone OTP functionality is preserved but hidden from user interface
- * Only Google signup is currently visible to users
  * All code remains intact for easy restoration
  */
 
 const Signup = () => {
-  const [signupMethod, setSignupMethod] = useState("google"); // Temporarily hidden: "phone" or "google"
+  const [signupMethod, setSignupMethod] = useState("email"); // "email", "phone", or "google"
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
+    password: "",
     otp: ""
   });
   const [error, setError] = useState("");
@@ -26,6 +32,10 @@ const Signup = () => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  
+  const [emailVerificationStep, setEmailVerificationStep] = useState(false);
+  const [signupData, setSignupData] = useState({});
   // Recovery popup state removed - now handled by Home.jsx and Profile.jsx
   
   const navigate = useNavigate();
@@ -213,6 +223,197 @@ const Signup = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Email/Password Signup Flow - Step 1: Send OTP
+  const handleEmailSignup = async (e) => {
+    e.preventDefault();
+    
+    // Validation
+    if (!formData.name || formData.name.trim().length < 2) {
+      setError("Please enter your full name (at least 2 characters)");
+      return;
+    }
+
+    if (!formData.email || !formData.email.includes('@')) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!formData.password || formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+  // no confirm password check
+
+    setLoading(true);
+    setError("");
+
+    try {
+      // Store signup data for later use
+      const signupData = {
+        name: formData.name.trim(),
+        email: formData.email,
+        password: formData.password,
+        mobile: formData.phone || null
+      };
+      setSignupData(signupData);
+
+      // Send OTP for email verification
+      const response = await axios.post(`${BACKEND}/api/v1/otp/send-signup-email-otp`, {
+        email: formData.email,
+        name: formData.name.trim()
+      });
+
+      if (response.status === 200) {
+        setEmailVerificationStep(true);
+        setMessage("OTP sent successfully! Check your email for the verification code.");
+        
+        // Clear password fields for security
+        setFormData(prev => ({
+          ...prev,
+          password: ""
+        }));
+      }
+    } catch (err) {
+      console.log('Email Signup OTP Error:', err);
+      let errorMessage = "Failed to send verification OTP. Please try again.";
+      
+      if (err.response?.status === 409) {
+        if (err.response.data.message.includes("Google")) {
+          errorMessage = "An account with this email already exists via Google. Please login with Google instead.";
+        } else if (err.response.data.message.includes("Mobile")) {
+          errorMessage = "Mobile number already exists. Please use a different number.";
+        } else {
+          errorMessage = "Email already exists. Please login instead.";
+        }
+      } else if (err.response?.status === 400) {
+        errorMessage = "Invalid email format or missing information.";
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Email/Password Signup Flow - Step 2: Verify OTP and Create Account
+  const handleVerifySignupOTP = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.otp || formData.otp.length < 4) {
+      setError("Please enter a valid OTP");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post(`${BACKEND}/api/v1/otp/verify-signup-email-otp`, {
+        email: signupData.email,
+        name: signupData.name,
+        otp: formData.otp,
+        password: signupData.password,
+        mobile: signupData.mobile
+      });
+
+      if (response.status === 200) {
+        console.log('Email signup: Response received:', response.data);
+        
+        // Store user data in localStorage and update auth context
+        if (response.data.token && response.data.user) {
+          console.log('Email signup: Storing user data in localStorage');
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          
+          // Update authentication context
+          login(response.data.token, response.data.user);
+          
+          // Verify data was stored
+          const storedToken = localStorage.getItem('token');
+          const storedUser = localStorage.getItem('user');
+          console.log('Email signup: Stored token:', !!storedToken);
+          console.log('Email signup: Stored user:', storedUser);
+        }
+        
+        setSuccess(true);
+        setMessage("Account created successfully! Welcome to KashiBnB!");
+        
+        // Clear all form data
+        setFormData({
+          name: "",
+          phone: "",
+          email: "",
+          password: "",
+          otp: ""
+        });
+        setSignupData({});
+      }
+    } catch (err) {
+      console.log('Email OTP Verification Error:', err);
+      let errorMessage = "OTP verification failed. Please try again.";
+      
+      if (err.response?.status === 400) {
+        if (err.response.data.message.includes("expired")) {
+          errorMessage = "OTP has expired. Please request a new one.";
+        } else if (err.response.data.message.includes("Invalid")) {
+          errorMessage = "Invalid OTP. Please check and try again.";
+        } else {
+          errorMessage = err.response.data.message;
+        }
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Resend OTP for Email Signup
+  const handleResendSignupOTP = async () => {
+    setOtpLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post(`${BACKEND}/api/v1/otp/send-signup-email-otp`, {
+        email: signupData.email,
+        name: signupData.name
+      });
+
+      if (response.status === 200) {
+        setMessage("OTP resent successfully! Check your email for the verification code.");
+        setFormData(prev => ({ ...prev, otp: "" }));
+      }
+    } catch (err) {
+      console.log('Resend OTP Error:', err);
+      let errorMessage = "Failed to resend OTP. Please try again.";
+      
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  // Go back to signup form
+  const handleBackToSignup = () => {
+    setEmailVerificationStep(false);
+    setSignupData({});
+    setFormData(prev => ({
+      ...prev,
+      otp: ""
+    }));
+    setMessage("");
+    setError("");
   };
 
   // Google Signup Flow
@@ -458,19 +659,18 @@ const Signup = () => {
           <p className="text-gray-600">Choose your preferred way to sign up</p>
         </div>
 
-        {/* Method Selection - TEMPORARILY HIDDEN */}
-        {/* 
+        {/* Method Selection */}
         <div className="flex gap-2">
           <button
-            onClick={() => setSignupMethod("phone")}
+            onClick={() => setSignupMethod("email")}
             className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-              signupMethod === "phone"
+              signupMethod === "email"
                 ? "bg-orange-500 text-white shadow-lg"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            <Phone className="h-5 w-5" />
-            <span className="hidden sm:inline">Phone OTP</span>
+            <Mail className="h-5 w-5" />
+            <span className="hidden sm:inline">Email</span>
           </button>
           <button
             onClick={() => setSignupMethod("google")}
@@ -489,11 +689,37 @@ const Signup = () => {
             <span className="hidden sm:inline">Google</span>
           </button>
         </div>
-        */}
 
         {error && (
           <div className="p-3 text-red-600 rounded-lg text-center bg-red-50 border border-red-200">
             {error}
+            {error.includes("already exists") && !error.includes("Google") && (
+              <div className="mt-2 text-sm">
+                <p className="text-gray-600">This email is already registered. Please login instead.</p>
+                <button
+                  onClick={() => navigate('/login')}
+                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                >
+                  Go to Login
+                </button>
+              </div>
+            )}
+            {error.includes("Google") && (
+              <div className="mt-2 text-sm">
+                <p className="text-gray-600">An account with this email already exists via Google. Please login with Google instead.</p>
+                <button
+                  onClick={() => setSignupMethod("google")}
+                  className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm"
+                >
+                  Use Google Signup Instead
+                </button>
+              </div>
+            )}
+            {error.includes("Mobile number already exists") && (
+              <div className="mt-2 text-sm">
+                <p className="text-gray-600">This phone number is already registered. Please use a different number or leave it blank.</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -501,6 +727,163 @@ const Signup = () => {
           <div className="p-3 text-green-600 rounded-lg text-center bg-green-50 border border-green-200">
             {message}
           </div>
+        )}
+
+        {/* Email/Password Signup */}
+        {signupMethod === "email" && !emailVerificationStep && (
+          <form onSubmit={handleEmailSignup} className="space-y-4">
+            <div>
+              <label className="block text-gray-700 mb-2 font-medium">Full Name</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Enter your full name as you'd like it to appear</p>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 mb-2 font-medium">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                  placeholder="Enter your email address"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-gray-500 mb-2 font-medium">Phone Number (Optional)</label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                  placeholder="Enter your phone number (optional)"
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Optional - helps with account recovery</p>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 mb-2 font-medium">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Password must be at least 6 characters long</p>
+            </div>
+
+            
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-lg font-medium transition-all duration-200 hover:from-orange-600 hover:to-yellow-600 shadow-lg hover:shadow-xl ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              {loading ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
+        )}
+
+        {/* Email OTP Verification Step */}
+        {signupMethod === "email" && emailVerificationStep && (
+          <form onSubmit={handleVerifySignupOTP} className="space-y-4">
+            <div className="text-center py-4">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full flex items-center justify-center">
+                <Mail className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Verify Your Email</h3>
+              <p className="text-gray-600 text-sm">
+                We've sent a 6-digit verification code to <br />
+                <span className="font-medium text-gray-800">{signupData.email}</span>
+              </p>
+              <p className="text-xs text-gray-500 mt-2">
+                The OTP will expire in 10 minutes
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 mb-2 font-medium">Enter Verification Code</label>
+              <div className="relative">
+                <Smartphone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  name="otp"
+                  value={formData.otp}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-center text-lg tracking-widest"
+                  placeholder="000000"
+                  maxLength="6"
+                  required
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Enter the 6-digit code sent to your email</p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-lg font-medium transition-all duration-200 hover:from-orange-600 hover:to-yellow-600 shadow-lg hover:shadow-xl ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              {loading ? "Verifying..." : "Verify & Create Account"}
+            </button>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleResendSignupOTP}
+                disabled={otpLoading}
+                className={`flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-all duration-200 hover:bg-gray-200 ${
+                  otpLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
+              >
+                {otpLoading ? "Sending..." : "Resend OTP"}
+              </button>
+              <button
+                type="button"
+                onClick={handleBackToSignup}
+                className="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-all duration-200 hover:bg-gray-200"
+              >
+                Back to Form
+              </button>
+            </div>
+          </form>
         )}
 
         {/* Phone OTP Signup - TEMPORARILY HIDDEN */}

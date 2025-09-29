@@ -266,7 +266,16 @@ export default App;
 const RouteAwareSpacer = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const isHotelPage = location.pathname.startsWith("/hotel/");
+  
+  // For hotel pages, provide extra spacing to ensure hotel name is visible
+  const getSpacingClass = () => {
+    if (isHome) return "h-0";
+    if (isHotelPage) return "h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36";
+    return "h-16 sm:h-20 md:h-28 lg:h-32 xl:h-36";
+  };
+  
   return (
-    <div aria-hidden="true" className={isHome ? "h-0" : "h-16 sm:h-20 md:h-28 lg:h-32 xl:h-36"}></div>
+    <div aria-hidden="true" className={getSpacingClass()}></div>
   );
 };

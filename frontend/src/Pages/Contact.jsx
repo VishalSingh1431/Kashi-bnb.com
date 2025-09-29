@@ -1,5 +1,5 @@
 import React from "react";
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaInstagram, FaTwitter, FaLinkedin, FaYoutube, FaPinterest } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const teamMembers = [
@@ -360,32 +360,49 @@ const Contact = () => {
             </div>
             <div className="flex gap-4">
               <motion.a
-                href="#"
-                className="text-black hover:text-black transition-colors"
-                whileHover={{ scale: 1.2, rotate: 10 }}
-              >
-                <FaFacebook className="text-2xl" />
-              </motion.a>
-              <motion.a
-                href="#"
-                className="text-black hover:text-black transition-colors"
+                href="https://www.instagram.com/kashibnb/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black hover:text-pink-600 transition-colors"
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
                 <FaInstagram className="text-2xl" />
               </motion.a>
               <motion.a
-                href="#"
-                className="text-black   transition-colors"
+                href="https://x.com/kashibnb"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black hover:text-blue-500 transition-colors"
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
                 <FaTwitter className="text-2xl" />
               </motion.a>
               <motion.a
-                href="#"
-                className="text-black 0  transition-colors"
+                href="https://www.linkedin.com/company/kashibnb"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black hover:text-blue-600 transition-colors"
                 whileHover={{ scale: 1.2, rotate: 10 }}
               >
                 <FaLinkedin className="text-2xl" />
+              </motion.a>
+              <motion.a
+                href="https://www.youtube.com/@Kashi_bnb"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black hover:text-red-600 transition-colors"
+                whileHover={{ scale: 1.2, rotate: 10 }}
+              >
+                <FaYoutube className="text-2xl" />
+              </motion.a>
+              <motion.a
+                href="https://in.pinterest.com/kashibnb/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black hover:text-red-500 transition-colors"
+                whileHover={{ scale: 1.2, rotate: 10 }}
+              >
+                <FaPinterest className="text-2xl" />
               </motion.a>
             </div>
           </motion.div>

@@ -32,7 +32,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="shadow-md p-3 md:p-4 opacity absolute z-10 w-full h-auto overflow-visible" style={{ backgroundColor: '#f3eadb' }}>
+    <nav className="shadow-md p-3 md:p-4 opacity fixed top-0 left-0 z-50 w-full h-auto overflow-visible" style={{ backgroundColor: '#f3eadb' }}>
       <div className="w-full max-w-7xl mx-auto flex justify-between items-center overflow-visible">
         {/* Logo - Left Side */}
         <div className="flex-shrink-0 mr-auto border-0 outline-none">
@@ -127,7 +127,7 @@ const Navbar = () => {
                     onMouseEnter={() => setIsProfileOpen(true)}
                     onMouseLeave={() => setIsProfileOpen(false)}
                   >
-                    <button className="flex items-center gap-2 cursor-pointer focus:outline-none border-0 block w-full h-full text-black group-hover:text-orange-600 group-active:text-orange-800 py-2">
+                    <button className="flex items-center gap-2 cursor-pointer focus:outline-none border-0 w-full h-full text-black group-hover:text-orange-600 group-active:text-orange-800 py-2">
                       <User size={20} />
                       {user.first_name || user.name || "Profile"}
                     </button>

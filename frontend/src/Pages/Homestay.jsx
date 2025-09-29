@@ -102,7 +102,7 @@ const Homestay = () => {
           initial="hidden"
           animate="visible"
         >
-          Book Your Kashi Stay Today
+          Discover Kashi, Book Your Stay Now
         </motion.h1>
 
         {/* Search Bar */}

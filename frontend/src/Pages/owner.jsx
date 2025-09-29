@@ -67,7 +67,7 @@ const Owner = () => {
           <h1 className='text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-gray-900 leading-tight'>
             Keep <span className='text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600'>100%</span> of your bookings
             <br />
-            <span className='text-blue-600'>List free on KashiBnB</span>
+            <span className='text-blue-600'>Zero commission fees on KashiBnB</span>
           </h1>
           
           <div className='flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 text-sm sm:text-base'>

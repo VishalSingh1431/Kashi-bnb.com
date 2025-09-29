@@ -11,12 +11,13 @@
 // import forgotPasswordRouter from './routes/forgotPassword.js';
 // import contactRouter from './routes/contact.js';
 // import { PrismaClient } from '@prisma/client';
-// // import cors from "cors";
-// // app.use(cors({
-// //   origin: "http://localhost:5173",   // React frontend URL
-// //   methods: ["GET", "POST", "PUT", "DELETE"],
-// //   credentials: true
-// // }));
+// import cors from "cors";
+
+// app.use(cors({
+//   origin: "http://localhost:5173",   // React frontend URL
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true
+// }));
 
 // const prisma = new PrismaClient();
 

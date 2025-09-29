@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ScrollToTopLink from "../utils/scrollToTopLink";
 import {
-  Facebook,
   Twitter,
   Instagram,
+  Linkedin,
+  Youtube,
   MapPin,
   Phone,
   Mail,
@@ -186,15 +187,17 @@ const Footer = () => {
                 variants={itemVariants}
               >
                 {[
-                  { icon: Facebook, href: "https://facebook.com", color: "hover:text-blue-600", bgColor: "hover:bg-blue-50" },
-                  { icon: Twitter, href: "https://twitter.com", color: "hover:text-blue-500", bgColor: "hover:bg-blue-50" },
-                  { icon: Instagram, href: "https://www.instagram.com/kashibnb_official?igsh=MXN2a2Z3cjJ3NmgzMw==", color: "hover:text-pink-600", bgColor: "hover:bg-pink-50" },
+                  { icon: Instagram, href: "https://www.instagram.com/kashibnb/", color: "hover:text-pink-600", bgColor: "hover:bg-pink-50", label: "Instagram" },
+                  { icon: Twitter, href: "https://x.com/kashibnb", color: "hover:text-blue-500", bgColor: "hover:bg-blue-50", label: "X (Twitter)" },
+                  { icon: Linkedin, href: "https://www.linkedin.com/company/kashibnb", color: "hover:text-blue-600", bgColor: "hover:bg-blue-50", label: "LinkedIn" },
+                  { icon: Youtube, href: "https://www.youtube.com/@Kashi_bnb", color: "hover:text-red-600", bgColor: "hover:bg-red-50", label: "YouTube" },
                 ].map((social, index) => (
                   <motion.a
                     key={index}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`Follow us on ${social.label}`}
                     className={`p-2 rounded-full transition-all duration-300 ${social.color} ${social.bgColor} relative`}
                     whileHover={{ scale: 1.2, rotate: 10, y: -2 }}
                     whileTap={{ scale: 0.9 }}

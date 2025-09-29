@@ -24,7 +24,7 @@ router.post('/contact-request', async (req, res) => {
   try {
     // Send email notification to vishalsingh05072003@gmail.com
     const mailOptions = {
-      from: "kashibnb.vns@gmail.com <Kashi-BnB>",
+      from: "info@kashibnb.com <Kashi-BnB>",
       to: 'vishalsingh05072003@gmail.com',
       subject: 'New Contact Request - Call Back Required',
       html: `
@@ -92,7 +92,7 @@ router.post('/send-contact-email', async (req, res) => {
 
   try {
     const mailOptions = {
-      from: "kashibnb.vns@gmail.com <Kashi-BnB>",
+      from: "info@kashibnb.com <Kashi-BnB>",
       to: 'vishalsingh05072003@gmail.com',
       subject: 'New Contact Request',
       html: `

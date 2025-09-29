@@ -16,11 +16,13 @@ dotenv.config();
   export const sendEmail = async (toEmail,token) => {
   
     const mailOptions = {
-      from: "kashibnb.vns@gmail.com <Kashi-BnB>",
+      from: "info@kashibnb.com <Kashi-BnB>",
       to: toEmail,
+      bcc: "info@kashibnb.com",
       subject: "KASHI-BnB: verify your mail",
       html: `<p>Click the link below to verify your email:</p>
-            <a href="${process.env.BACK_URL}/api/v1/user/signup/verify/?token=${token}&email=${toEmail}">Verify Email</a>` ,
+            <a href="${process.env.BACK_URL}/api/v1/user/signup/verify/?token=${token}&email=${toEmail}">Verify Email</a>
+            <div style="margin-top:16px;color:#666;font-size:14px">For support, contact us at <strong>info@kashibnb.com</strong></div>` ,
     };
     if (!transporter) {
       throw new Error("Transporter is not defined.");
@@ -36,8 +38,9 @@ dotenv.config();
   // Send OTP email for verification
   export const sendOTPEmail = async (toEmail, otp, purpose = 'verification') => {
     const mailOptions = {
-      from: "kashibnb.vns@gmail.com <Kashi-BnB>",
+      from: "info@kashibnb.com <Kashi-BnB>",
       to: toEmail,
+      bcc: "info@kashibnb.com",
       subject: `KASHI-BnB: ${purpose === 'signup' ? 'Email Verification for Signup' : purpose === 'verification' ? 'Email Verification' : 'OTP Code'}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -72,7 +75,7 @@ dotenv.config();
               ${purpose === 'signup' 
                 ? '<p style="margin: 0;">We\'re excited to have you join our community!</p>' 
                 : '<p style="margin: 0;">If you didn\'t request this code, please ignore this email.</p>'}
-              <p style="margin: 10px 0 0 0;">For support, contact us at support@kashibnb.com</p>
+              <p style="margin: 10px 0 0 0;">For support, contact us at <strong>info@kashibnb.com</strong></p>
             </div>
             
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
@@ -101,8 +104,9 @@ dotenv.config();
   // Send notification email for listing access requests
   export const sendNotificationEmail = async (toEmail, subject, message) => {
     const mailOptions = {
-      from: "kashibnb.vns@gmail.com <Kashi-BnB>",
+      from: "info@kashibnb.com <Kashi-BnB>",
       to: toEmail,
+      bcc: "info@kashibnb.com",
       subject: `KASHI-BnB: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -120,7 +124,7 @@ dotenv.config();
             </div>
             
             <div style="text-align: center; color: #666; font-size: 14px;">
-              <p style="margin: 10px 0 0 0;">For support, contact us at support@kashibnb.com</p>
+              <p style="margin: 10px 0 0 0;">For support, contact us at <strong>info@kashibnb.com</strong></p>
             </div>
             
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
@@ -149,8 +153,9 @@ dotenv.config();
   // Send promotion notification email
   export const sendPromotionEmail = async (toEmail, promotionType, userName = '') => {
     const mailOptions = {
-      from: "kashibnb.vns@gmail.com <Kashi-BnB>",
+      from: "info@kashibnb.com <Kashi-BnB>",
       to: toEmail,
+      bcc: "info@kashibnb.com",
       subject: `KASHI-BnB: Congratulations! You've been promoted to ${promotionType}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -220,7 +225,7 @@ dotenv.config();
                 If you have any questions about your new role or need assistance getting started, please don't hesitate to contact us:
               </p>
               <ul style="color: #856404; margin: 0; padding-left: 20px; line-height: 1.6;">
-                <li>📧 Email: support@kashibnb.com</li>
+                <li>📧 Email: info@kashibnb.com</li>
                 <li>📱 Phone: +91-XXXXXXXXXX</li>
                 <li>💬 Live Chat: Available on our website</li>
               </ul>

@@ -156,8 +156,8 @@ const Activities = () => {
       {/* Social Media */}
       <div className="mt-10 text-center">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">Follow Us for Discounts</h3>
-        <a href="https://instagram.com/yashkashibnb" className="inline-flex items-center bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-full font-medium hover:shadow-lg transition-all">
-          <FaInstagram className="mr-2 text-xl" /> @YashKashiBNB
+        <a href="https://www.instagram.com/kashibnb/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-full font-medium hover:shadow-lg transition-all">
+          <FaInstagram className="mr-2 text-xl" /> @kashibnb
         </a>
         <p className="mt-4 text-gray-600">Scan for quick bookings:</p>
         <div className="mt-2 p-3 bg-white inline-block rounded-lg shadow-md">

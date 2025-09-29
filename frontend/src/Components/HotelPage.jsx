@@ -318,7 +318,7 @@ const HotelPage = () => {
   if (!hotel) return <div className="text-center py-10 text-red-500">Hotel not found</div>;
 
   return (
-    <div className="min-h-screen px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 max-w-7xl mx-auto pt-4 sm:pt-6 md:pt-8">
       <HotelHeader 
         isOwnerOrAdmin={isOwnerOrAdmin}
         editMode={editMode}

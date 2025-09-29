@@ -6,23 +6,29 @@ import { useAuth } from "../App";
 import { Mail, Phone, Lock, Eye, EyeOff, Smartphone } from "lucide-react";
 
 /*
+ * LOGIN METHODS AVAILABLE:
+ * 1. Email/Password login - Primary method
+ * 2. Google OAuth login - Alternative method
+ * 
  * PHONE LOGIN TEMPORARILY HIDDEN FROM UI - WILL RE-ENABLE LATER
  * All phone OTP functionality is preserved but hidden from user interface
- * Only Google login is currently visible to users
  * All code remains intact for easy restoration
  */
 
 const Login = () => {
-  const [loginMethod, setLoginMethod] = useState("google"); // Temporarily hidden: "phone" or "google"
+  const [loginMethod, setLoginMethod] = useState("email"); // "email", "phone", or "google"
   const [formData, setFormData] = useState({
     phone: "",
-    otp: ""
+    otp: "",
+    email: "",
+    password: ""
   });
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -130,6 +136,58 @@ const Login = () => {
     }
   };
 
+  // Email/Password Login Flow
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    if (!formData.email || !formData.password) {
+      setError("Please enter both email and password");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post(`${BACKEND}/api/v1/user/login`, {
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (response.status === 200) {
+        login(response.data.token, response.data.user);
+        
+        // Check for redirect parameter and navigate accordingly
+        const redirectUrl = searchParams.get('redirect');
+        if (redirectUrl) {
+          navigate(decodeURIComponent(redirectUrl));
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (err) {
+      console.log('Email Login Error:', err);
+      let errorMessage = "Login failed. Please try again.";
+      
+      if (err.response?.status === 401) {
+        if (err.response.data.message.includes("not found")) {
+          errorMessage = "Email not found. Please check your email or sign up.";
+        } else if (err.response.data.message.includes("Incorrect password")) {
+          errorMessage = "Incorrect password. Please try again.";
+        } else {
+          errorMessage = err.response.data.message;
+        }
+      } else if (err.response?.status === 403) {
+        errorMessage = "Email not verified. Please verify your email before logging in.";
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Google Login Flow
   const handleGoogleLogin = () => {
     const redirectUrl = searchParams.get('redirect');
@@ -150,19 +208,18 @@ const Login = () => {
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
-        {/* Method Selection - TEMPORARILY HIDDEN */}
-        {/* 
+        {/* Method Selection */}
         <div className="flex gap-2">
           <button
-            onClick={() => setLoginMethod("phone")}
+            onClick={() => setLoginMethod("email")}
             className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-              loginMethod === "phone"
+              loginMethod === "email"
                 ? "bg-orange-500 text-white shadow-lg"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            <Phone className="h-5 w-5" />
-            <span className="hidden sm:inline">Phone OTP</span>
+            <Mail className="h-5 w-5" />
+            <span className="hidden sm:inline">Email</span>
           </button>
           <button
             onClick={() => setLoginMethod("google")}
@@ -181,19 +238,29 @@ const Login = () => {
             <span className="hidden sm:inline">Google</span>
           </button>
         </div>
-        */}
 
         {error && (
           <div className="p-3 text-red-600 rounded-lg text-center bg-red-50 border border-red-200">
             {error}
             {error.includes("not found") && (
               <div className="mt-2 text-sm">
-                <p className="text-gray-600">This phone number is not registered. Please sign up first.</p>
+                <p className="text-gray-600">This email address is not registered. Please sign up first.</p>
                 <button
                   onClick={() => navigate('/signup')}
                   className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
                 >
                   Go to Signup
+                </button>
+              </div>
+            )}
+            {error.includes("Email not verified") && (
+              <div className="mt-2 text-sm">
+                <p className="text-gray-600">Please check your email and click the verification link before logging in.</p>
+                <button
+                  onClick={() => setLoginMethod("google")}
+                  className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm"
+                >
+                  Use Google Login Instead
                 </button>
               </div>
             )}
@@ -242,6 +309,69 @@ const Login = () => {
           <div className="p-3 text-green-600 rounded-lg text-center bg-green-50 border border-green-200">
             {message}
           </div>
+        )}
+
+        {/* Email/Password Login */}
+        {loginMethod === "email" && (
+          <form onSubmit={handleEmailLogin} className="space-y-4">
+            <div>
+              <label className="block text-gray-700 mb-2 font-medium">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                  placeholder="Enter your email address"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 mb-2 font-medium">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-lg font-medium transition-all duration-200 hover:from-orange-600 hover:to-yellow-600 shadow-lg hover:shadow-xl ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
+
+            <div className="text-center">
+              <Link
+                to="/forgot-password"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+          </form>
         )}
 
         {/* Phone OTP Login - TEMPORARILY HIDDEN */}

@@ -105,70 +105,27 @@ const StaffImagesUploader = ({
             <p className="text-xs sm:text-sm font-medium text-gray-700">
               Trained Staff Photos ({staffImages.length})
             </p>
-            {staffImages.length > 1 && (
-              <div className="flex items-center gap-1 sm:gap-2">
+          </div>
+
+          {/* Responsive grid of uniform frames */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
+            {staffImages.map((image) => (
+              <div key={image.id} className="relative bg-gray-100 rounded-lg overflow-hidden aspect-[3/4]">
+                <img
+                  src={image.url}
+                  alt={`KashiBnB trained staff`}
+                  className="w-full h-full object-cover"
+                />
                 <button
-                  onClick={prevStaffImage}
-                  className="p-1 sm:p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
-                  title="Previous photo"
+                  onClick={() => removeStaffImage(image.id)}
+                  className="absolute top-1 right-1 sm:top-2 sm:right-2 p-1 sm:p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                  title="Remove photo"
                 >
-                  <FiChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
-                </button>
-                <span className="text-xs text-gray-600 px-1 sm:px-2">
-                  {currentStaffImageIndex + 1} / {staffImages.length}
-                </span>
-                <button
-                  onClick={nextStaffImage}
-                  className="p-1 sm:p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
-                  title="Next photo"
-                >
-                  <FiChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" />
+                  <FiX className="h-3 w-3 sm:h-4 sm:w-4" />
                 </button>
               </div>
-            )}
+            ))}
           </div>
-
-          <div className="relative group">
-            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-              <img
-                src={staffImages[currentStaffImageIndex]?.url}
-                alt={`KashiBnB trained staff member ${currentStaffImageIndex + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            
-            {/* Remove button */}
-            <button
-              onClick={() => removeStaffImage(staffImages[currentStaffImageIndex]?.id)}
-              className="absolute top-1 right-1 sm:top-2 sm:right-2 p-1 sm:p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
-              title="Remove photo"
-            >
-              <FiX className="h-3 w-3 sm:h-4 sm:w-4" />
-            </button>
-          </div>
-
-          {/* Thumbnail navigation */}
-          {staffImages.length > 1 && (
-            <div className="flex gap-1 sm:gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {staffImages.map((image, index) => (
-                <button
-                  key={image.id}
-                  onClick={() => setCurrentStaffImageIndex(index)}
-                  className={`flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-lg overflow-hidden border-2 transition-colors ${
-                    index === currentStaffImageIndex
-                      ? 'border-purple-500'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <img
-                    src={image.url}
-                    alt={`KashiBnB trained staff ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       )}
 

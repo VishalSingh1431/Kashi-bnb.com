@@ -504,10 +504,19 @@ export const sendSignupEmailOTP = async (req, res) => {
 // Verify Email OTP for new user signup
 export const verifySignupEmailOTP = async (req, res) => {
   try {
-    const { email, otp, name } = req.body;
+    const { email, otp, name, password, mobile } = req.body;
 
     if (!email || !otp || !name) {
       return res.status(400).json({ message: 'Email, OTP, and name are required' });
+    }
+
+    // If a password is provided (email/password signup), validate it
+    let hashedPassword = null;
+    if (typeof password === 'string' && password.length > 0) {
+      if (password.length < 6) {
+        return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+      }
+      hashedPassword = await bcrypt.hash(password, 10);
     }
 
     // Find the OTP record
@@ -526,6 +535,14 @@ export const verifySignupEmailOTP = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
+    // Ensure user does not already exist (race condition safety)
+    const existingUser = await prisma.users.findUnique({
+      where: { email: email.toLowerCase() }
+    });
+    if (existingUser) {
+      return res.status(409).json({ message: 'Email already registered. Please login instead.' });
+    }
+
     // Split name into first and last name
     const nameParts = name.trim().split(' ');
     const first_name = nameParts[0];
@@ -538,7 +555,9 @@ export const verifySignupEmailOTP = async (req, res) => {
         first_name,
         last_name,
         email: email.toLowerCase(),
-        verified: true // Email verification is complete
+        verified: true, // Email verification is complete
+        password: hashedPassword,
+        mobile: mobile || null
       }
     });
 
