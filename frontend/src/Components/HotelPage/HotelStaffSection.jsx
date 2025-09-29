@@ -46,7 +46,7 @@ const HotelStaffSection = ({ hotel, editMode, handleStaffImageUpload, handleDele
             </div>
 
             {/* Uniform grid of equal frames, images not cropped */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
               {hotel.staffimages.map((image, index) => (
                 <div key={image.id || index} className="relative bg-white rounded-md sm:rounded-lg border border-gray-200 shadow-sm overflow-hidden">
                   <div className="aspect-square w-full bg-gray-50 flex items-center justify-center">

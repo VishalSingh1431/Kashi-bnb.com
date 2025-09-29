@@ -16,7 +16,7 @@ dotenv.config();
   export const sendEmail = async (toEmail,token) => {
   
     const mailOptions = {
-      from: "info@kashibnb.com <Kashi-BnB>",
+      from: `${process.env.EMAIL_USER} <Kashi-BnB>`,
       to: toEmail,
       bcc: "info@kashibnb.com",
       subject: "KASHI-BnB: verify your mail",
@@ -38,7 +38,7 @@ dotenv.config();
   // Send OTP email for verification
   export const sendOTPEmail = async (toEmail, otp, purpose = 'verification') => {
     const mailOptions = {
-      from: "info@kashibnb.com <Kashi-BnB>",
+      from: `${process.env.EMAIL_USER} <Kashi-BnB>`,
       to: toEmail,
       bcc: "info@kashibnb.com",
       subject: `KASHI-BnB: ${purpose === 'signup' ? 'Email Verification for Signup' : purpose === 'verification' ? 'Email Verification' : 'OTP Code'}`,
