@@ -218,6 +218,7 @@ enum OTPType {
   EMAIL_RECOVERY
   PHONE_RECOVERY
   EMAIL_ADD
+  EMAIL_SIGNUP
 }
 
 enum UserType {

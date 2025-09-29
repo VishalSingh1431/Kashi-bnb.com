@@ -43,87 +43,32 @@ const HotelStaffSection = ({ hotel, editMode, handleStaffImageUpload, handleDele
               <p className="text-xs sm:text-sm font-medium text-gray-700">
                 Trained Staff Photos ({hotel.staffimages.length})
               </p>
-              {hotel.staffimages.length > 1 && (
-                <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2">
-                  <button
-                    onClick={prevStaffImage}
-                    className="p-1 sm:p-1.5 md:p-2 rounded-md sm:rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-colors touch-manipulation"
-                    aria-label="Previous staff photo"
-                  >
-                    <FiChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-gray-600" />
-                  </button>
-                  <button
-                    onClick={nextStaffImage}
-                    className="p-1 sm:p-1.5 md:p-2 rounded-md sm:rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-colors touch-manipulation"
-                    aria-label="Next staff photo"
-                  >
-                    <FiChevronRight className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-gray-600" />
-                  </button>
-                </div>
-              )}
             </div>
 
-            <div className="relative group">
-              <div className="aspect-[4/3] sm:aspect-[16/10] md:aspect-video bg-gray-100 rounded-md sm:rounded-lg overflow-hidden shadow-sm">
-                <img
-                  src={hotel.staffimages[currentStaffImageIndex]?.url}
-                  alt={`KashiBnB trained staff member ${currentStaffImageIndex + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-              
-              {/* Delete button in edit mode */}
-              {editMode && (
-                <button
-                  onClick={() => handleDeleteStaffImage(hotel.staffimages[currentStaffImageIndex]?.id)}
-                  className="absolute top-2 right-2 p-1 sm:p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-colors"
-                  aria-label="Delete staff photo"
-                >
-                  <FiX className="h-3 w-3 sm:h-4 sm:w-4" />
-                </button>
-              )}
-            </div>
-
-            {/* Thumbnail Navigation */}
-            {hotel.staffimages.length > 1 && (
-              <div className="flex gap-1 sm:gap-1.5 md:gap-2 overflow-x-auto pb-1 sm:pb-2 scrollbar-hide">
-                {hotel.staffimages.map((image, index) => (
-                  <div key={image.id} className="relative">
-                    <button
-                      onClick={() => setCurrentStaffImageIndex(index)}
-                      className={`flex-shrink-0 w-10 h-7 sm:w-12 sm:h-8 md:w-16 md:h-10 lg:w-20 lg:h-12 rounded-md sm:rounded-lg overflow-hidden border-2 transition-all duration-200 touch-manipulation ${
-                        index === currentStaffImageIndex
-                          ? 'border-purple-500 ring-2 ring-purple-200 scale-105'
-                          : 'border-gray-200 hover:border-gray-300 hover:scale-105 active:scale-95'
-                      }`}
-                      aria-label={`View staff photo ${index + 1}`}
-                    >
-                      <img
-                        src={image.url}
-                        alt={`KashiBnB trained staff ${index + 1}`}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </button>
-                    
-                    {/* Delete button for thumbnail in edit mode */}
-                    {editMode && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteStaffImage(image.id);
-                        }}
-                        className="absolute -top-1 -right-1 p-0.5 sm:p-1 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-colors"
-                        aria-label="Delete staff photo"
-                      >
-                        <FiX className="h-2 w-2 sm:h-3 sm:w-3" />
-                      </button>
-                    )}
+            {/* Uniform grid of equal frames, images not cropped */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
+              {hotel.staffimages.map((image, index) => (
+                <div key={image.id || index} className="relative bg-white rounded-md sm:rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="aspect-square w-full bg-gray-50 flex items-center justify-center">
+                    <img
+                      src={image.url}
+                      alt={`KashiBnB trained staff ${index + 1}`}
+                      className="max-w-full max-h-full object-contain p-2"
+                      loading="lazy"
+                    />
                   </div>
-                ))}
-              </div>
-            )}
+                  {editMode && (
+                    <button
+                      onClick={() => handleDeleteStaffImage(image.id)}
+                      className="absolute top-1 right-1 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full shadow transition-colors"
+                      aria-label="Delete staff photo"
+                    >
+                      <FiX className="h-3 w-3" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </>
         ) : (
           <div className="text-center py-6 sm:py-8 md:py-10">
