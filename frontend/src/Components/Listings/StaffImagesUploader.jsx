@@ -108,9 +108,9 @@ const StaffImagesUploader = ({
           </div>
 
           {/* Responsive grid of uniform frames */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-6 xl:gap-8">
             {staffImages.map((image) => (
-              <div key={image.id} className="relative bg-gray-100 rounded-lg overflow-hidden aspect-[3/4]">
+              <div key={image.id} className="relative bg-gray-100 rounded-lg lg:rounded-xl xl:rounded-2xl overflow-hidden aspect-[3/4] shadow-sm lg:shadow-md xl:shadow-lg">
                 <img
                   src={image.url}
                   alt={`KashiBnB trained staff`}
