@@ -491,8 +491,15 @@ export const sendSignupEmailOTP = async (req, res) => {
         expiresIn: '10 minutes'
       });
     } else {
-      // If email fails, return error
-      res.status(500).json({ message: 'Failed to send verification OTP. Please try again.' });
+      // If email fails, return detailed error and optional dev fallback
+      console.error('Signup email OTP send failed:', emailResult.error);
+      const allowFallback = process.env.ALLOW_EMAIL_OTP_FALLBACK === 'true' || process.env.NODE_ENV !== 'production';
+      res.status(500).json({ 
+        message: 'Failed to send verification OTP. Please try again.',
+        error: emailResult.error,
+        developmentMode: allowFallback,
+        otp: allowFallback ? otp : undefined
+      });
     }
 
   } catch (error) {

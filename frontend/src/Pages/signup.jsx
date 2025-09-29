@@ -280,6 +280,21 @@ const Signup = () => {
       console.log('Email Signup OTP Error:', err);
       let errorMessage = "Failed to send verification OTP. Please try again.";
       
+      // If backend provided a specific error (e.g., SMTP issue), surface it
+      const backendError = err.response?.data?.error;
+      const devOtp = err.response?.data?.otp;
+      const devMode = err.response?.data?.developmentMode;
+
+      if (backendError) {
+        errorMessage = `${errorMessage}${devMode ? ` (Dev hint: ${backendError})` : ''}`;
+      }
+
+      // If backend provided a dev OTP (fallback), show it and move to verification step
+      if (devMode && devOtp) {
+        setEmailVerificationStep(true);
+        setMessage(`Development mode: Use OTP ${devOtp} to verify.`);
+      }
+      
       if (err.response?.status === 409) {
         if (err.response.data.message.includes("Google")) {
           errorMessage = "An account with this email already exists via Google. Please login with Google instead.";
